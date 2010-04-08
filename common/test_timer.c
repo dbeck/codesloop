@@ -62,10 +62,11 @@ csl_common_test_timer_v0( void (*test_function)(void) )
   int i = 0;
   size_t nl = 0;
   double ela = 0.0;
+  double max_sampling_interval = (double)(MAX_SAMPLING_INTERVAL_MS);
 
   gettimeofday( &start,NULL );
 
-  while( (ela = calc_elapsed(&start)) < MAX_SAMPLING_INTERVAL_MS )
+  while( (ela = calc_elapsed(&start)) < max_sampling_interval )
   {
     for( i=0;i<loop;++i )
     {

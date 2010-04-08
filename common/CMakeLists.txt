@@ -56,7 +56,7 @@ ADD_LIBRARY( csl_common STATIC
              binry.cc      binry.hh
              # -- replacements for rdbuf, read_res, tbuf
              limited_work_buffer.hh
-             work_buffer_part.cc work_buffer_part.hh
+             stream_part.cc stream_part.hh
              preallocated_array.hh preallocated_array_impl.hh )
 
 # ADD_DEFINITIONS( -DENABLE_LOGGER )

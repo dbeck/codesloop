@@ -31,17 +31,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif /* DEBUG */
 #endif /* 0 */
 
-#include "codesloop/common/work_buffer_part.hh"
+#include "codesloop/common/stream_part.hh"
 #include "codesloop/common/logger.hh"
 
 namespace csl
 {
   namespace common
   {
-    work_buffer_part::work_buffer_part()
+    stream_part::stream_part()
         : data_(0), bytes_(0), timed_out_(false), failed_(false) { }
 
-    void work_buffer_part::reset()
+    void stream_part::reset()
     {
       ENTER_FUNCTION();
       data_       = 0;
@@ -51,13 +51,13 @@ namespace csl
       LEAVE_FUNCTION();
     }
 
-    uint8_t * work_buffer_part::data() const
+    void * stream_part::data() const
     {
       ENTER_FUNCTION();
       RETURN_FUNCTION( data_ );
     }
 
-    void work_buffer_part::data(uint8_t * d)
+    void stream_part::data(void * d)
     {
       ENTER_FUNCTION();
       CSL_DEBUGF(L"data(%p)",d );
@@ -65,27 +65,27 @@ namespace csl
       LEAVE_FUNCTION();
     }
 
-    uint64_t work_buffer_part::bytes() const
+    size_t stream_part::bytes() const
     {
       ENTER_FUNCTION();
       RETURN_FUNCTION( bytes_ );
     }
 
-    void work_buffer_part::bytes(uint64_t b)
+    void stream_part::bytes(size_t b)
     {
       ENTER_FUNCTION();
-      CSL_DEBUGF(L"bytes(%lld)",b );
+      CSL_DEBUGF(L"bytes(%lld)",static_cast<uint64_t>(b) );
       bytes_ = b;
       LEAVE_FUNCTION();
     }
 
-    bool work_buffer_part::timed_out() const
+    bool stream_part::timed_out() const
     {
       ENTER_FUNCTION();
       RETURN_FUNCTION( timed_out_ );
     }
 
-    void work_buffer_part::timed_out(bool to)
+    void stream_part::timed_out(bool to)
     {
       ENTER_FUNCTION();
       CSL_DEBUGF(L"timed_out(%s)",(to==true?"TRUE":"FALSE") );
@@ -93,13 +93,13 @@ namespace csl
       LEAVE_FUNCTION();
     }
 
-    bool work_buffer_part::failed() const
+    bool stream_part::failed() const
     {
       ENTER_FUNCTION();
       RETURN_FUNCTION( failed_ );
     }
 
-    void work_buffer_part::failed(bool fd)
+    void stream_part::failed(bool fd)
     {
       ENTER_FUNCTION();
       CSL_DEBUGF(L"failed(%s)",(fd==true?"TRUE":"FALSE") );

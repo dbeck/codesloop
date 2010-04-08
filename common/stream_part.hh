@@ -23,8 +23,8 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_common_work_buffer_part_hh_included_
-#define _csl_common_work_buffer_part_hh_included_
+#ifndef _csl_common_stream_part_hh_included_
+#define _csl_common_stream_part_hh_included_
 
 #include "codesloop/common/common.h"
 #include "codesloop/common/obj.hh"
@@ -34,33 +34,33 @@ namespace csl
 {
   namespace common
   {
-    class work_buffer_part
+    class stream_part
     {
       private:
-        uint8_t *  data_;
-        uint64_t   bytes_;
+        void *     data_;
+        size_t     bytes_;
         bool       timed_out_;
         bool       failed_;
 
       public:
-        work_buffer_part();
+        stream_part();
 
         void reset();
 
-        uint8_t * data() const;
-        uint64_t bytes() const;
+        void * data() const;
+        size_t bytes() const;
         bool timed_out() const;
         bool failed() const;
 
-        void data(uint8_t * d);
-        void bytes(uint64_t b);
+        void data(void * d);
+        void bytes(size_t b);
         void timed_out(bool to);
         void failed(bool fd);
 
-        CSL_OBJ(csl::common, work_buffer_part);
+        CSL_OBJ(csl::common, stream_part);
     };
   }
 }
 
 #endif /* __cplusplus */
-#endif /* _csl_common_work_buffer_part_hh_included_ */
+#endif /* _csl_common_stream_part_hh_included_ */
