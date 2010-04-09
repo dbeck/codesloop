@@ -250,10 +250,10 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
-    bool preallocated_array<T,SZ>::append(const uint8_t * dta, size_t sz)
+    bool preallocated_array<T,SZ>::append(const T * dta, size_t sz)
     {
-       /* if no data on the other side we are done */
-       if( !sz )  { return true; }
+      /* if no data on the other side we are done */
+      if( !sz )  { return true; }
 
       /* if sz is not zero than dta must not be null */
       if( !dta ) { return false; }
@@ -279,7 +279,7 @@ namespace csl
     template <typename T, size_t SZ>
     void preallocated_array<T,SZ>::set_at(size_t pos,const T & c)
     {
-      uint8_t * t = data_;
+      T * t = data_;
       if( pos >= size_ ) t = allocate( pos+1 );
       t[pos] = c;
     }

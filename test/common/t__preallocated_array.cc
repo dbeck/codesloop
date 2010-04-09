@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__preallocated_array.cc
-   @brief Tests to verify preallocated_array
- */
-
 #ifndef DEBUG
 #define DEBUG
 #endif /* DEBUG */
@@ -45,66 +40,194 @@ using csl::common::pbuf;
 using csl::common::preallocated_array;
 using csl::common::str;
 
-/** @brief contains tests related to preallocated_array */
 namespace test_preallocated_array {
 
-  /** @test baseline for performance comparison */
   void preallocated_array_baseline()
   {
     preallocated_array<char,128> b;
   }
-
-  /** @test baseline for performance comparison */
+  
   void pbuf_baseline()
   {
     pbuf b;
   }
 
-  /** @test baseline for performance comparison */
   void string_baseline()
   {
     std::string b;
   }
 
-  /** @test baseline for performance comparison */
   void str_baseline()
   {
     str b;
   }
 
-  /** @test adds 6 bytes to preallocated_array (for performance comparison) */
   void preallocated_array_hello()
   {
     preallocated_array<char,128> b;
     b.set( "Hello", 6 );
   }
 
-  /** @test adds 6 bytes to pbuf (for performance comparison) */
   void pbuf_hello()
   {
     pbuf b;
     b.append( reinterpret_cast<const unsigned char *>("Hello"),6);
   }
 
-  /** @test adds 6 bytes to std::string (for performance comparison) */
   void string_hello()
   {
     std::string b;
     b = "Hello";
   }
 
-  /** @test @todo */
   void str_hello()
   {
     str b;
     b = L"Hello";
   }
 
-  /** @test @todo */
   void test_selfequal()
   {
     preallocated_array<char, 10> t;
     t = t;
+  }
+
+  void baseline_1()
+  {
+    preallocated_array<char, 1> t;
+  }
+      
+  void baseline_10()
+  {
+    preallocated_array<char, 10> t;
+  }
+  
+  void alloc_10_static()
+  {
+    preallocated_array<char, 10> t;
+    for(size_t i=0;i<10;++i)
+    {
+      assert(t.allocate(i) != 0);
+    }
+  }
+  
+  void alloc_10_static_of_20()
+  {
+    preallocated_array<char, 10> t;
+    for(size_t i=0;i<20;++i)
+    {
+      assert(t.allocate(i) != 0);
+    }
+  }
+  
+  void reset_1()
+  {
+    preallocated_array<char, 10> t;
+    t.reset();
+  }
+
+  void reset_10()
+  {
+    preallocated_array<char, 10> t;
+    for(size_t i=0;i<10;++i)
+    {
+      t.reset();
+    }
+  }
+
+  void set_get_1()
+  {
+    preallocated_array<char, 10> t;
+    char tx = '0';
+    t.set(&tx,1);
+    tx = 'x';
+    t.get(&tx);
+    assert( tx == '0' );
+  }
+
+  void set_get_1_str()
+  {
+    std::string s;
+    s += '0';
+    assert( s[0] == '0' );
+  }
+  
+  void append_t()
+  {
+    preallocated_array<char, 10> t;
+    char tx = '0';
+    t.append(tx);
+  }
+  
+  void append_ptr()
+  {
+    preallocated_array<char, 10> t;
+    char tx[] = { 'h','e','l','l','o' };
+    t.append(tx,sizeof(tx));
+  }
+  
+  void append_pa()
+  {
+    preallocated_array<char, 10> t,t2;
+    char tx[] = { 'h','e','l','l','o' };
+    t.append(tx,sizeof(tx));
+    t2.append(t);
+  }
+  
+  void append_t_str()
+  {
+    std::string t;
+    char tx = '0';
+    t.append(&tx,(&tx)+1);
+  }
+  
+  void append_ptr_str()
+  {
+    std::string t;
+    char tx[] = { 'h','e','l','l','o' };
+    t.append(tx,tx+sizeof(tx));
+  }
+  
+  void append_pa_str()
+  {
+    std::string t,t2;
+    char tx[] = { 'h','e','l','l','o' };
+    t.append(tx,tx+sizeof(tx));
+    t2.append(t);
+  }
+    
+  void assign_10()
+  {
+    preallocated_array<char, 10> t,t2;
+    char tx[] = { 'h','e','l','l','o' };
+    t.append(tx,sizeof(tx));
+    for(int i=0;i<10;++i) t2 = t;
+  }
+
+  void assign_10_str()
+  {
+    std::string t,t2;
+    char tx[] = { 'h','e','l','l','o' };
+    t.append(tx,tx+sizeof(tx));
+    for(int i=0;i<10;++i) t2 = t;
+  }
+
+  void equal_10()
+  {
+    preallocated_array<char, 10> t,t2;
+    char tx[] = { 'h','e','l','l','o' };
+    t.append(tx,sizeof(tx));
+    bool eq = false;
+    for(int i=0;i<10;++i) { eq = (t2 == t); }
+  }
+
+  void equal_10_str()
+  {
+    std::string t,t2;
+    char tx[] = { 'h','e','l','l','o' };
+    t.append(tx,tx+sizeof(tx));
+    bool eq = false;
+    for(int i=0;i<10;++i) { eq = (t2 == t); }
   }
 
 } // end of test_preallocated_array
@@ -115,6 +238,25 @@ int main()
 {
   test_selfequal();
 
+  csl_common_print_results( "baseline_1         ", csl_common_test_timer_v0(baseline_1),"" );    
+  csl_common_print_results( "baseline_10        ", csl_common_test_timer_v0(baseline_10),"" );  
+  csl_common_print_results( "alloc_10_static    ", csl_common_test_timer_v0(alloc_10_static),"" );
+  csl_common_print_results( "10/20 alloc        ", csl_common_test_timer_v0(alloc_10_static_of_20),"" );
+  csl_common_print_results( "reset_1            ", csl_common_test_timer_v0(reset_1),"" );
+  csl_common_print_results( "reset_10           ", csl_common_test_timer_v0(reset_10),"" );
+  csl_common_print_results( "set_get_1          ", csl_common_test_timer_v0(set_get_1),"" );
+  csl_common_print_results( "set_get_1_str      ", csl_common_test_timer_v0(set_get_1_str),"" );
+  csl_common_print_results( "append_t           ", csl_common_test_timer_v0(append_t),"" );
+  csl_common_print_results( "append_ptr         ", csl_common_test_timer_v0(append_ptr),"" );
+  csl_common_print_results( "append_pa          ", csl_common_test_timer_v0(append_pa),"" );
+  csl_common_print_results( "append_t_str       ", csl_common_test_timer_v0(append_t_str),"" );
+  csl_common_print_results( "append_ptr_str     ", csl_common_test_timer_v0(append_ptr_str),"" );
+  csl_common_print_results( "append_pa_str      ", csl_common_test_timer_v0(append_pa_str),"" );
+  csl_common_print_results( "assign_10          ", csl_common_test_timer_v0(assign_10),"" );
+  csl_common_print_results( "assign_10_str      ", csl_common_test_timer_v0(assign_10_str),"" );
+  csl_common_print_results( "equal_10           ", csl_common_test_timer_v0(equal_10),"" );
+  csl_common_print_results( "equal_10_str       ", csl_common_test_timer_v0(equal_10_str),"" );
+
   csl_common_print_results( "PA_baseline        ", csl_common_test_timer_v0(preallocated_array_baseline),"" );
   csl_common_print_results( "pbuf_baseline      ", csl_common_test_timer_v0(pbuf_baseline),"" );
   csl_common_print_results( "str_baseline       ", csl_common_test_timer_v0(str_baseline),"" );
@@ -124,7 +266,7 @@ int main()
   csl_common_print_results( "pbuf_hello         ", csl_common_test_timer_v0(pbuf_hello),"" );
   csl_common_print_results( "str_hello          ", csl_common_test_timer_v0(str_hello),"" );
   csl_common_print_results( "string_hello       ", csl_common_test_timer_v0(string_hello),"" );
-
+  
   return 0;
 }
 

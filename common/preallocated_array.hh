@@ -63,7 +63,7 @@ namespace csl
         T * allocate_nocopy(size_t sz);
         
         void append(const T & c);
-        bool append(const uint8_t * dta, size_t sz);
+        bool append(const T * dta, size_t sz);
         bool append(const preallocated_array & other);
         void set_at(size_t pos,const T & c);
 
