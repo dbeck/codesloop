@@ -26,7 +26,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_limited_work_buffer_hh_included_
 #define _csl_common_limited_work_buffer_hh_included_
 
-#include "codesloop/common/work_buffer_part.hh"
+#include "codesloop/common/stream_part.hh"
 #include "codesloop/common/exc.hh"
 #include "codesloop/common/tbuf.hh"
 #include "codesloop/common/common.h"
@@ -39,29 +39,29 @@ namespace csl
 {
   namespace common
   {
-    template <uint64_t Preallocated=1024,uint64_t MaxSize=256*1024>
+    template <size_t Preallocated=1024,size_t MaxSize=256*1024>
     class limited_work_buffer
     {
       public:
-        static const uint64_t preallocated_size_ = Preallocated;
-        static const uint64_t max_size_          = MaxSize;
+        static const size_t preallocated_size_ = Preallocated;
+        static const size_t max_size_          = MaxSize;
 
-        work_buffer_part & get( uint64_t sz, work_buffer_part & rr )
+        stream_part & get( size_t sz, stream_part & sp )
         {
           ENTER_FUNCTION();
-          CSL_DEBUGF(L"get(sz:%lld,rr)",sz);
-          rr.reset();
+          CSL_DEBUGF(L"get(sz:%lld,sp)",static_cast<uint64_t>(sz));
+          sp.reset();
 
           if( sz == 0 )
           {
             CSL_DEBUGF(L"invalid size [sz:0]");
-            rr.failed( true );
+            sp.failed( true );
           }
           else if( len_ > 0 )
           {
-            uint64_t ret_size = (len_ > sz ? sz : len_);
-            rr.data( buf_.private_data() + start_ );
-            rr.bytes( ret_size );
+            size_t ret_size = (len_ > sz ? sz : len_);
+            sp.data( buf_.private_data() + start_ );
+            sp.bytes( ret_size );
             start_ += ret_size;
             len_   -= ret_size;
             if( len_ == 0 ) start_ = 0;
@@ -71,7 +71,7 @@ namespace csl
             // this is not an error: empty buffer
             CSL_DEBUGF(L"no data to be returned");
           }
-          RETURN_FUNCTION( rr );
+          RETURN_FUNCTION( sp );
         }
 
         // there is an important design decision here: data is always allocated at
@@ -79,77 +79,77 @@ namespace csl
         // the buffer, it can only be used if all data is returned by get().
         // this behaviour forces the application to care about the buffer, thus
         // not not enforcing unneccessary and time consuming memory copies.
-        work_buffer_part & reserve( uint64_t sz, work_buffer_part & rr )
+        stream_part & reserve( size_t sz, stream_part & sp )
         {
           ENTER_FUNCTION();
-          CSL_DEBUGF(L"resrerve(sz:%lld,rr)",sz);
-          rr.reset();
+          CSL_DEBUGF(L"resrerve(sz:%lld,sp)",static_cast<uint64_t>(sz));
+          sp.reset();
 
-          uint64_t new_len = start_ + len_ + sz;
+          size_t new_len = start_ + len_ + sz;
           if( new_len > MaxSize )
           {
-            CSL_DEBUGF(L"cannot allocate %lld bytes",sz);
+            CSL_DEBUGF(L"cannot allocate %lld bytes",static_cast<uint64_t>(sz));
             if( start_ + len_ < MaxSize )
             {
               CSL_DEBUGF(L"allocate additional %lld bytes instead of the "
                          "requested %lld bytes [max:%lld-start_:%lld-len_:%lld]",
-                         n_free(),
-                         sz,
-                         start_,
-                         len_);
+                         static_cast<uint64_t>(n_free()),
+                         static_cast<uint64_t>(sz),
+                         static_cast<uint64_t>(start_),
+                         static_cast<uint64_t>(len_));
               uint8_t * ptr = buf_.allocate( MaxSize );
-              rr.data( ptr + start_ + len_ );
-              rr.bytes( n_free() );
+              sp.data( ptr + start_ + len_ );
+              sp.bytes( n_free() );
               len_ = MaxSize - start_;
             }
             else
             {
               // we are at maximum capacity already: this is an error
               CSL_DEBUGF(L"cannot allocate more data");
-              rr.failed( true );
+              sp.failed( true );
             }
           }
           else if( sz == 0 )
           {
             CSL_DEBUGF(L"not allocating");
-            rr.reset(); // this is to enforce errors
+            sp.reset(); // this is to enforce errors
           }
           else
           {
-            CSL_DEBUGF(L"allocating %lld bytes",sz);
+            CSL_DEBUGF(L"allocating %lld bytes",static_cast<uint64_t>(sz));
             uint8_t * ptr = buf_.allocate( len_+sz );
-            rr.data( ptr + start_ + len_ );
-            rr.bytes( sz );
+            sp.data( ptr + start_ + len_ );
+            sp.bytes( sz );
             len_ += sz;
           }
-          RETURN_FUNCTION( rr );
+          RETURN_FUNCTION( sp );
         }
 
-        work_buffer_part & adjust( work_buffer_part & rr, uint64_t n_succeed )
+        stream_part & adjust( stream_part & sp, size_t n_succeed )
         {
           ENTER_FUNCTION();
-          CSL_DEBUGF(L"adjust(rr,n_succeed:%lld)",n_succeed);
+          CSL_DEBUGF(L"adjust(sp,n_succeed:%lld)",static_cast<uint64_t>(n_succeed));
 
-          uint64_t start_offset = 0;
-          uint64_t adjust_len   = 0;
+          size_t start_offset = 0;
+          size_t adjust_len   = 0;
 
-          start_offset = rr.data() - buf_.private_data();
+          start_offset = sp.data() - buf_.private_data();
 
-          if( rr.bytes() < n_succeed ||
-              rr.data() == NULL      ||
-              rr.failed() == true    ||
-              len_ < rr.bytes()      ||
-              start_offset !=  (start_+len_-rr.bytes()) )
+          if( sp.bytes() < n_succeed ||
+              sp.data() == NULL      ||
+              sp.failed() == true    ||
+              len_ < sp.bytes()      ||
+              start_offset !=  (start_+len_-sp.bytes()) )
           {
             CSL_DEBUGF(L"invalid param received");
             goto bail;
           }
 
           {
-            // set rr
-            adjust_len = rr.bytes() - n_succeed;
-            rr.bytes( n_succeed );
-            if( !n_succeed ) rr.data( NULL );
+            // set sp 
+            adjust_len = sp.bytes() - n_succeed;
+            sp.bytes( n_succeed );
+            if( !n_succeed ) sp.data( NULL );
           }
 
           {
@@ -159,19 +159,19 @@ namespace csl
             else if( adjust_len > 0 )
             {
               uint8_t * p = buf_.allocate( len_ + start_ );
-              if( n_succeed > 0 ) { rr.data( p + start_offset ); }
+              if( n_succeed > 0 ) { sp.data( p + start_offset ); }
             }
           }
 
-          CSL_DEBUGF(L"length decreased by: %lld bytes",adjust_len);
+          CSL_DEBUGF(L"length decreased by: %lld bytes",static_cast<uint64_t>(adjust_len));
         bail:
-          RETURN_FUNCTION( rr );
+          RETURN_FUNCTION( sp );
         }
 
-        uint64_t start()  const { return start_;      }
-        uint64_t len()    const { return len_;        }
-        uint64_t buflen() const { return buf_.size(); }
-        uint64_t n_free() const { return (MaxSize-len_-start_); }
+        size_t start()  const { return start_;      }
+        size_t len()    const { return len_;        }
+        size_t buflen() const { return buf_.size(); }
+        size_t n_free() const { return (MaxSize-len_-start_); }
 
         const unsigned char * data() const { return buf_.data()+start_; }
 
@@ -179,8 +179,8 @@ namespace csl
 
       private:
         common::tbuf<Preallocated> buf_;
-        uint64_t start_;
-        uint64_t len_;
+        size_t start_;
+        size_t len_;
 
         CSL_OBJ(csl::common,limited_work_buffer);
         USE_EXC();

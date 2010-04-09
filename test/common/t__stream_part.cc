@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__read_res.cc
-   @brief @todo
- */
-
 #if 0
 #ifndef DEBUG
 #define DEBUG
@@ -36,7 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif /* DEBUG */
 #endif
 
-#include "codesloop/common/read_res.hh"
+#include "codesloop/common/stream_part.hh"
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
@@ -47,21 +42,21 @@ using namespace csl::common;
 //using namespace csl::nthread;
 
 /** @brief @todo */
-namespace test_read_res {
+namespace test_stream_part {
 
   /*
   ** DEBUG support --------------------------------------------------------------------
   */
-  static inline const wchar_t * get_namespace()   { return L"test_read_res"; }
-  static inline const wchar_t * get_class_name()  { return L"test_read_res::noclass"; }
+  static inline const wchar_t * get_namespace()   { return L"test_stream_part"; }
+  static inline const wchar_t * get_class_name()  { return L"test_stream_part::noclass"; }
   static inline const wchar_t * get_class_short() { return L"noclass"; }
 
-  void baseline() { read_res o; }
-  void copy()     { read_res o1,o2; o1 = o2; }
+  void baseline() { stream_part o; }
+  void copy()     { stream_part o1,o2; o1 = o2; }
 
-} /* end of test_read_res */
+} /* end of test_stream_part */
 
-using namespace test_read_res;
+using namespace test_stream_part;
 
 int main()
 {
