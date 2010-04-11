@@ -229,6 +229,62 @@ namespace test_preallocated_array {
     bool eq = false;
     for(int i=0;i<10;++i) { eq = (t2 == t); }
   }
+  
+  class Direct
+  {
+  public:
+    void append(char c) { pa10_.append(c); }
+    size_t size()       { return pa10_.size(); }
+  private:
+    preallocated_array<char, 10> pa10_;
+  };
+  
+  void test_direct()
+  {
+    Direct d;
+    d.append('a');
+    d.append('b');
+    assert( d.size() == 2 );
+  }
+
+  void test_direct0()
+  {
+    Direct d;
+    d.append('a');
+  }
+      
+  class Base
+  {
+  public:
+    virtual void append(char c) = 0;
+    virtual size_t size() = 0;
+    virtual ~Base() {}
+  };
+  
+  class Virtual : public Base
+  {
+  public:
+    void append(char c) { pa10_.append(c); }
+    size_t size()       { return pa10_.size(); }
+  private:
+    preallocated_array<char, 10> pa10_;
+  };
+  
+  void test_virtual()
+  {
+    Virtual v;
+    Base* bp = &v;
+    bp->append('a');
+    bp->append('b');
+    assert( bp->size() == 2 );    
+  }
+
+  void test_virtual0()
+  {
+    Virtual v;
+    Base* bp = &v;
+    bp->append('a');
+  }
 
 } // end of test_preallocated_array
 
@@ -238,7 +294,11 @@ int main()
 {
   test_selfequal();
 
-  csl_common_print_results( "baseline_1         ", csl_common_test_timer_v0(baseline_1),"" );    
+  csl_common_print_results( "direct0            ", csl_common_test_timer_v0(test_direct0),"" );
+  csl_common_print_results( "virtual0           ", csl_common_test_timer_v0(test_virtual0),"" );
+  csl_common_print_results( "direct             ", csl_common_test_timer_v0(test_direct),"" );
+  csl_common_print_results( "virtual            ", csl_common_test_timer_v0(test_virtual),"" );
+  csl_common_print_results( "baseline_1         ", csl_common_test_timer_v0(baseline_1),"" );
   csl_common_print_results( "baseline_10        ", csl_common_test_timer_v0(baseline_10),"" );  
   csl_common_print_results( "alloc_10_static    ", csl_common_test_timer_v0(alloc_10_static),"" );
   csl_common_print_results( "10/20 alloc        ", csl_common_test_timer_v0(alloc_10_static_of_20),"" );

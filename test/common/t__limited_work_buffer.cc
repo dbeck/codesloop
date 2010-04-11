@@ -84,7 +84,7 @@ namespace test_limited_work_buffer {
     assert( o.buflen() == 2 );
 
     // adjust 1
-    lwp_t::part_t & rr3(o.adjust(1,rr));
+    lwp_t::part_t & rr3(o.confirm(1,rr));
 
     // check results
     assert( &rr == &rr3 );
@@ -166,7 +166,7 @@ namespace test_limited_work_buffer {
 
     o.reserve(6,rr);
     assert( o.n_free() == 14 );
-    o.adjust(4,rr);
+    o.confirm(4,rr);
     assert( o.n_free() == 16 );
 
     assert( rr.bytes() == 4 );
@@ -185,7 +185,7 @@ namespace test_limited_work_buffer {
 
     // 1 byte succeed out of 4 bytes reserved
     // this means, 3 bytes should be cut off
-    o.adjust(1,rr);
+    o.confirm(1,rr);
     assert( o.n_free() == 15 );
     assert( rr.bytes() == 1 );
     assert( rr.data() != NULL );
@@ -207,14 +207,14 @@ namespace test_limited_work_buffer {
     assert( o.buflen() == o_t::max_size_ );
     assert( o.n_free() == 0 );
 
-    o.adjust(o_t::max_size_,rr);
+    o.confirm(o_t::max_size_,rr);
     assert( rr.bytes() == o_t::max_size_ );
     assert( rr.data() != NULL );
     assert( o.len() == o_t::max_size_ );
     assert( o.start() == 0 );
     assert( o.buflen() == o_t::max_size_ );
 
-    o.adjust(0,rr);
+    o.confirm(0,rr);
     assert( rr.bytes() == 0 );
     assert( rr.data() == NULL );
     assert( o.len() == 0 );
@@ -235,7 +235,7 @@ namespace test_limited_work_buffer {
     int caught = 0;
 
     // this should throw an exception
-    try { o.adjust(1,rr); }
+    try { o.confirm(1,rr); }
     catch( csl::common::exc e ) { caught = 1; }
     assert( caught == 1 );
 
@@ -243,7 +243,7 @@ namespace test_limited_work_buffer {
     rr.bytes( 999999ULL );                         // bad size
 
     // this should throw an exception
-    try { o.adjust(1,rr); }
+    try { o.confirm(1,rr); }
     catch( csl::common::exc e ) { caught = 2; }
     assert( caught == 2 );
 
@@ -251,7 +251,7 @@ namespace test_limited_work_buffer {
     rr.set_flags( rr2.os_error_ );                 // failed
 
     // this should throw an exception
-    try { o.adjust(1,rr); }
+    try { o.confirm(1,rr); }
     catch( csl::common::exc e ) { caught = 3; }
     assert( caught == 3 );
   }

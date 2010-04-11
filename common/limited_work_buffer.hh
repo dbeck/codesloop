@@ -128,13 +128,13 @@ namespace csl
           RETURN_FUNCTION( sp );
         }
 
-        part_t & adjust( size_t n_succeed, part_t & sp )
+        part_t & confirm( size_t n_succeed, part_t & sp )
         {
           ENTER_FUNCTION();
-          CSL_DEBUGF(L"adjust(sp,n_succeed:%lld)",static_cast<uint64_t>(n_succeed));
+          CSL_DEBUGF(L"confirm(sp,n_succeed:%lld)",static_cast<uint64_t>(n_succeed));
 
-          size_t start_offset = 0;
-          size_t adjust_len   = 0;
+          size_t start_offset  = 0;
+          size_t confirm_len   = 0;
 
           start_offset = sp.data() - buf_.private_data();
 
@@ -151,23 +151,23 @@ namespace csl
 
           {
             // set sp 
-            adjust_len = sp.bytes() - n_succeed;
+            confirm_len = sp.bytes() - n_succeed;
             sp.bytes( n_succeed );
             if( !n_succeed ) sp.data( NULL );
           }
 
           {
             // set internal data
-            len_ -= adjust_len;
+            len_ -= confirm_len;
             if( len_ == 0 )           { start_ = 0; buf_.allocate(0); }
-            else if( adjust_len > 0 )
+            else if( confirm_len > 0 )
             {
               T * p = buf_.allocate( len_ + start_ );
               if( n_succeed > 0 ) { sp.data( p + start_offset ); }
             }
           }
 
-          CSL_DEBUGF(L"length decreased by: %lld bytes",static_cast<uint64_t>(adjust_len));
+          CSL_DEBUGF(L"length decreased by: %lld bytes",static_cast<uint64_t>(confirm_len));
         bail:
           RETURN_FUNCTION( sp );
         }
