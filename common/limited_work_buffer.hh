@@ -28,7 +28,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/stream_part.hh"
 #include "codesloop/common/exc.hh"
-#include "codesloop/common/tbuf.hh"
+#include "codesloop/common/preallocated_array.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/obj.hh"
@@ -39,14 +39,16 @@ namespace csl
 {
   namespace common
   {
-    template <size_t Preallocated=1024,size_t MaxSize=256*1024>
+    template <typename T, size_t Preallocated=1024, size_t MaxSize=256*1024>
     class limited_work_buffer
     {
       public:
         static const size_t preallocated_size_ = Preallocated;
         static const size_t max_size_          = MaxSize;
+        typedef T item_t;
+        typedef stream_part<T> part_t;
 
-        stream_part & get( size_t sz, stream_part & sp )
+        part_t & get( size_t sz, part_t & sp )
         {
           ENTER_FUNCTION();
           CSL_DEBUGF(L"get(sz:%lld,sp)",static_cast<uint64_t>(sz));
@@ -55,7 +57,7 @@ namespace csl
           if( sz == 0 )
           {
             CSL_DEBUGF(L"invalid size [sz:0]");
-            sp.failed( true );
+            sp.add_flags( sp.parameter_error_ );
           }
           else if( len_ > 0 )
           {
@@ -79,7 +81,7 @@ namespace csl
         // the buffer, it can only be used if all data is returned by get().
         // this behaviour forces the application to care about the buffer, thus
         // not not enforcing unneccessary and time consuming memory copies.
-        stream_part & reserve( size_t sz, stream_part & sp )
+        part_t & reserve( size_t sz, part_t & sp )
         {
           ENTER_FUNCTION();
           CSL_DEBUGF(L"resrerve(sz:%lld,sp)",static_cast<uint64_t>(sz));
@@ -97,7 +99,8 @@ namespace csl
                          static_cast<uint64_t>(sz),
                          static_cast<uint64_t>(start_),
                          static_cast<uint64_t>(len_));
-              uint8_t * ptr = buf_.allocate( MaxSize );
+
+              T * ptr = buf_.allocate( MaxSize );
               sp.data( ptr + start_ + len_ );
               sp.bytes( n_free() );
               len_ = MaxSize - start_;
@@ -106,7 +109,7 @@ namespace csl
             {
               // we are at maximum capacity already: this is an error
               CSL_DEBUGF(L"cannot allocate more data");
-              sp.failed( true );
+              sp.add_flags( sp.buffer_full_ );
             }
           }
           else if( sz == 0 )
@@ -117,7 +120,7 @@ namespace csl
           else
           {
             CSL_DEBUGF(L"allocating %lld bytes",static_cast<uint64_t>(sz));
-            uint8_t * ptr = buf_.allocate( len_+sz );
+            T * ptr = buf_.allocate( len_+sz );
             sp.data( ptr + start_ + len_ );
             sp.bytes( sz );
             len_ += sz;
@@ -125,7 +128,7 @@ namespace csl
           RETURN_FUNCTION( sp );
         }
 
-        stream_part & adjust( stream_part & sp, size_t n_succeed )
+        part_t & adjust( size_t n_succeed, part_t & sp )
         {
           ENTER_FUNCTION();
           CSL_DEBUGF(L"adjust(sp,n_succeed:%lld)",static_cast<uint64_t>(n_succeed));
@@ -137,11 +140,12 @@ namespace csl
 
           if( sp.bytes() < n_succeed ||
               sp.data() == NULL      ||
-              sp.failed() == true    ||
+              sp.flags() != sp.ok_   ||
               len_ < sp.bytes()      ||
               start_offset !=  (start_+len_-sp.bytes()) )
           {
             CSL_DEBUGF(L"invalid param received");
+            sp.add_flags( sp.parameter_error_ );
             goto bail;
           }
 
@@ -158,7 +162,7 @@ namespace csl
             if( len_ == 0 )           { start_ = 0; buf_.allocate(0); }
             else if( adjust_len > 0 )
             {
-              uint8_t * p = buf_.allocate( len_ + start_ );
+              T * p = buf_.allocate( len_ + start_ );
               if( n_succeed > 0 ) { sp.data( p + start_offset ); }
             }
           }
@@ -178,7 +182,7 @@ namespace csl
         limited_work_buffer() : start_(0), len_(0), use_exc_(true) {}
 
       private:
-        common::tbuf<Preallocated> buf_;
+        preallocated_array<T,Preallocated> buf_;
         size_t start_;
         size_t len_;
 

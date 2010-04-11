@@ -51,8 +51,8 @@ namespace test_stream_part {
   static inline const wchar_t * get_class_name()  { return L"test_stream_part::noclass"; }
   static inline const wchar_t * get_class_short() { return L"noclass"; }
 
-  void baseline() { stream_part o; }
-  void copy()     { stream_part o1,o2; o1 = o2; }
+  void baseline() { stream_part<double> o; }
+  void copy()     { stream_part<float> o1,o2; o1 = o2; }
 
 } /* end of test_stream_part */
 

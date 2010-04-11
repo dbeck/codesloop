@@ -54,11 +54,11 @@ namespace test_limited_work_buffer {
   static inline const wchar_t * get_class_name()  { return L"test_limited_work_buffer::noclass"; }
   static inline const wchar_t * get_class_short() { return L"noclass"; }
 
-  void baseline() { limited_work_buffer<> o; }
+  void baseline() { limited_work_buffer<char> o; }
 
   void basic()
   {
-    limited_work_buffer<> o;
+    limited_work_buffer<char> o;
     assert( o.start() == 0 );
     assert( o.len() == 0 );
     assert( o.buflen() == 0 );
@@ -66,31 +66,30 @@ namespace test_limited_work_buffer {
 
   void reserve()
   {
-    limited_work_buffer<10,20> o;
-    stream_part rr;
+    typedef limited_work_buffer<char,10,20> lwp_t;
+    lwp_t o;
+    lwp_t::part_t rr;
 
     // do reserve
-    stream_part & rr2(o.reserve(2,rr));
+    lwp_t::part_t & rr2(o.reserve(2,rr));
     assert( o.n_free() == 18 );
 
     // check results
     assert( &rr == &rr2 );
     assert( rr.bytes() == 2 );
-    assert( rr.failed() == false );
-    assert( rr.timed_out() == false );
+    assert( rr.flags() == rr.ok_ );
     assert( rr.data() != NULL );
     assert( o.len() == 2 );
     assert( o.start() == 0 );
     assert( o.buflen() == 2 );
 
     // adjust 1
-    // XXX TODO stream_part & rr3(o.adjust(rr,1));
+    lwp_t::part_t & rr3(o.adjust(1,rr));
 
     // check results
-    // XXX TODO assert( &rr == &rr3 );
+    assert( &rr == &rr3 );
     assert( rr.bytes() == 1 );
-    assert( rr.failed() == false );
-    assert( rr.timed_out() == false );
+    assert( rr.flags() == rr.ok_ );
     assert( rr.data() != NULL );
     assert( o.len() == 1 );
     assert( o.start() == 0 );
@@ -99,8 +98,9 @@ namespace test_limited_work_buffer {
 
   void reserve_max()
   {
-    limited_work_buffer<10,20> o;
-    stream_part rr;
+    typedef limited_work_buffer<char,10,20> lwp_t;
+    lwp_t o;
+    lwp_t::part_t rr;
 
     // reserve 1: 8
     o.reserve(8,rr);
@@ -129,8 +129,9 @@ namespace test_limited_work_buffer {
 
   void reserve_badinput()
   {
-    limited_work_buffer<10,20> o;
-    stream_part rr;
+    typedef limited_work_buffer<char,10,20> lwp_t;
+    lwp_t o;
+    lwp_t::part_t rr;
     o.reserve(0,rr);
     assert( o.n_free() == 20 );
 
@@ -140,10 +141,10 @@ namespace test_limited_work_buffer {
     assert( o.start() == 0 );
     assert( o.buflen() == 0 );
 
-    rr.data( reinterpret_cast<uint8_t *>(33ULL) ); // bad ptr
-    rr.bytes( 999999ULL );                         // bad size
-    rr.failed( true );                             // failed
-    rr.timed_out( true );                          // timed_out
+    rr.data( reinterpret_cast<lwp_t::item_t *>(33ULL) );     // bad ptr
+    rr.bytes( 999999ULL );                                   // bad size
+    rr.set_flags( rr.timed_out_ | rr.application_error_ |
+                  rr.os_error_  | rr.try_again_ );           // set some flags
 
     o.reserve(12,rr);
     assert( o.n_free() == 8 );
@@ -159,12 +160,13 @@ namespace test_limited_work_buffer {
 
   void adjust()
   {
-    limited_work_buffer<10,20> o;
-    stream_part rr;
+    typedef limited_work_buffer<char,10,20> lwp_t;
+    lwp_t o;
+    lwp_t::part_t rr;
 
     o.reserve(6,rr);
     assert( o.n_free() == 14 );
-    //  XXX TODO o.adjust(rr,4);
+    o.adjust(4,rr);
     assert( o.n_free() == 16 );
 
     assert( rr.bytes() == 4 );
@@ -183,7 +185,7 @@ namespace test_limited_work_buffer {
 
     // 1 byte succeed out of 4 bytes reserved
     // this means, 3 bytes should be cut off
-    // XXX TODO o.adjust(rr,1);
+    o.adjust(1,rr);
     assert( o.n_free() == 15 );
     assert( rr.bytes() == 1 );
     assert( rr.data() != NULL );
@@ -193,9 +195,9 @@ namespace test_limited_work_buffer {
 
   void adjust_max()
   {
-    typedef limited_work_buffer<10,20> o_t;
+    typedef limited_work_buffer<char,10,20> o_t;
     o_t o;
-    stream_part rr;
+    o_t::part_t rr;
 
     o.reserve(o_t::max_size_,rr);
     assert( rr.bytes() == o_t::max_size_ );
@@ -205,14 +207,14 @@ namespace test_limited_work_buffer {
     assert( o.buflen() == o_t::max_size_ );
     assert( o.n_free() == 0 );
 
-    // XXX TODO o.adjust(rr,o_t::max_size_);
+    o.adjust(o_t::max_size_,rr);
     assert( rr.bytes() == o_t::max_size_ );
     assert( rr.data() != NULL );
     assert( o.len() == o_t::max_size_ );
     assert( o.start() == 0 );
     assert( o.buflen() == o_t::max_size_ );
 
-    // XXX TODO o.adjust(rr,0);
+    o.adjust(0,rr);
     assert( rr.bytes() == 0 );
     assert( rr.data() == NULL );
     assert( o.len() == 0 );
@@ -222,57 +224,49 @@ namespace test_limited_work_buffer {
 
   void adjust_badinput()
   {
-    typedef limited_work_buffer<10,20> o_t;
+    typedef limited_work_buffer<double,10,20> o_t;
     o_t o;
-    stream_part rr,rr2;
+    o_t::part_t rr,rr2;
 
     o.reserve(13,rr2);
     rr = rr2;
-    rr.data( reinterpret_cast<uint8_t *>(33ULL) ); // bad ptr
+    rr.data( reinterpret_cast<o_t::item_t *>(33ULL) ); // bad ptr
 
     int caught = 0;
 
     // this should throw an exception
-    // XXX TODO try { o.adjust(rr,1); }
-    // XXX TODO catch( csl::common::exc e ) { caught = 1; }
+    try { o.adjust(1,rr); }
+    catch( csl::common::exc e ) { caught = 1; }
     assert( caught == 1 );
 
     rr.data( rr2.data() );                         // fix pointer
     rr.bytes( 999999ULL );                         // bad size
 
     // this should throw an exception
-    // XXX TODO try { o.adjust(rr,1); }
-    // XXX TODO catch( csl::common::exc e ) { caught = 2; }
+    try { o.adjust(1,rr); }
+    catch( csl::common::exc e ) { caught = 2; }
     assert( caught == 2 );
 
     rr.bytes( rr2.bytes() );                       // fix size
-    rr.failed( true );                             // failed
+    rr.set_flags( rr2.os_error_ );                 // failed
 
     // this should throw an exception
-    // XXX TODO try { o.adjust(rr,1); }
-    // XXX TODO catch( csl::common::exc e ) { caught = 3; }
+    try { o.adjust(1,rr); }
+    catch( csl::common::exc e ) { caught = 3; }
     assert( caught == 3 );
-
-    rr.failed( false );                             // fix fail status
-    rr.timed_out( true );                          // timed_out
-
-    // this should throw an exception
-    // XXX TODO try { o.adjust(rr,1); }
-    // XXX TODO catch( csl::common::exc e ) { caught = 4; }
-    assert( caught == 4 );
   }
 
   void get()
   {
-    typedef limited_work_buffer<10,20> o_t;
+    typedef limited_work_buffer<long long,10,20> o_t;
     o_t o;
-    stream_part rr,rr2,rr3;
+    o_t::part_t rr,rr2,rr3;
 
     assert( o.n_free() == o_t::max_size_ );
     o.reserve(20,rr);
     assert( o.n_free() == 0 );
 
-    stream_part & rf2(o.get(2,rr2));
+    o_t::part_t & rf2(o.get(2,rr2));
     assert( &rf2 == &rr2 );
 
     assert( o.len() == 18 );
@@ -281,24 +275,23 @@ namespace test_limited_work_buffer {
     assert( o.n_free() == 0 );
     assert( rf2.bytes() == 2 );
     assert( rf2.data() == rr.data() );
-    assert( rf2.failed() == false );
-    assert( rf2.timed_out() == false );
+    assert( rf2.flags() == rf2.ok_ );
 
-    stream_part & rf3(o.get(3,rr3));
+    o_t::part_t & rf3(o.get(3,rr3));
     assert( o.len() == 15 );
     assert( o.buflen() == 20 );
     assert( o.start() == 5 );
     assert( o.n_free() == 0 );
     assert( rf3.bytes() == 3 );
-    // XXX TODO assert( rf3.data() == (rr.data()+2) );
-    assert( rf3.failed() == false );
-    assert( rf3.timed_out() == false );
+    assert( rf3.data() == (rr.data()+2) );
+    assert( rf3.flags() == rf3.ok_ );
   }
 
   void get_max()
   {
-    typedef limited_work_buffer<10,20> o_t; o_t o;
-    stream_part rr;
+    typedef limited_work_buffer<short,10,20> o_t;
+    o_t o;
+    o_t::part_t rr;
 
     o.get(2,rr);
     // get should not change anything on limited_work_buffer
@@ -309,8 +302,7 @@ namespace test_limited_work_buffer {
     // rr should not be changed either
     assert( rr.bytes() == 0 );
     assert( rr.data() == NULL );
-    assert( rr.failed() == false );
-    assert( rr.timed_out() == false );
+    assert( rr.flags() == rr.ok_ );
 
     o.reserve(9,rr);
     // check the results of reserve
@@ -321,8 +313,7 @@ namespace test_limited_work_buffer {
     //
     assert( rr.bytes() == 9 );
     assert( rr.data() != NULL );
-    assert( rr.failed() == false );
-    assert( rr.timed_out() == false );
+    assert( rr.flags() == rr.ok_ );
 
     o.get(2*o_t::max_size_,rr);
     // get should reset limited_work_buffer as it should have received all the data
@@ -334,8 +325,7 @@ namespace test_limited_work_buffer {
     // rr have the data
     assert( rr.bytes() == 9 );
     assert( rr.data() != NULL );
-    assert( rr.failed() == false );
-    assert( rr.timed_out() == false );
+    assert( rr.flags() == rr.ok_ );
 
     // get/rewind
     o.reserve(14,rr);
@@ -350,14 +340,14 @@ namespace test_limited_work_buffer {
 
     assert( rr.bytes() == 10 );
     assert( rr.data() != NULL );
-    assert( rr.failed() == false );
-    assert( rr.timed_out() == false );
+    assert( rr.flags() == rr.ok_ );
   }
 
   void get_badinput()
   {
-    typedef limited_work_buffer<10,20> o_t; o_t o;
-    stream_part rr;
+    typedef limited_work_buffer<float,10,20> o_t;
+    o_t o;
+    o_t::part_t rr;
     o.reserve(9,rr);
     o.get(0,rr);
 
@@ -368,8 +358,7 @@ namespace test_limited_work_buffer {
 
     assert( rr.bytes() == 0 );
     assert( rr.data() == NULL );
-    assert( rr.failed() == true );
-    assert( rr.timed_out() == false );
+    assert( rr.has_flags( rr.buffer_full_ ) == true );
   }
 
 } /* end of test_limited_work_buffer */
