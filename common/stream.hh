@@ -44,9 +44,18 @@ namespace csl
     public:
       typedef stream_part<T> part_t;
       
+      /* packet frame */
       virtual uint32_t start() = 0;
       virtual uint32_t end() = 0;
+      
+      /* error handling */
+      virtual uint32_t flags() const = 0;
+      virtual bool has_flags(uint32_t fl) const = 0;
+      virtual void set_flags(uint32_t fl) = 0;
+      virtual void clear_flags(uint32_t fl) = 0;
+      virtual void add_flags(uint32_t fl) = 0;
 
+      /* buffer allocation */
       virtual part_t & reserve( size_t sz, part_t & sp ) = 0;
       virtual part_t & confirm( size_t n_succeed, part_t & sp ) = 0;
       virtual part_t & get( size_t sz, part_t & sp ) = 0;
