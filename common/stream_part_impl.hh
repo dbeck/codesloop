@@ -38,44 +38,8 @@ namespace csl
 {
   namespace common
   {
-    void stream_flags_to_str(uint32_t f, str & s)
-    {
-      s += L"[";        
-      if( f&(1ULL<<0) )  s+= L" timed_out_";
-      if( f&(1ULL<<1) )  s+= L" closed_";
-      if( f&(1ULL<<2) )  s+= L" stopped_";
-      if( f&(1ULL<<3) )  s+= L" permission_error_";
-      if( f&(1ULL<<4) )  s+= L" not_authenticated_";
-      if( f&(1ULL<<5) )  s+= L" not_authorized_";
-      if( f&(1ULL<<6) )  s+= L" security_error_";
-      if( f&(1ULL<<7) )  s+= L" parameter_error_";
-      if( f&(1ULL<<8) )  s+= L" data_error_";
-      if( f&(1ULL<<9) )  s+= L" crc_error_";
-      if( f&(1ULL<<10) ) s+= L" serialization_error_";
-      if( f&(1ULL<<11) ) s+= L" deserialization_error_";
-      if( f&(1ULL<<12) ) s+= L" try_again_";
-      if( f&(1ULL<<13) ) s+= L" out_of_memory_";
-      if( f&(1ULL<<14) ) s+= L" buffer_full_";
-      if( f&(1ULL<<15) ) s+= L" too_fast_";
-      if( f&(1ULL<<16) ) s+= L" too_slow_";
-      if( f&(1ULL<<17) ) s+= L" too_large_";
-      if( f&(1ULL<<18) ) s+= L" too_small_";
-      if( f&(1ULL<<19) ) s+= L" read_only_";
-      if( f&(1ULL<<20) ) s+= L" write_only_";
-      if( f&(1ULL<<21) ) s+= L" read_error_";
-      if( f&(1ULL<<22) ) s+= L" write_error_";
-      if( f&(1ULL<<23) ) s+= L" out_of_range_";
-      if( f&(1ULL<<24) ) s+= L" database_error_";
-      if( f&(1ULL<<25) ) s+= L" network_error_";
-      if( f&(1ULL<<26) ) s+= L" application_error_";
-      if( f&(1ULL<<27) ) s+= L" os_error_";
-      if( f&(1ULL<<28) ) s+= L" peer_exception_";
-      s += L" ]";
-    }
-
     template<typename T>
-    stream_part<T>::stream_part()
-        : data_(0), bytes_(0), flags_(ok_) { }
+    stream_part<T>::stream_part() : data_(0), bytes_(0) { }
 
     template<typename T>
     void stream_part<T>::reset()
@@ -83,7 +47,7 @@ namespace csl
       ENTER_FUNCTION();
       data_       = 0;
       bytes_      = 0;
-      flags_      = ok_;
+      flags_.set_flags(stream_flags::ok_);
       LEAVE_FUNCTION();
     }
 
@@ -118,87 +82,14 @@ namespace csl
       bytes_ = b;
       LEAVE_FUNCTION();
     }
-    
+
     template<typename T>
-    uint32_t stream_part<T>::flags() const
+    stream_flags & stream_part<T>::flags() 
     {
       ENTER_FUNCTION();
-#ifdef DEBUG
-      str flags_str;
-      stream_flags_to_str(flags_,flags_str);
-      CSL_DEBUGF(L"flags() => %x:%ls",flags_,flags_str.c_str() );
-#endif /*DEBUG*/
-      RETURN_FUNCTION(flags_);
+      RETURN_FUNCTION( flags_ );
     }
-    
-    template<typename T>
-    bool stream_part<T>::has_flags(uint32_t fl) const
-    {
-      ENTER_FUNCTION();
-      bool ret = ((flags_ & fl) == fl);
-#ifdef DEBUG
-      str flags_str, fl_str;
-      stream_flags_to_str(flags_,flags_str);
-      stream_flags_to_str(fl,fl_str);
-      CSL_DEBUGF(L"has_flags(%x:%ls) [flags:%x:%ls] => %ls",
-        fl,fl_str,
-        flags_,flags_str.c_str(),
-        (ret?L"TRUE":L"FALSE") );
-#endif /*DEBUG*/
-      RETURN_FUNCTION(ret);
-    }
-    
-    template<typename T>
-    void stream_part<T>::set_flags(uint32_t fl)
-    {
-      ENTER_FUNCTION();
-#ifdef DEBUG
-      str flags_str, fl_str;
-      stream_flags_to_str(flags_,flags_str);
-      stream_flags_to_str(fl,fl_str);
-      CSL_DEBUGF(L"set_flags(%x:%ls) [old_flags:%x:%ls]",
-        fl,fl_str,
-        flags_,flags_str.c_str());
-#endif /*DEBUG*/
-      flags_ = fl;
-      LEAVE_FUNCTION();
-    }
-    
-    template<typename T>
-    void stream_part<T>::clear_flags(uint32_t fl)
-    {
-      ENTER_FUNCTION();
-      uint32_t new_flags = (flags_ & (~fl));
-#ifdef DEBUG
-      str flags_str, fl_str, new_flags_str;
-      stream_flags_to_str(flags_,flags_str);
-      stream_flags_to_str(fl,fl_str);
-      stream_flags_to_str(new_flags,new_flags_str);
-      CSL_DEBUGF(L"clear_flags(%x:%ls) [old_flags:%x:%ls] [new_flags:%x:%ls]",
-        fl,fl_str,
-        flags_,flags_str.c_str(),
-        new_flags,new_flags_str.c_str() );
-#endif /*DEBUG*/
-      flags_ = new_flags;
-      LEAVE_FUNCTION();
-    }
-    
-    template<typename T>
-    void stream_part<T>::add_flags(uint32_t fl)
-    {
-      ENTER_FUNCTION();
-#ifdef DEBUG
-      str flags_str, fl_str;
-      stream_flags_to_str(flags_,flags_str);
-      stream_flags_to_str(fl,fl_str);
-      CSL_DEBUGF(L"set_flags(%x:%ls) [old_flags:%x:%ls]",
-        fl,fl_str,
-        flags_,flags_str.c_str());
-#endif /*DEBUG*/
-      flags_ |= fl;
-      LEAVE_FUNCTION();
-    }
-    
+
   } /* end of ns: csl::common */
 } /* end of ns: csl */
 

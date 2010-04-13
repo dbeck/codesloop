@@ -57,7 +57,7 @@ namespace csl
           if( sz == 0 )
           {
             CSL_DEBUGF(L"invalid size [sz:0]");
-            sp.add_flags( sp.parameter_error_ );
+            sp.flags() << stream_flags::parameter_error_;
           }
           else if( len_ > 0 )
           {
@@ -109,7 +109,7 @@ namespace csl
             {
               // we are at maximum capacity already: this is an error
               CSL_DEBUGF(L"cannot allocate more data");
-              sp.add_flags( sp.buffer_full_ );
+              sp.flags() << stream_flags::buffer_full_;
             }
           }
           else if( sz == 0 )
@@ -138,14 +138,14 @@ namespace csl
 
           start_offset = sp.data() - buf_.private_data();
 
-          if( sp.bytes() < n_succeed ||
-              sp.data() == NULL      ||
-              sp.flags() != sp.ok_   ||
-              len_ < sp.bytes()      ||
+          if( sp.bytes() < n_succeed            ||
+              sp.data() == NULL                 ||
+              sp.flags() != stream_flags::ok_   ||
+              len_ < sp.bytes()                 ||
               start_offset !=  (start_+len_-sp.bytes()) )
           {
             CSL_DEBUGF(L"invalid param received");
-            sp.add_flags( sp.parameter_error_ );
+            sp.flags() << stream_flags::parameter_error_;
             goto bail;
           }
 

@@ -77,7 +77,7 @@ namespace test_limited_work_buffer {
     // check results
     assert( &rr == &rr2 );
     assert( rr.bytes() == 2 );
-    assert( rr.flags() == rr.ok_ );
+    assert( rr.flags() == stream_flags::ok_ );
     assert( rr.data() != NULL );
     assert( o.len() == 2 );
     assert( o.start() == 0 );
@@ -89,7 +89,7 @@ namespace test_limited_work_buffer {
     // check results
     assert( &rr == &rr3 );
     assert( rr.bytes() == 1 );
-    assert( rr.flags() == rr.ok_ );
+    assert( rr.flags() == stream_flags::ok_ );
     assert( rr.data() != NULL );
     assert( o.len() == 1 );
     assert( o.start() == 0 );
@@ -143,8 +143,8 @@ namespace test_limited_work_buffer {
 
     rr.data( reinterpret_cast<lwp_t::item_t *>(33ULL) );     // bad ptr
     rr.bytes( 999999ULL );                                   // bad size
-    rr.set_flags( rr.timed_out_ | rr.application_error_ |
-                  rr.os_error_  | rr.try_again_ );           // set some flags
+    rr.flags() << ( stream_flags::timed_out_ | stream_flags::application_error_ |
+                    stream_flags::os_error_  | stream_flags::try_again_ );
 
     o.reserve(12,rr);
     assert( o.n_free() == 8 );
@@ -248,7 +248,7 @@ namespace test_limited_work_buffer {
     assert( caught == 2 );
 
     rr.bytes( rr2.bytes() );                       // fix size
-    rr.set_flags( rr2.os_error_ );                 // failed
+    rr.flags() << ( stream_flags::os_error_ );     // failed
 
     // this should throw an exception
     try { o.confirm(1,rr); }
@@ -275,7 +275,7 @@ namespace test_limited_work_buffer {
     assert( o.n_free() == 0 );
     assert( rf2.bytes() == 2 );
     assert( rf2.data() == rr.data() );
-    assert( rf2.flags() == rf2.ok_ );
+    assert( rf2.flags() == stream_flags::ok_ );
 
     o_t::part_t & rf3(o.get(3,rr3));
     assert( o.len() == 15 );
@@ -284,7 +284,7 @@ namespace test_limited_work_buffer {
     assert( o.n_free() == 0 );
     assert( rf3.bytes() == 3 );
     assert( rf3.data() == (rr.data()+2) );
-    assert( rf3.flags() == rf3.ok_ );
+    assert( rf3.flags() == stream_flags::ok_ );
   }
 
   void get_max()
@@ -302,7 +302,7 @@ namespace test_limited_work_buffer {
     // rr should not be changed either
     assert( rr.bytes() == 0 );
     assert( rr.data() == NULL );
-    assert( rr.flags() == rr.ok_ );
+    assert( rr.flags() == stream_flags::ok_ );
 
     o.reserve(9,rr);
     // check the results of reserve
@@ -313,7 +313,7 @@ namespace test_limited_work_buffer {
     //
     assert( rr.bytes() == 9 );
     assert( rr.data() != NULL );
-    assert( rr.flags() == rr.ok_ );
+    assert( rr.flags() == stream_flags::ok_ );
 
     o.get(2*o_t::max_size_,rr);
     // get should reset limited_work_buffer as it should have received all the data
@@ -325,7 +325,7 @@ namespace test_limited_work_buffer {
     // rr have the data
     assert( rr.bytes() == 9 );
     assert( rr.data() != NULL );
-    assert( rr.flags() == rr.ok_ );
+    assert( rr.flags() == stream_flags::ok_ );
 
     // get/rewind
     o.reserve(14,rr);
@@ -340,7 +340,7 @@ namespace test_limited_work_buffer {
 
     assert( rr.bytes() == 10 );
     assert( rr.data() != NULL );
-    assert( rr.flags() == rr.ok_ );
+    assert( rr.flags() == stream_flags::ok_ );
   }
 
   void get_badinput()
@@ -358,7 +358,7 @@ namespace test_limited_work_buffer {
 
     assert( rr.bytes() == 0 );
     assert( rr.data() == NULL );
-    assert( rr.has_flags( rr.buffer_full_ ) == true );
+    assert( rr.flags().has_flags( stream_flags::buffer_full_ ) == true );
   }
 
 } /* end of test_limited_work_buffer */
