@@ -23,7 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 #ifndef _csl_common_stream_buffer_impl_hh_included_
 #define _csl_common_stream_buffer_impl_hh_included_
 #ifdef __cplusplus

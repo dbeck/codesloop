@@ -23,51 +23,9 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_common_stream_hh_included_
-#define _csl_common_stream_hh_included_
-
-#include "codesloop/common/stream_part.hh"
-#include "codesloop/common/stream_flags.hh"
-#include "codesloop/common/exc.hh"
-#include "codesloop/common/common.h"
-#include "codesloop/common/logger.hh"
-#include "codesloop/common/obj.hh"
-
+#ifndef _csl_common_stream_impl_hh_included_
+#define _csl_common_stream_impl_hh_included_
 #ifdef __cplusplus
-
-namespace csl
-{
-  namespace common
-  {
-    template <typename T>
-    class stream
-    {
-    public:
-      typedef stream_part<T> part_t;
-      
-      /* packet frame */
-      virtual const stream_flags & start() = 0;
-      virtual const stream_flags & end() = 0;
-      virtual const stream_flags & flush() = 0;
-      
-      /* error handling */
-      virtual stream_flags & flags() = 0;
-
-      /* buffer allocation */
-      virtual part_t & reserve( size_t sz, part_t & sp ) = 0;
-      virtual part_t & confirm( size_t n_succeed, part_t & sp ) = 0;
-      virtual part_t & get( size_t sz, part_t & sp ) = 0;
-      
-      /* sizes */
-      virtual size_t confirmed_items() = 0;
-      virtual size_t has_items() = 0;
-      
-      virtual ~stream() {}
-    };  
-  } /* end of ns:csl:common */
-} /* end of ns:csl */
-
 #endif /* __cplusplus */
-#include "codesloop/common/stream_impl.hh"
-#endif /* _csl_common_stream_hh_included_ */
+#endif /* _csl_common_stream_impl_hh_included_ */
 

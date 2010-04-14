@@ -64,7 +64,7 @@ namespace csl
         size_t buflen() const { return buf_.size(); }
         size_t n_free() const { return (MaxSize-len_-start_); }
 
-        const unsigned char * data() const { return buf_.data()+start_; }
+        const T * data() const { return buf_.data()+start_; }
 
         stream_buffer() : start_(0), len_(0), use_exc_(true) {}
 
