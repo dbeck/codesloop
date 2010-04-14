@@ -25,7 +25,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_common_preallocated_array_impl_hh_included_
 #define _csl_common_preallocated_array_impl_hh_included_
-
 #ifdef __cplusplus
 
 namespace csl

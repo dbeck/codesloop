@@ -23,9 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// the next definition must stay here in order to help testing the assertions
-#define RDBUF_ASSERT_TESTING
-
 #if 0
 #ifndef DEBUG
 #define DEBUG
@@ -34,7 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif /* DEBUG */
 #endif
 
-#include "codesloop/common/limited_work_buffer.hh"
+#include "codesloop/common/stream_buffer.hh"
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
@@ -45,20 +42,20 @@ using namespace csl::common;
 //using namespace csl::nthread;
 
 /** @brief @todo */
-namespace test_limited_work_buffer {
+namespace test_stream_buffer {
 
   /*
   ** DEBUG support --------------------------------------------------------------------
   */
-  static inline const wchar_t * get_namespace()   { return L"test_limited_work_buffer"; }
-  static inline const wchar_t * get_class_name()  { return L"test_limited_work_buffer::noclass"; }
+  static inline const wchar_t * get_namespace()   { return L"test_stream_buffer"; }
+  static inline const wchar_t * get_class_name()  { return L"test_stream_buffer::noclass"; }
   static inline const wchar_t * get_class_short() { return L"noclass"; }
 
-  void baseline() { limited_work_buffer<char> o; }
+  void baseline() { stream_buffer<char> o; }
 
   void basic()
   {
-    limited_work_buffer<char> o;
+    stream_buffer<char> o;
     assert( o.start() == 0 );
     assert( o.len() == 0 );
     assert( o.buflen() == 0 );
@@ -66,7 +63,7 @@ namespace test_limited_work_buffer {
 
   void reserve()
   {
-    typedef limited_work_buffer<char,10,20> lwp_t;
+    typedef stream_buffer<char,10,20> lwp_t;
     lwp_t o;
     lwp_t::part_t rr;
 
@@ -98,7 +95,7 @@ namespace test_limited_work_buffer {
 
   void reserve_max()
   {
-    typedef limited_work_buffer<char,10,20> lwp_t;
+    typedef stream_buffer<char,10,20> lwp_t;
     lwp_t o;
     lwp_t::part_t rr;
 
@@ -129,7 +126,7 @@ namespace test_limited_work_buffer {
 
   void reserve_badinput()
   {
-    typedef limited_work_buffer<char,10,20> lwp_t;
+    typedef stream_buffer<char,10,20> lwp_t;
     lwp_t o;
     lwp_t::part_t rr;
     o.reserve(0,rr);
@@ -160,7 +157,7 @@ namespace test_limited_work_buffer {
 
   void adjust()
   {
-    typedef limited_work_buffer<char,10,20> lwp_t;
+    typedef stream_buffer<char,10,20> lwp_t;
     lwp_t o;
     lwp_t::part_t rr;
 
@@ -195,7 +192,7 @@ namespace test_limited_work_buffer {
 
   void adjust_max()
   {
-    typedef limited_work_buffer<char,10,20> o_t;
+    typedef stream_buffer<char,10,20> o_t;
     o_t o;
     o_t::part_t rr;
 
@@ -224,7 +221,7 @@ namespace test_limited_work_buffer {
 
   void adjust_badinput()
   {
-    typedef limited_work_buffer<double,10,20> o_t;
+    typedef stream_buffer<double,10,20> o_t;
     o_t o;
     o_t::part_t rr,rr2;
 
@@ -258,7 +255,7 @@ namespace test_limited_work_buffer {
 
   void get()
   {
-    typedef limited_work_buffer<long long,10,20> o_t;
+    typedef stream_buffer<long long,10,20> o_t;
     o_t o;
     o_t::part_t rr,rr2,rr3;
 
@@ -289,12 +286,12 @@ namespace test_limited_work_buffer {
 
   void get_max()
   {
-    typedef limited_work_buffer<short,10,20> o_t;
+    typedef stream_buffer<short,10,20> o_t;
     o_t o;
     o_t::part_t rr;
 
     o.get(2,rr);
-    // get should not change anything on limited_work_buffer
+    // get should not change anything on stream_buffer
     assert( o.len() == 0 );
     assert( o.n_free() == o_t::max_size_ );
     assert( o.buflen() == 0 );
@@ -316,7 +313,7 @@ namespace test_limited_work_buffer {
     assert( rr.flags() == stream_flags::ok_ );
 
     o.get(2*o_t::max_size_,rr);
-    // get should reset limited_work_buffer as it should have received all the data
+    // get should reset stream_buffer as it should have received all the data
     assert( o.len() == 0 );
     assert( o.n_free() == o_t::max_size_ );
     assert( o.buflen() == 9 );
@@ -345,7 +342,7 @@ namespace test_limited_work_buffer {
 
   void get_badinput()
   {
-    typedef limited_work_buffer<float,10,20> o_t;
+    typedef stream_buffer<float,10,20> o_t;
     o_t o;
     o_t::part_t rr;
     o.reserve(9,rr);
@@ -361,9 +358,9 @@ namespace test_limited_work_buffer {
     assert( rr.flags().has_flags( stream_flags::buffer_full_ ) == true );
   }
 
-} /* end of test_limited_work_buffer */
+} /* end of test_stream_buffer */
 
-using namespace test_limited_work_buffer;
+using namespace test_stream_buffer;
 
 int main()
 {

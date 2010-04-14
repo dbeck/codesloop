@@ -258,3 +258,4 @@ test/common/t__preallocated_array
 test/common/t__limited_work_buffer
 test/common/t__work_buffer_part
 test/common/t__stream_part
+test/common/t__stream_buffer

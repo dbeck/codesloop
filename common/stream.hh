@@ -27,6 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_common_stream_hh_included_
 
 #include "codesloop/common/stream_part.hh"
+#include "codesloop/common/stream_flags.hh"
 #include "codesloop/common/exc.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/logger.hh"
@@ -45,24 +46,24 @@ namespace csl
       typedef stream_part<T> part_t;
       
       /* packet frame */
-      virtual uint32_t start() = 0;
-      virtual uint32_t end() = 0;
+      virtual const stream_flags & start() = 0;
+      virtual const stream_flags & end() = 0;
+      virtual const stream_flags & flush() = 0;
       
       /* error handling */
-      virtual uint32_t flags() const = 0;
-      virtual bool has_flags(uint32_t fl) const = 0;
-      virtual void set_flags(uint32_t fl) = 0;
-      virtual void clear_flags(uint32_t fl) = 0;
-      virtual void add_flags(uint32_t fl) = 0;
+      virtual stream_flags & flags() = 0;
 
       /* buffer allocation */
       virtual part_t & reserve( size_t sz, part_t & sp ) = 0;
       virtual part_t & confirm( size_t n_succeed, part_t & sp ) = 0;
       virtual part_t & get( size_t sz, part_t & sp ) = 0;
       
-      virtual ~stream() = 0;
-    };
-  
+      /* sizes */
+      virtual size_t confirmed_items() = 0;
+      virtual size_t has_items() = 0;
+      
+      virtual ~stream() {}
+    };  
   } /* end of ns:csl:common */
 } /* end of ns:csl */
 
