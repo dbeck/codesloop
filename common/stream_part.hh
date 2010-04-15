@@ -27,6 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_common_stream_part_hh_included_
 
 #include "codesloop/common/stream_flags.hh"
+#include "codesloop/common/str.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/obj.hh"
 

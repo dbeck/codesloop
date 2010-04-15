@@ -59,10 +59,11 @@ namespace csl
         part_t & reserve( size_t sz, part_t & sp );        
         part_t & confirm( size_t n_succeed, part_t & sp );
         
-        size_t start()  const { return start_;      }
-        size_t len()    const { return len_;        }
-        size_t buflen() const { return buf_.size(); }
-        size_t n_free() const { return (MaxSize-len_-start_); }
+        size_t start()     const { return start_;      }
+        size_t len()       const { return len_;        }
+        size_t buflen()    const { return buf_.size(); }
+        size_t n_free()    const { return (MaxSize-len_-start_); }        
+        size_t has_items() const { return len(); }
 
         const T * data() const { return buf_.data()+start_; }
 

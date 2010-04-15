@@ -87,6 +87,12 @@ namespace csl
     stream_flags & stream_part<T>::flags() 
     {
       ENTER_FUNCTION();
+#ifdef DEBUG
+      str flags_str;
+      flags_.to_str(flags_str);
+      CSL_DEBUGF(L"flags() => [%x:%ls]",
+        flags_.flags(),flags_str.c_str());
+#endif /*DEBUG*/
       RETURN_FUNCTION( flags_ );
     }
 

@@ -107,6 +107,7 @@ namespace csl
     {
     public:
       typedef typename stream_base<T> base_t;
+      typedef typename stream_part<T> part_t;
       
       /* packet frame */
       const stream_flags & start();
@@ -133,6 +134,7 @@ namespace csl
       stream_flags  flags_;
       Target *      target_;
       Buffer *      buffer_;
+      size_t        n_confirmed_;
       
       CSL_OBJ(csl::common,stream);
     };

@@ -32,9 +32,9 @@ namespace csl
   namespace common
   {
     template <typename T, size_t Preallocated, size_t MaxSize>
-    stream_part<T> &
+    typename stream_buffer<T,Preallocated,MaxSize>::part_t &
     stream_buffer<T,Preallocated,MaxSize>::get( size_t sz,
-                                                stream_part<T> & sp )
+                                                stream_buffer<T,Preallocated,MaxSize>::part_t & sp )
     {
       ENTER_FUNCTION();
       CSL_DEBUGF(L"get(sz:%lld,sp)",static_cast<uint64_t>(sz));
@@ -63,9 +63,9 @@ namespace csl
     }  
 
     template <typename T, size_t Preallocated, size_t MaxSize>  
-    stream_part<T> &
+    typename stream_buffer<T,Preallocated,MaxSize>::part_t &
     stream_buffer<T,Preallocated,MaxSize>::reserve( size_t sz,
-                                                    stream_part<T> & sp )
+                                                    stream_buffer<T,Preallocated,MaxSize>::part_t & sp )
     {
       ENTER_FUNCTION();
       CSL_DEBUGF(L"resrerve(sz:%lld,sp)",static_cast<uint64_t>(sz));
@@ -113,9 +113,9 @@ namespace csl
     }
 
     template <typename T, size_t Preallocated, size_t MaxSize>
-    stream_part<T> &
+    typename stream_buffer<T,Preallocated,MaxSize>::part_t &
     stream_buffer<T,Preallocated,MaxSize>::confirm( size_t n_succeed,
-                                                    stream_part<T> & sp )
+                                                    stream_buffer<T,Preallocated,MaxSize>::part_t & sp )
     {
       ENTER_FUNCTION();
       CSL_DEBUGF(L"confirm(sp,n_succeed:%lld)",static_cast<uint64_t>(n_succeed));

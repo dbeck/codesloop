@@ -44,36 +44,40 @@ namespace csl
 
     void stream_flags::to_str(uint32_t f, str & s)
     {
-      s += L"[";        
-      if( f&(1ULL<<0) )  s+= L" timed_out_";
-      if( f&(1ULL<<1) )  s+= L" closed_";
-      if( f&(1ULL<<2) )  s+= L" stopped_";
-      if( f&(1ULL<<3) )  s+= L" permission_error_";
-      if( f&(1ULL<<4) )  s+= L" not_authenticated_";
-      if( f&(1ULL<<5) )  s+= L" not_authorized_";
-      if( f&(1ULL<<6) )  s+= L" security_error_";
-      if( f&(1ULL<<7) )  s+= L" parameter_error_";
-      if( f&(1ULL<<8) )  s+= L" data_error_";
-      if( f&(1ULL<<9) )  s+= L" crc_error_";
-      if( f&(1ULL<<10) ) s+= L" serialization_error_";
-      if( f&(1ULL<<11) ) s+= L" deserialization_error_";
-      if( f&(1ULL<<12) ) s+= L" try_again_";
-      if( f&(1ULL<<13) ) s+= L" out_of_memory_";
-      if( f&(1ULL<<14) ) s+= L" buffer_full_";
-      if( f&(1ULL<<15) ) s+= L" too_fast_";
-      if( f&(1ULL<<16) ) s+= L" too_slow_";
-      if( f&(1ULL<<17) ) s+= L" too_large_";
-      if( f&(1ULL<<18) ) s+= L" too_small_";
-      if( f&(1ULL<<19) ) s+= L" read_only_";
-      if( f&(1ULL<<20) ) s+= L" write_only_";
-      if( f&(1ULL<<21) ) s+= L" read_error_";
-      if( f&(1ULL<<22) ) s+= L" write_error_";
-      if( f&(1ULL<<23) ) s+= L" out_of_range_";
-      if( f&(1ULL<<24) ) s+= L" database_error_";
-      if( f&(1ULL<<25) ) s+= L" network_error_";
-      if( f&(1ULL<<26) ) s+= L" application_error_";
-      if( f&(1ULL<<27) ) s+= L" os_error_";
-      if( f&(1ULL<<28) ) s+= L" peer_exception_";
+      s += L"[";
+      if( f == 0 ) s+= L" ok_ ";
+      else
+      {
+        if( f&(1ULL<<0) )  s+= L" timed_out_";
+        if( f&(1ULL<<1) )  s+= L" closed_";
+        if( f&(1ULL<<2) )  s+= L" stopped_";
+        if( f&(1ULL<<3) )  s+= L" permission_error_";
+        if( f&(1ULL<<4) )  s+= L" not_authenticated_";
+        if( f&(1ULL<<5) )  s+= L" not_authorized_";
+        if( f&(1ULL<<6) )  s+= L" security_error_";
+        if( f&(1ULL<<7) )  s+= L" parameter_error_";
+        if( f&(1ULL<<8) )  s+= L" data_error_";
+        if( f&(1ULL<<9) )  s+= L" crc_error_";
+        if( f&(1ULL<<10) ) s+= L" serialization_error_";
+        if( f&(1ULL<<11) ) s+= L" deserialization_error_";
+        if( f&(1ULL<<12) ) s+= L" try_again_";
+        if( f&(1ULL<<13) ) s+= L" out_of_memory_";
+        if( f&(1ULL<<14) ) s+= L" buffer_full_";
+        if( f&(1ULL<<15) ) s+= L" too_fast_";
+        if( f&(1ULL<<16) ) s+= L" too_slow_";
+        if( f&(1ULL<<17) ) s+= L" too_large_";
+        if( f&(1ULL<<18) ) s+= L" too_small_";
+        if( f&(1ULL<<19) ) s+= L" read_only_";
+        if( f&(1ULL<<20) ) s+= L" write_only_";
+        if( f&(1ULL<<21) ) s+= L" read_error_";
+        if( f&(1ULL<<22) ) s+= L" write_error_";
+        if( f&(1ULL<<23) ) s+= L" out_of_range_";
+        if( f&(1ULL<<24) ) s+= L" database_error_";
+        if( f&(1ULL<<25) ) s+= L" network_error_";
+        if( f&(1ULL<<26) ) s+= L" application_error_";
+        if( f&(1ULL<<27) ) s+= L" os_error_";
+        if( f&(1ULL<<28) ) s+= L" peer_exception_";
+      }
       s += L" ]";
     }
   
