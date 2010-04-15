@@ -27,6 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_common_stream_hh_included_
 
 #include "codesloop/common/stream_part.hh"
+#include "codesloop/common/stream_buffer.hh"
 #include "codesloop/common/stream_flags.hh"
 #include "codesloop/common/exc.hh"
 #include "codesloop/common/common.h"
@@ -40,7 +41,7 @@ namespace csl
   namespace common
   {
     template <typename T>
-    class stream
+    class stream_base
     {
     public:
       typedef stream_part<T> part_t;
@@ -62,8 +63,80 @@ namespace csl
       virtual size_t confirmed_items() = 0;
       virtual size_t has_items() = 0;
       
+      virtual ~stream_base() {}
+    };
+    
+    // Target is where the streamed data should arrive. This is an asynch interface where
+    // target is notified by specific notification calls from the stream. The stream client
+    // is expected to call this sequence:
+    //
+    //  -- start()    -- tells the stream that a new stream packet is assembling
+    //  -- reserve()  -- allocate the needed space from the buffer
+    //     ....       -- put the data into the allocated buffer
+    //  -- confirm()  -- tell the stream, that we are done in the buffer. the stream
+    //                   calls the target's data() functions, so it can get() the assembled
+    //                   data
+    //  -- end()      -- tell the stream that we are done with this packet
+
+    // Target must provide the following interface:
+    //
+    //  -- these are used in the stream to tell the target that a new packet has started
+    //     ended, data arrived ...
+    //
+    //    const stream_flags & start();  -- to tell that a new stream packet is arriving
+    //    const stream_flags & end();    -- to tell that the packet has been finished
+    //    const stream_flags & flush();  -- to tell that the data stream reached a logical
+    //                                      boundary. eg. a video frame in a video stream
+    //    const stream_flags & data();   -- to tell that data arrived to the stream
+    
+    // The stream call sequence is this (C=client, S=stream, B=buffer, T=target)
+    //
+    //   C -> S: start    -> T: start               -- get ready for a new packet
+    //   C -> S: reserve  -> B: reserve             -- allocate space for the data
+    //   C (assemble data in the buffer allocated)
+    //   C -> S: confirm  -> {B: confirm, T: data}  -- buffer adjusts its buffer boundaries
+    //                                                 based on the  confirmed data size.
+    //                                                 target is notified about data arrival
+    //   B: get <- S: get <- T                      -- target gets data from the stream (buffer)
+    //   C -> S: end      -> T: end                 -- client declares that no more data to be sent
+    //                                                 so target can do appropriate actions (eg. add
+    //                                                 cryptographic headers, close socket, etc...)
+    
+    template <typename T, typename Target, typename Buffer=stream_buffer<T> >
+    class stream : public stream_base<T>
+    {
+    public:
+      typedef typename stream_base<T> base_t;
+      
+      /* packet frame */
+      const stream_flags & start();
+      const stream_flags & end();
+      const stream_flags & flush();
+      
+      /* error handling */
+      stream_flags & flags();
+
+      /* buffer allocation */
+      part_t & reserve( size_t sz, part_t & sp );
+      part_t & confirm( size_t n_succeed, part_t & sp );
+      part_t & get( size_t sz, part_t & sp );
+      
+      /* sizes */
+      size_t confirmed_items();
+      size_t has_items();
+      
       virtual ~stream() {}
-    };  
+      
+      stream(Target & t, Buffer & b);
+      
+    private:
+      stream_flags  flags_;
+      Target *      target_;
+      Buffer *      buffer_;
+      
+      CSL_OBJ(csl::common,stream);
+    };
+    
   } /* end of ns:csl:common */
 } /* end of ns:csl */
 
