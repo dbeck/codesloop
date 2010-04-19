@@ -34,6 +34,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/str.hh"
 
+#ifndef _csl_common_stream_part_impl_hh_included_
+#define _csl_common_stream_part_impl_hh_included_
+#ifdef __cplusplus
+
 namespace csl
 {
   namespace common
@@ -99,4 +103,7 @@ namespace csl
   } /* end of ns: csl::common */
 } /* end of ns: csl */
 
-/* EOF */
+
+#endif /* __cplusplus */
+#endif /* _csl_common_stream_part_impl_hh_included_ */
+
