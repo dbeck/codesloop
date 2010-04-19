@@ -146,7 +146,7 @@ namespace csl
       {
         // set internal data
         len_ -= confirm_len;
-        if( len_ == 0 )           { start_ = 0; buf_.allocate(0); }
+        if( len_ == 0 ) { start_ = 0; buf_.allocate(0); }
         else if( confirm_len > 0 )
         {
           T * p = buf_.allocate( len_ + start_ );

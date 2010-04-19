@@ -101,7 +101,7 @@ namespace csl
       to_str(flags_,flags_str);
       to_str(fl,fl_str);
       CSL_DEBUGF(L"has_flags(%x:%ls) [flags:%x:%ls] => %ls",
-        fl,fl_str,
+        fl,fl_str.c_str(),
         flags_,flags_str.c_str(),
         (ret?L"TRUE":L"FALSE") );
 #endif /*DEBUG*/
@@ -116,7 +116,7 @@ namespace csl
       to_str(flags_,flags_str);
       to_str(fl,fl_str);
       CSL_DEBUGF(L"set_flags(%x:%ls) [old_flags:%x:%ls]",
-        fl,fl_str,
+        fl,fl_str.c_str(),
         flags_,flags_str.c_str());
 #endif /*DEBUG*/
       flags_ = fl;
@@ -133,7 +133,7 @@ namespace csl
       to_str(fl,fl_str);
       to_str(new_flags,new_flags_str);
       CSL_DEBUGF(L"clear_flags(%x:%ls) [old_flags:%x:%ls] [new_flags:%x:%ls]",
-        fl,fl_str,
+        fl,fl_str.c_str(),
         flags_,flags_str.c_str(),
         new_flags,new_flags_str.c_str() );
 #endif /*DEBUG*/
@@ -149,7 +149,7 @@ namespace csl
       to_str(flags_,flags_str);
       to_str(fl,fl_str);
       CSL_DEBUGF(L"set_flags(%x:%ls) [old_flags:%x:%ls]",
-        fl,fl_str,
+        fl,fl_str.c_str(),
         flags_,flags_str.c_str());
 #endif /*DEBUG*/
       flags_ |= fl;
@@ -161,11 +161,11 @@ namespace csl
       ENTER_FUNCTION();
       bool ret = (flags_ == other);
 #ifdef DEBUG
-      str flags_str, fl_str;
+      str flags_str, other_str;
       to_str(flags_,flags_str);
       to_str(other,other_str);
       CSL_DEBUGF(L"operator==(%x:%ls) [flags:%x:%ls] => %ls",
-        other,other_str,
+        other,other_str.c_str(),
         flags_,flags_str.c_str(),
         (ret?L"TRUE":L"FALSE"));
 #endif /*DEBUG*/      
@@ -177,11 +177,11 @@ namespace csl
       ENTER_FUNCTION();
       bool ret = (flags_ == other.flags_);
 #ifdef DEBUG
-      str flags_str, fl_str;
+      str flags_str, other_str;
       to_str(flags_,flags_str);
       to_str(other.flags_,other_str);
       CSL_DEBUGF(L"operator==(%x:%ls) [flags:%x:%ls] => %ls",
-        other.flags_,other_str,
+        other.flags_,other_str.c_str(),
         flags_,flags_str.c_str(),
         (ret?L"TRUE":L"FALSE"));
 #endif /*DEBUG*/      

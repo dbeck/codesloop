@@ -31,11 +31,24 @@ namespace csl
 {
   namespace common
   {
+  
+#ifdef DEBUG
+#define DEBUG_FLAGS_AND_TARGETOP(fun) \
+            str flags_str___; flags_.to_str(flags_str___); \
+            CSL_DEBUGF(fun L"() => stream flags:[%x:%ls]", \
+                      flags_.flags(),flags_str___.c_str() ); \
+#else
+#define DEBUG_FLAGS_AND_TARGETOP(fun)
+#endif
+
     template <typename T, typename Target, typename Buffer>
     const stream_flags &
     stream<T,Target,Buffer>::start()
     {
       ENTER_FUNCTION();
+      if( !target_ ) RETURN_FUNCTION(flags_);
+      flags_ << target_->start(*this);
+      DEBUG_FLAGS_AND_TARGETOP(L"start");
       RETURN_FUNCTION(flags_);
     }
     
@@ -44,6 +57,9 @@ namespace csl
     stream<T,Target,Buffer>::end()
     {
       ENTER_FUNCTION();
+      if( !target_ ) RETURN_FUNCTION(flags_);
+      flags_ << target_->end(*this);
+      DEBUG_FLAGS_AND_TARGETOP(L"end");
       RETURN_FUNCTION(flags_);
     }
     
@@ -52,6 +68,9 @@ namespace csl
     stream<T,Target,Buffer>::flush()
     {
       ENTER_FUNCTION();
+      if( !target_ ) RETURN_FUNCTION(flags_);
+      flags_ << target_->flush(*this);
+      DEBUG_FLAGS_AND_TARGETOP(L"flush");
       RETURN_FUNCTION(flags_);
     }
                 
@@ -68,18 +87,17 @@ namespace csl
       RETURN_FUNCTION(flags_);
     }
 
-
+#undef DEBUG_FLAGS_AND_TARGETOP
 #ifdef DEBUG
 #define DEBUG_FLAGS_AND_BUFFEROP(fun,param) \
             str flags_str___; flags_.to_str(flags_str___); \
             CSL_DEBUGF(fun L"(%lld,sp) => sp:[data:%p,bytes:%d] stream flags:[%x:%ls]", \
                       static_cast<uint64_t>(param), \
                       sp.data(), sp.bytes(), \
-                      flags_.flags(),flags_str.c_str() ); \
+                      flags_.flags(),flags_str___.c_str() ); \
 #else
 #define DEBUG_FLAGS_AND_BUFFEROP(fun,param)
 #endif
-            
 
     template <typename T, typename Target, typename Buffer>
     typename stream<T,Target,Buffer>::part_t &
@@ -102,6 +120,10 @@ namespace csl
       ENTER_FUNCTION();
       part_t & ret(buffer_->confirm(n_succeeded,sp));
       flags_ << sp.flags();
+      if(target_)
+      {
+        flags_ << target_->data(*this,n_succeed);
+      }
       sp.flags() << flags_;
       DEBUG_FLAGS_AND_BUFFEROP(L"confirm",n_succeed);
       RETURN_FUNCTION(ret);
@@ -146,6 +168,28 @@ namespace csl
                                                               buffer_(&b),
                                                               n_confirmed_(0),
     {
+      ENTER_FUNCTION();
+      CSL_DEBUGF(L"stream::stream(target:%p,buffer:%p)",&t,&b);
+      LEAVE_FUNCTION();
+    }
+    
+    template <typename T, typename Target, typename Buffer>
+    stream<T,Target,Buffer>::stream(Buffer & b) : target_(0),
+                                                  buffer_(&b),
+                                                  n_confirmed_(0)
+    {
+      ENTER_FUNCTION();
+      CSL_DEBUGF(L"stream::stream(buffer:%p)",&b);
+      LEAVE_FUNCTION();
+    }
+    
+    template <typename T, typename Target, typename Buffer>
+    void stream<T,Target,Buffer>::set_target(Target & t)
+    {
+      ENTER_FUNCTION();
+      target_ = &t;
+      CSL_DEBUGF(L"set_target(target:%p)",&t);
+      LEAVE_FUNCTION();
     }
   }
 }

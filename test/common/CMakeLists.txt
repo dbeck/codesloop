@@ -33,6 +33,8 @@ LINK_LIBRARIES( csl_common
                 ${WSOCK32_LIBRARY} )
 
 SET_SOURCE_FILES_PROPERTIES( t__logger.cc PROPERTIES  COMPILE_FLAGS -DENABLE_LOGGER )
+SET_SOURCE_FILES_PROPERTIES( t__stream.cc PROPERTIES
+                             COMPILE_FLAGS -DENABLE_LOGGER -DDEBUG -DDEBUG_ENABLE_INDENT ) 
 
 ADD_EXECUTABLE( t__zfile t__zfile.cc )
 ADD_EXECUTABLE( t__circbuf t__circbuf.cc )
@@ -55,6 +57,7 @@ ADD_EXECUTABLE( t__hash t__hash.cc )
 ADD_EXECUTABLE( t__hash_helpers t__hash_helpers.cc )
 ADD_EXECUTABLE( t__hash_exp t__hash_exp.cc )
 ADD_EXECUTABLE( t__auto_cloce t__auto_close.cc )
+ADD_EXECUTABLE( t__stream t__stream.cc )
 ADD_EXECUTABLE( t__stream_buffer t__stream_buffer.cc )
 ADD_EXECUTABLE( t__stream_part t__stream_part.cc )
 
@@ -73,6 +76,7 @@ ADD_TEST(common_obj ${EXECUTABLE_OUTPUT_PATH}/t__obj)
 ADD_TEST(common_pbuf ${EXECUTABLE_OUTPUT_PATH}/t__pbuf)
 ADD_TEST(common_pvlist ${EXECUTABLE_OUTPUT_PATH}/t__pvlist)
 ADD_TEST(common_queue ${EXECUTABLE_OUTPUT_PATH}/t__queue)
+ADD_TEST(common_stream ${EXECUTABLE_OUTPUT_PATH}/t__stream)
 ADD_TEST(common_stream_buffer ${EXECUTABLE_OUTPUT_PATH}/t__stream_buffer)
 ADD_TEST(common_stream_part ${EXECUTABLE_OUTPUT_PATH}/t__stream_part)
 ADD_TEST(common_serial ${EXECUTABLE_OUTPUT_PATH}/t__serial)

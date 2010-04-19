@@ -29,6 +29,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/stream_part.hh"
 #include "codesloop/common/stream_buffer.hh"
 #include "codesloop/common/stream_flags.hh"
+#include "codesloop/common/stream_nop_target.hh"
 #include "codesloop/common/exc.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/logger.hh"
@@ -83,11 +84,11 @@ namespace csl
     //  -- these are used in the stream to tell the target that a new packet has started
     //     ended, data arrived ...
     //
-    //    const stream_flags & start();  -- to tell that a new stream packet is arriving
-    //    const stream_flags & end();    -- to tell that the packet has been finished
-    //    const stream_flags & flush();  -- to tell that the data stream reached a logical
-    //                                      boundary. eg. a video frame in a video stream
-    //    const stream_flags & data();   -- to tell that data arrived to the stream
+    //    const stream_flags & start(stream_base &);          -- to tell that a new stream packet is arriving
+    //    const stream_flags & end(stream_base &);            -- to tell that the packet has been finished
+    //    const stream_flags & flush(stream_base &);          -- to tell that the data stream reached a logical
+    //                                                           boundary. eg. a video frame in a video stream
+    //    const stream_flags & data(stream_base &, size_t);   -- to tell that data arrived to the stream
     
     // The stream call sequence is this (C=client, S=stream, B=buffer, T=target)
     //
@@ -102,7 +103,10 @@ namespace csl
     //                                                 so target can do appropriate actions (eg. add
     //                                                 cryptographic headers, close socket, etc...)
     
-    template <typename T, typename Target, typename Buffer=stream_buffer<T> >
+    template < typename T,
+               typename Target=stream_nop_target<T>,
+               typename Buffer=stream_buffer<T>
+             >
     class stream : public stream_base<T>
     {
     public:
@@ -127,10 +131,14 @@ namespace csl
       size_t has_items();
       
       virtual ~stream() {}
-      
       stream(Target & t, Buffer & b);
+      stream(Buffer & b);
+      void set_target(Target & t);
       
     private:
+      // no default construction: at least a buffer is needed
+      stream() {}
+      
       stream_flags  flags_;
       Target *      target_;
       Buffer *      buffer_;
