@@ -37,8 +37,7 @@ namespace csl
 {
   namespace common
   {  
-    template<typename T>
-    class stream_part
+    template <typename T> class stream_part
     {        
       public:
         stream_part();

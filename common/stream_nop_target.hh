@@ -23,8 +23,8 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_common_preallocated_array_hh_included_
-#define _csl_common_preallocated_array_hh_included_
+#ifndef _csl_common_stream_nop_target_hh_included_
+#define _csl_common_stream_nop_target_hh_included_
 
 #include "codesloop/common/stream_flags.hh"
 #include "codesloop/common/obj.hh"
@@ -53,5 +53,5 @@ namespace csl
 }
 
 #endif /*__cplusplus*/
-#endif /*_csl_common_preallocated_array_hh_included_*/
+#endif /*_csl_common_stream_nop_target_hh_included_*/
 

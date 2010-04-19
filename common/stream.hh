@@ -103,15 +103,12 @@ namespace csl
     //                                                 so target can do appropriate actions (eg. add
     //                                                 cryptographic headers, close socket, etc...)
     
-    template < typename T,
-               typename Target=stream_nop_target<T>,
-               typename Buffer=stream_buffer<T>
-             >
+    template < typename T, typename Target, typename Buffer >
     class stream : public stream_base<T>
     {
     public:
-      typedef typename stream_base<T> base_t;
-      typedef typename stream_part<T> part_t;
+      typedef stream_base<T> base_t;
+      typedef stream_part<T> part_t;
       
       /* packet frame */
       const stream_flags & start();
@@ -137,7 +134,7 @@ namespace csl
       
     private:
       // no default construction: at least a buffer is needed
-      stream() {}
+      stream() : target_(0), buffer_(0), n_confirmed_(0) {}
       
       stream_flags  flags_;
       Target *      target_;

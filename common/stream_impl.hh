@@ -34,9 +34,12 @@ namespace csl
   
 #ifdef DEBUG
 #define DEBUG_FLAGS_AND_TARGETOP(fun) \
-            str flags_str___; flags_.to_str(flags_str___); \
+          do { \
+            str flags_str___; \
+            flags_.to_str(flags_str___); \
             CSL_DEBUGF(fun L"() => stream flags:[%x:%ls]", \
                       flags_.flags(),flags_str___.c_str() ); \
+          } while(false)
 #else
 #define DEBUG_FLAGS_AND_TARGETOP(fun)
 #endif
@@ -90,11 +93,14 @@ namespace csl
 #undef DEBUG_FLAGS_AND_TARGETOP
 #ifdef DEBUG
 #define DEBUG_FLAGS_AND_BUFFEROP(fun,param) \
-            str flags_str___; flags_.to_str(flags_str___); \
+          do { \
+            str flags_str___; \
+            flags_.to_str(flags_str___); \
             CSL_DEBUGF(fun L"(%lld,sp) => sp:[data:%p,bytes:%d] stream flags:[%x:%ls]", \
                       static_cast<uint64_t>(param), \
                       sp.data(), sp.bytes(), \
                       flags_.flags(),flags_str___.c_str() ); \
+          } while(false)
 #else
 #define DEBUG_FLAGS_AND_BUFFEROP(fun,param)
 #endif
@@ -118,7 +124,7 @@ namespace csl
                                       stream<T,Target,Buffer>::part_t & sp )
     {
       ENTER_FUNCTION();
-      part_t & ret(buffer_->confirm(n_succeeded,sp));
+      part_t & ret(buffer_->confirm(n_succeed,sp));
       flags_ << sp.flags();
       if(target_)
       {
@@ -138,7 +144,7 @@ namespace csl
       part_t & ret(buffer_->get(sz,sp));
       flags_ << sp.flags();
       sp.flags() << flags_;
-      DEBUG_FLAGS_AND_BUFFEROP(L"get",n_succeed);
+      DEBUG_FLAGS_AND_BUFFEROP(L"get",sz);
       RETURN_FUNCTION(ret);
     }
 
@@ -166,7 +172,7 @@ namespace csl
     template <typename T, typename Target, typename Buffer>
     stream<T,Target,Buffer>::stream(Target & t, Buffer & b) : target_(&t),
                                                               buffer_(&b),
-                                                              n_confirmed_(0),
+                                                              n_confirmed_(0)
     {
       ENTER_FUNCTION();
       CSL_DEBUGF(L"stream::stream(target:%p,buffer:%p)",&t,&b);

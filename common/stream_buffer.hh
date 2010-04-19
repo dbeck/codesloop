@@ -26,9 +26,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_stream_buffer_hh_included_
 #define _csl_common_stream_buffer_hh_included_
 
+#include "codesloop/common/preallocated_array.hh"
 #include "codesloop/common/stream_part.hh"
 #include "codesloop/common/exc.hh"
-#include "codesloop/common/preallocated_array.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/obj.hh"
@@ -39,7 +39,7 @@ namespace csl
 {
   namespace common
   {
-    template <typename T, size_t Preallocated=1024, size_t MaxSize=256*1024>
+    template <typename T, size_t Preallocated=1024, size_t MaxSize=(256*1024)>
     class stream_buffer
     {
       public:
@@ -70,9 +70,11 @@ namespace csl
         stream_buffer() : start_(0), len_(0), use_exc_(true) {}
 
       private:
-        preallocated_array<T,Preallocated> buf_;
-        size_t start_;
-        size_t len_;
+        typedef preallocated_array<T,Preallocated> buf_t;
+
+        buf_t   buf_;
+        size_t  start_;
+        size_t  len_;
 
         CSL_OBJ(csl::common,stream_buffer);
         USE_EXC();
