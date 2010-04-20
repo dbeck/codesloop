@@ -23,13 +23,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// #if 0
+#if 0
 #ifndef DEBUG
 #define DEBUG
 #define DEBUG_ENABLE_INDENT
 //#define DEBUG_VERBOSE
 #endif /* DEBUG */
-// #endif
+#endif
 
 #include "codesloop/common/stream_nop_target.hh"
 #include "codesloop/common/stream_buffer.hh"
@@ -42,11 +42,20 @@ using namespace csl::common;
 
 namespace test_stream {
 
-  void test_baseline()
+  void test_baseline_nop_target()
   {
     stream_nop_target<char> t;
+  }
+
+  void test_baseline_buffer()
+  {
     stream_buffer<char> b;
-    stream< char, stream_nop_target<char>, stream_buffer<char> > s(b);
+  }
+
+  void test_baseline_stream()
+  {
+    stream_buffer<double> b;
+    stream< double > s(b);
   }
 
 }
@@ -55,7 +64,9 @@ using namespace test_stream;
 
 int main()
 {
-  csl_common_print_results( "baseline            ", csl_common_test_timer_v0(test_baseline),"" );
+  csl_common_print_results( "baseline nop target ", csl_common_test_timer_v0(test_baseline_nop_target),"" );
+  csl_common_print_results( "baseline buffer     ", csl_common_test_timer_v0(test_baseline_buffer),"" );
+  csl_common_print_results( "baseline stream     ", csl_common_test_timer_v0(test_baseline_stream),"" );
   return 0;
 }
 

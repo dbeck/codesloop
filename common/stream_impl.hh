@@ -44,9 +44,13 @@ namespace csl
 #define DEBUG_FLAGS_AND_TARGETOP(fun)
 #endif
 
-    template <typename T, typename Target, typename Buffer>
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
     const stream_flags &
-    stream<T,Target,Buffer>::start()
+    stream<T,Buffer,Target,Preallocated,MaxSize>::start()
     {
       ENTER_FUNCTION();
       if( !target_ ) RETURN_FUNCTION(flags_);
@@ -55,9 +59,13 @@ namespace csl
       RETURN_FUNCTION(flags_);
     }
     
-    template <typename T, typename Target, typename Buffer>
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
     const stream_flags &
-    stream<T,Target,Buffer>::end()
+    stream<T,Buffer,Target,Preallocated,MaxSize>::end()
     {
       ENTER_FUNCTION();
       if( !target_ ) RETURN_FUNCTION(flags_);
@@ -66,9 +74,13 @@ namespace csl
       RETURN_FUNCTION(flags_);
     }
     
-    template <typename T, typename Target, typename Buffer>
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
     const stream_flags &
-    stream<T,Target,Buffer>::flush()
+    stream<T,Buffer,Target,Preallocated,MaxSize>::flush()
     {
       ENTER_FUNCTION();
       if( !target_ ) RETURN_FUNCTION(flags_);
@@ -77,9 +89,13 @@ namespace csl
       RETURN_FUNCTION(flags_);
     }
                 
-    template <typename T, typename Target, typename Buffer>
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
     stream_flags &
-    stream<T,Target,Buffer>::flags()
+    stream<T,Buffer,Target,Preallocated,MaxSize>::flags()
     {
       ENTER_FUNCTION();
 #ifdef DEBUG
@@ -105,10 +121,15 @@ namespace csl
 #define DEBUG_FLAGS_AND_BUFFEROP(fun,param)
 #endif
 
-    template <typename T, typename Target, typename Buffer>
-    typename stream<T,Target,Buffer>::part_t &
-    stream<T,Target,Buffer>::reserve( size_t sz,
-                                      stream<T,Target,Buffer>::part_t & sp )
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
+    typename stream<T,Buffer,Target,Preallocated,MaxSize>::part_t &
+    stream<T,Buffer,Target,Preallocated,MaxSize>::reserve(
+                               size_t sz,
+                               stream<T,Buffer,Target,Preallocated,MaxSize>::part_t & sp )
     {
       ENTER_FUNCTION();
       part_t & ret(buffer_->reserve(sz,sp));
@@ -118,10 +139,15 @@ namespace csl
       RETURN_FUNCTION(ret);
     }
     
-    template <typename T, typename Target, typename Buffer>
-    typename stream<T,Target,Buffer>::part_t &
-    stream<T,Target,Buffer>::confirm( size_t n_succeed,
-                                      stream<T,Target,Buffer>::part_t & sp )
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
+    typename stream<T,Buffer,Target,Preallocated,MaxSize>::part_t &
+    stream<T,Buffer,Target,Preallocated,MaxSize>::confirm(
+                               size_t n_succeed,
+                               stream<T,Buffer,Target,Preallocated,MaxSize>::part_t & sp )
     {
       ENTER_FUNCTION();
       part_t & ret(buffer_->confirm(n_succeed,sp));
@@ -135,10 +161,15 @@ namespace csl
       RETURN_FUNCTION(ret);
     }
     
-    template <typename T, typename Target, typename Buffer>
-    typename stream<T,Target,Buffer>::part_t &
-    stream<T,Target,Buffer>::get( size_t sz,
-                                  stream<T,Target,Buffer>::part_t & sp )
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
+    typename stream<T,Buffer,Target,Preallocated,MaxSize>::part_t &
+    stream<T,Buffer,Target,Preallocated,MaxSize>::get(
+                               size_t sz,
+                               stream<T,Buffer,Target,Preallocated,MaxSize>::part_t & sp )
     {
       ENTER_FUNCTION();
       part_t & ret(buffer_->get(sz,sp));
@@ -150,18 +181,26 @@ namespace csl
 
 #undef DEBUG_FLAGS_AND_BUFFEROP
 
-    template <typename T, typename Target, typename Buffer>
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
     size_t
-    stream<T,Target,Buffer>::confirmed_items()
+    stream<T,Buffer,Target,Preallocated,MaxSize>::confirmed_items()
     {
       ENTER_FUNCTION();
       CSL_DEBUGF(L"confirmed_items() => %lld",static_cast<uint64_t>(n_confirmed_));
       RETURN_FUNCTION(n_confirmed_);
     }
     
-    template <typename T, typename Target, typename Buffer>
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
     size_t
-    stream<T,Target,Buffer>::has_items()
+    stream<T,Buffer,Target,Preallocated,MaxSize>::has_items()
     {
       ENTER_FUNCTION();
       size_t ret = buffer_->has_items();
@@ -169,28 +208,46 @@ namespace csl
       RETURN_FUNCTION(ret);
     }
 
-    template <typename T, typename Target, typename Buffer>
-    stream<T,Target,Buffer>::stream(Target & t, Buffer & b) : target_(&t),
-                                                              buffer_(&b),
-                                                              n_confirmed_(0)
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
+    stream<T,Buffer,Target,Preallocated,MaxSize>::stream(
+                                    stream<T,Buffer,Target,Preallocated,MaxSize>::target_t & t,
+                                    stream<T,Buffer,Target,Preallocated,MaxSize>::buffer_t & b)
+            : target_(&t),
+              buffer_(&b),
+              n_confirmed_(0)
     {
       ENTER_FUNCTION();
       CSL_DEBUGF(L"stream::stream(target:%p,buffer:%p)",&t,&b);
       LEAVE_FUNCTION();
     }
     
-    template <typename T, typename Target, typename Buffer>
-    stream<T,Target,Buffer>::stream(Buffer & b) : target_(0),
-                                                  buffer_(&b),
-                                                  n_confirmed_(0)
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
+    stream<T,Buffer,Target,Preallocated,MaxSize>::stream(
+                                    stream<T,Buffer,Target,Preallocated,MaxSize>::buffer_t & b)
+            : target_(0),
+              buffer_(&b),
+              n_confirmed_(0)
     {
       ENTER_FUNCTION();
       CSL_DEBUGF(L"stream::stream(buffer:%p)",&b);
       LEAVE_FUNCTION();
     }
     
-    template <typename T, typename Target, typename Buffer>
-    void stream<T,Target,Buffer>::set_target(Target & t)
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
+    void stream<T,Buffer,Target,Preallocated,MaxSize>::set_target(
+                                         stream<T,Buffer,Target,Preallocated,MaxSize>::target_t & t)
     {
       ENTER_FUNCTION();
       target_ = &t;

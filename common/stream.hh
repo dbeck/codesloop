@@ -103,12 +103,19 @@ namespace csl
     //                                                 so target can do appropriate actions (eg. add
     //                                                 cryptographic headers, close socket, etc...)
     
-    template < typename T, typename Target, typename Buffer >
+    template < typename T,
+               template < typename, size_t, size_t > class Buffer = stream_buffer,
+               template < typename > class Target = stream_nop_target,
+               size_t Preallocated=1024,
+               size_t MaxSize=(256*1024)
+             >
     class stream : public stream_base<T>
     {
     public:
-      typedef stream_base<T> base_t;
-      typedef stream_part<T> part_t;
+      typedef stream_base<T>                  base_t;
+      typedef stream_part<T>                  part_t;
+      typedef Target<T>                       target_t;
+      typedef Buffer<T,Preallocated,MaxSize>  buffer_t;
       
       /* packet frame */
       const stream_flags & start();
@@ -128,17 +135,17 @@ namespace csl
       size_t has_items();
       
       virtual ~stream() {}
-      stream(Target & t, Buffer & b);
-      stream(Buffer & b);
-      void set_target(Target & t);
+      stream(target_t & t, buffer_t & b);
+      stream(buffer_t & b);
+      void set_target(target_t & t);
       
     private:
       // no default construction: at least a buffer is needed
       stream() : target_(0), buffer_(0), n_confirmed_(0) {}
       
       stream_flags  flags_;
-      Target *      target_;
-      Buffer *      buffer_;
+      target_t *    target_;
+      buffer_t *    buffer_;
       size_t        n_confirmed_;
       
       CSL_OBJ(csl::common,stream);
