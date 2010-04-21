@@ -128,7 +128,6 @@ namespace csl
 
       if( sp.bytes() < n_succeed            ||
           sp.data() == NULL                 ||
-          sp.flags() != stream_flags::ok_   ||
           len_ < sp.bytes()                 ||
           start_offset !=  (start_+len_-sp.bytes()) )
       {

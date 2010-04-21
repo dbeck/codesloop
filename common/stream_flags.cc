@@ -157,7 +157,7 @@ namespace csl
       LEAVE_FUNCTION();
     }
     
-    bool stream_flags::operator==(uint32_t other)
+    bool stream_flags::operator==(uint32_t other) const
     {
       ENTER_FUNCTION();
       bool ret = (flags_ == other);
@@ -173,7 +173,7 @@ namespace csl
       RETURN_FUNCTION(ret);
     }
     
-    bool stream_flags::operator==(const stream_flags & other)
+    bool stream_flags::operator==(const stream_flags & other) const
     {
       ENTER_FUNCTION();
       bool ret = (flags_ == other.flags_);
@@ -189,14 +189,28 @@ namespace csl
       RETURN_FUNCTION(ret);
     }
     
-    bool stream_flags::operator!=(uint32_t other)
+    bool stream_flags::operator&(uint32_t other) const
+    {
+      ENTER_FUNCTION();
+      bool ret = has_flags(other);
+      RETURN_FUNCTION(ret);
+    }
+    
+    bool stream_flags::operator&(const stream_flags & other) const
+    {
+      ENTER_FUNCTION();
+      bool ret = has_flags(other.flags_);
+      RETURN_FUNCTION(ret);
+    }
+
+    bool stream_flags::operator!=(uint32_t other) const
     {
       ENTER_FUNCTION();
       bool ret = (operator==(other) == false);
       RETURN_FUNCTION(ret);
     }
     
-    bool stream_flags::operator!=(const stream_flags & other)
+    bool stream_flags::operator!=(const stream_flags & other) const
     {
       ENTER_FUNCTION();
       bool ret = (operator==(other) == false);

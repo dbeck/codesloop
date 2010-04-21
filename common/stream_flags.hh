@@ -73,7 +73,7 @@ namespace csl
         static const uint32_t os_error_               = (1UL<<27);
         static const uint32_t peer_exception_         = (1UL<<28);
         static const uint32_t empty_buffer_           = (1UL<<29);
-        
+                
         stream_flags() : flags_(ok_) {}
         
         uint32_t flags() const;
@@ -83,10 +83,13 @@ namespace csl
         void clear_flags(uint32_t f);
         void add_flags(uint32_t f);
         
-        bool operator==(uint32_t other);
-        bool operator==(const stream_flags & other);
-        bool operator!=(uint32_t other);
-        bool operator!=(const stream_flags & other);
+        bool operator==(uint32_t other) const;
+        bool operator==(const stream_flags & other) const;
+        bool operator!=(uint32_t other) const;
+        bool operator!=(const stream_flags & other) const;
+        bool operator&(uint32_t other) const;
+        bool operator&(const stream_flags & other) const;
+
         stream_flags & operator<<(uint32_t other);
         stream_flags & operator<<(const stream_flags & other);
         stream_flags & operator=(uint32_t other);

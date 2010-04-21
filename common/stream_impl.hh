@@ -133,7 +133,14 @@ namespace csl
     {
       ENTER_FUNCTION();
       part_t & ret(buffer_->reserve(sz,sp));
-      flags_ << sp.flags();
+      if( ret.flags() == stream_flags::ok_ )
+      {
+        flags_.clear_flags( stream_flags::parameter_error_ | stream_flags::buffer_full_ );
+      }
+      else
+      {
+        flags_ << ret.flags();
+      }
       ret.flags() << flags_;
       DEBUG_FLAGS_AND_BUFFEROP(L"reserve",sz);
       RETURN_FUNCTION(ret);
@@ -151,7 +158,14 @@ namespace csl
     {
       ENTER_FUNCTION();
       part_t & ret(buffer_->confirm(n_succeed,sp));
-      flags_ << sp.flags();
+      if( ret.flags() == stream_flags::ok_ )
+      {
+        flags_.clear_flags( stream_flags::empty_buffer_ | stream_flags::parameter_error_ );
+      }
+      else
+      {
+        flags_ << ret.flags();
+      }
       if(target_)
       {
         flags_ << target_->data(*this,n_succeed);
@@ -173,7 +187,14 @@ namespace csl
     {
       ENTER_FUNCTION();
       part_t & ret(buffer_->get(sz,sp));
-      flags_ << sp.flags();
+      if( ret.flags() == stream_flags::ok_ )
+      {
+        flags_.clear_flags( stream_flags::empty_buffer_ | stream_flags::parameter_error_ );
+      }
+      else
+      {
+        flags_ << ret.flags();
+      }
       ret.flags() << flags_;
       DEBUG_FLAGS_AND_BUFFEROP(L"get",sz);
       RETURN_FUNCTION(ret);
@@ -190,6 +211,7 @@ namespace csl
     stream<T,Buffer,Target,Preallocated,MaxSize>::confirmed_items()
     {
       ENTER_FUNCTION();
+      /* TODO XXX */
       CSL_DEBUGF(L"confirmed_items() => %lld",static_cast<uint64_t>(n_confirmed_));
       RETURN_FUNCTION(n_confirmed_);
     }
