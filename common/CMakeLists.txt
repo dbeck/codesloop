@@ -65,8 +65,8 @@ ADD_LIBRARY( csl_common STATIC
 # ADD_DEFINITIONS( -DENABLE_LOGGER )
 SET_SOURCE_FILES_PROPERTIES( logger.cc PROPERTIES 
                              COMPILE_FLAGS -DENABLE_LOGGER )
-SET_SOURCE_FILES_PROPERTIES( stream_flags.cc PROPERTIES 
-                             COMPILE_FLAGS "-DDEBUG -DDEBUG_ENABLE_INDENT" )
+# SET_SOURCE_FILES_PROPERTIES( stream_flags.cc PROPERTIES 
+#                              COMPILE_FLAGS "-DDEBUG -DDEBUG_ENABLE_INDENT" )
 
 ADD_DEPENDENCIES( csl_common libev/config.h )
 
