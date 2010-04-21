@@ -57,6 +57,7 @@ namespace csl
       else
       {
         // this is not an error: empty buffer
+        sp.flags() << stream_flags::empty_buffer_;
         CSL_DEBUGF(L"no data to be returned");
       }
       RETURN_FUNCTION( sp );

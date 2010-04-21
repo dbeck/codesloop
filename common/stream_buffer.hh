@@ -28,7 +28,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/preallocated_array.hh"
 #include "codesloop/common/stream_part.hh"
-#include "codesloop/common/exc.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/obj.hh"
@@ -67,7 +66,7 @@ namespace csl
 
         const T * data() const { return buf_.data()+start_; }
 
-        stream_buffer() : start_(0), len_(0), use_exc_(true) {}
+        stream_buffer() : start_(0), len_(0) {}
 
       private:
         typedef preallocated_array<T,Preallocated> buf_t;
@@ -77,7 +76,6 @@ namespace csl
         size_t  len_;
 
         CSL_OBJ(csl::common,stream_buffer);
-        USE_EXC();
     };
   } /* end of ns:csl:common */
 } /* end of ns:csl */
