@@ -134,7 +134,7 @@ namespace csl
       ENTER_FUNCTION();
       part_t & ret(buffer_->reserve(sz,sp));
       flags_ << sp.flags();
-      sp.flags() << flags_;
+      ret.flags() << flags_;
       DEBUG_FLAGS_AND_BUFFEROP(L"reserve",sz);
       RETURN_FUNCTION(ret);
     }
@@ -156,7 +156,7 @@ namespace csl
       {
         flags_ << target_->data(*this,n_succeed);
       }
-      sp.flags() << flags_;
+      ret.flags() << flags_;
       DEBUG_FLAGS_AND_BUFFEROP(L"confirm",n_succeed);
       RETURN_FUNCTION(ret);
     }
@@ -174,7 +174,7 @@ namespace csl
       ENTER_FUNCTION();
       part_t & ret(buffer_->get(sz,sp));
       flags_ << sp.flags();
-      sp.flags() << flags_;
+      ret.flags() << flags_;
       DEBUG_FLAGS_AND_BUFFEROP(L"get",sz);
       RETURN_FUNCTION(ret);
     }

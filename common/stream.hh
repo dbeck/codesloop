@@ -103,12 +103,11 @@ namespace csl
     //                                                 so target can do appropriate actions (eg. add
     //                                                 cryptographic headers, close socket, etc...)
     
-    template < typename T,
-               template < typename, size_t, size_t > class Buffer = stream_buffer,
-               template < typename > class Target = stream_nop_target,
-               size_t Preallocated=1024,
-               size_t MaxSize=(256*1024)
-             >
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer = stream_buffer,
+              template <typename> class Target = stream_nop_target,
+              size_t Preallocated=1024,
+              size_t MaxSize=(256*1024)>
     class stream : public stream_base<T>
     {
     public:
