@@ -77,6 +77,7 @@ namespace csl
         if( f&(1ULL<<26) ) s+= L" application_error_";
         if( f&(1ULL<<27) ) s+= L" os_error_";
         if( f&(1ULL<<28) ) s+= L" peer_exception_";
+        if( f&(1ULL<<29) ) s+= L" empty_buffer_";
       }
       s += L" ]";
     }

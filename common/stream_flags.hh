@@ -72,6 +72,7 @@ namespace csl
         static const uint32_t application_error_      = (1UL<<26);
         static const uint32_t os_error_               = (1UL<<27);
         static const uint32_t peer_exception_         = (1UL<<28);
+        static const uint32_t empty_buffer_           = (1UL<<29);
         
         stream_flags() : flags_(ok_) {}
         
