@@ -229,28 +229,25 @@ namespace test_stream_buffer {
     rr = rr2;
     rr.data( reinterpret_cast<o_t::item_t *>(33ULL) ); // bad ptr
 
-    int caught = 0;
+    // this should set error flags, because we are confirming something
+    // that was not previously reserved
+    o.confirm(1,rr);
+    assert( rr.flags().has_flags(stream_flags::parameter_error_) );
 
-    // this should throw an exception
-    try { o.confirm(1,rr); }
-    catch( csl::common::exc e ) { caught = 1; }
-    assert( caught == 1 );
-
+    rr.reset();
     rr.data( rr2.data() );                         // fix pointer
     rr.bytes( 999999ULL );                         // bad size
 
-    // this should throw an exception
-    try { o.confirm(1,rr); }
-    catch( csl::common::exc e ) { caught = 2; }
-    assert( caught == 2 );
+    // this should set error flags
+    o.confirm(1,rr);
+    assert( rr.flags().has_flags(stream_flags::parameter_error_) );
 
     rr.bytes( rr2.bytes() );                       // fix size
     rr.flags() << ( stream_flags::os_error_ );     // failed
 
-    // this should throw an exception
-    try { o.confirm(1,rr); }
-    catch( csl::common::exc e ) { caught = 3; }
-    assert( caught == 3 );
+    // this should set error flags and keep original errors too
+    o.confirm(1,rr);
+    assert( rr.flags().has_flags(stream_flags::parameter_error_|stream_flags::os_error_) );
   }
 
   void get()
@@ -299,7 +296,7 @@ namespace test_stream_buffer {
     // rr should not be changed either
     assert( rr.bytes() == 0 );
     assert( rr.data() == NULL );
-    assert( rr.flags() == stream_flags::ok_ );
+    assert( rr.flags() == stream_flags::empty_buffer_ );
 
     o.reserve(9,rr);
     // check the results of reserve
@@ -355,7 +352,7 @@ namespace test_stream_buffer {
 
     assert( rr.bytes() == 0 );
     assert( rr.data() == NULL );
-    assert( rr.flags().has_flags( stream_flags::buffer_full_ ) == true );
+    assert( rr.flags() == stream_flags::parameter_error_ );
   }
 
 } /* end of test_stream_buffer */
