@@ -71,6 +71,7 @@ namespace csl
         inline bool is_empty() const        { return (size_ == 0); }
         inline bool has_data() const        { return (size_ > 0); }
         inline bool is_static() const       { return (data_ == preallocated_); }
+        inline bool is_dynamic() const      { return (data_ && data_ != preallocated_); }
 
         inline size_t size() const      { return size_; }
         inline const T * data() const   { return data_; }

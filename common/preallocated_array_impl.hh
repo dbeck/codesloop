@@ -62,7 +62,7 @@ namespace csl
           {
             ::memcpy( tmp, data_, size_ );
 
-            if( is_static() == false )
+            if( is_dynamic() )
             {
               ::free( data_ );
             }
@@ -79,7 +79,7 @@ namespace csl
     template <typename T,size_t SZ>
     void preallocated_array<T,SZ>::reset()
     {
-      if( data_ && is_static() == false )
+      if( is_dynamic() )
       {
         ::free( data_ );
         data_ = preallocated_;
@@ -105,7 +105,21 @@ namespace csl
     {
       preallocated_[0] = c;
     }
-    
+
+    template <typename T, size_t SZ>
+    preallocated_array<T,SZ>::preallocated_array(const preallocated_array & other)
+        : data_(preallocated_), size_(0)
+    {
+      *this = other;
+    }
+
+    template <typename T, size_t SZ>
+    preallocated_array<T,SZ>::preallocated_array(const T * other)
+        : data_(preallocated_), size_(0)
+    {
+      *this = other;
+    }
+
     template <typename T, size_t SZ>
     bool preallocated_array<T,SZ>::set(const T * dta, size_t sz)
     {
@@ -141,7 +155,7 @@ namespace csl
       else if( sz <= SZ )
       {
         /* data fits into preallocated size */
-        if( size_ > 0 && is_static() == false ) ::free( data_ );
+        if( size_ > 0 && is_dynamic() ) ::free( data_ );
 
         data_ = preallocated_;
         size_ = sz;
@@ -156,7 +170,7 @@ namespace csl
         if( !tmp ) return 0;
 
         /* already have data ? */
-        if( size_ > 0 && is_static() == false ) ::free( data_ );
+        if( size_ > 0 && is_dynamic() ) ::free( data_ );
 
         data_ = tmp;
         size_ = sz;
@@ -192,20 +206,6 @@ namespace csl
         ::memcpy( tmp, other.data_, other.size_*item_size_ );
       }
       return *this;
-    }
-    
-    template <typename T, size_t SZ>
-    preallocated_array<T,SZ>::preallocated_array(const preallocated_array & other)
-        : data_(preallocated_), size_(0)
-    {
-      *this = other;
-    }
-
-    template <typename T, size_t SZ>
-    preallocated_array<T,SZ>::preallocated_array(const T * other)
-        : data_(preallocated_), size_(0)
-    {
-      *this = other;
     }
     
     template <typename T, size_t SZ>
