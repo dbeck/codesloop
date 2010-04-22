@@ -152,6 +152,9 @@ namespace csl
         else if( confirm_len > 0 )
         {
           T * p = buf_.allocate( len_ + start_ );
+
+          // if allocate modifies the pointer, then it should be
+          // reflected in the stream part too
           if( n_succeed > 0 ) { sp.data( p + start_offset ); }
         }
       }
