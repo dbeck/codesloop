@@ -162,9 +162,7 @@ namespace csl
       CSL_DEBUGF(L"length decreased by: %lld items",static_cast<uint64_t>(confirm_len));
     bail:
       RETURN_FUNCTION( sp );
-    }
-
-  
+    }  
   }
 }
 

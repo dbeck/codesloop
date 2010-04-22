@@ -125,6 +125,19 @@ namespace csl
       LEAVE_FUNCTION();
     }
     
+    void stream_flags::reset()
+    {
+      ENTER_FUNCTION();
+#ifdef DEBUG
+      str flags_str;
+      to_str(flags_,flags_str);
+      CSL_DEBUGF(L"reset() [old_flags:%x:%ls]",
+        flags_,flags_str.c_str());
+#endif /*DEBUG*/
+      flags_ = ok_;
+      LEAVE_FUNCTION();
+    }
+    
     void stream_flags::clear_flags(uint32_t fl)
     {
       ENTER_FUNCTION();

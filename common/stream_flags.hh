@@ -79,7 +79,8 @@ namespace csl
         
         uint32_t flags() const;
         bool has_flags(uint32_t flags) const;
-        
+
+        void reset();
         void set_flags(uint32_t f);
         void clear_flags(uint32_t f);
         void add_flags(uint32_t f);

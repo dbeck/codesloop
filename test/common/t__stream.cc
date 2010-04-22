@@ -244,8 +244,59 @@ namespace test_stream {
     assert( sp.items() == 2 );
   }
 
-  void test_confirm_failed() {}
-  void test_get_failed() {}
+  void test_confirm_failed()
+  {
+    stream_buffer<double,1,2> b;
+    counting_target<double> t;
+    typedef stream<double,stream_buffer,counting_target,1,2> dblstream_t;
+    dblstream_t s(t,b);
+    dblstream_t::part_t sp,sp2;
+    
+    // n_succeed > avail : parameter_error_
+    assert( s.confirm(1,sp).flags() == stream_flags::parameter_error_ );
+    
+    // sp.data() invalid : parameter_error_
+    sp.reset();
+    s.reserve(1,sp);
+    assert( sp.flags() == stream_flags::ok_ );
+    sp2 = sp;
+    sp2.data(sp.data()+1);
+    assert( s.confirm(1,sp2).flags() == stream_flags::parameter_error_ );
+    assert( sp.data()+1 == sp2.data() );
+    assert( sp.items() == sp2.items() );
+    assert( sp.items() == 1 );
+    
+    // sp.items() invalid : parameter_error_
+    sp.flags().reset();
+    sp.items(0);
+    assert( s.confirm(1,sp).flags() == stream_flags::parameter_error_ );
+    sp.flags().reset();
+    sp.items(2);
+    assert( s.confirm(1,sp).flags() == stream_flags::parameter_error_ );
+    sp.flags().reset();
+    sp.items(1);
+    assert( s.confirm(1,sp).flags() == stream_flags::ok_ );
+  }
+  
+  void test_get_failed()
+  {
+    stream_buffer<double,1,2> b;
+    counting_target<double> t;
+    typedef stream<double,stream_buffer,counting_target,1,2> dblstream_t;
+    dblstream_t s(t,b);
+    dblstream_t::part_t sp;
+    
+    // sz == 0 : parameter_error_
+    s.reserve(1,sp);
+    sp.reset();
+    assert( s.get(0,sp).flags() == stream_flags::parameter_error_ );
+    
+    // b.len() == 0 : empty_buffer_
+    s.get(100,sp);
+    assert( b.len() == 0 );
+    sp.reset();
+    assert( s.get(1,sp).flags() == stream_flags::empty_buffer_ );
+  }
   
   void test_start_failed()
   {
@@ -255,10 +306,30 @@ namespace test_stream {
     typedef stream<double,stream_buffer,counting_target,1,2> dblstream_t;
     dblstream_t s(t,b);
     assert( s.start() == stream_flags::security_error_ );
+    assert( t.start_count_ == 1 );
   }
   
-  void test_end_failed() {}
-  void test_flush_failed() {}
+  void test_end_failed()
+  {
+    stream_buffer<double,1,2> b;
+    counting_target<double> t;
+    t.flags_ << stream_flags::security_error_;
+    typedef stream<double,stream_buffer,counting_target,1,2> dblstream_t;
+    dblstream_t s(t,b);
+    assert( s.end() == stream_flags::security_error_ );
+    assert( t.end_count_ == 1 );
+  }
+  
+  void test_flush_failed()
+  {
+    stream_buffer<double,1,2> b;
+    counting_target<double> t;
+    t.flags_ << stream_flags::security_error_;
+    typedef stream<double,stream_buffer,counting_target,1,2> dblstream_t;
+    dblstream_t s(t,b);
+    assert( s.flush() == stream_flags::security_error_ );
+    assert( t.flush_count_ == 1 );
+  }
 }
 
 using namespace test_stream;
