@@ -205,7 +205,45 @@ namespace test_stream {
     assert( s.confirmed_items() == 0 );
   }
 
-  void test_reserve_failed() {}
+  void test_reserve_failed()
+  {
+    stream_buffer<uint32_t,1,2> b;
+    counting_target<uint32_t> t;
+    typedef stream<uint32_t,stream_buffer,counting_target,1,2> ui32stream_t;
+    ui32stream_t s(t,b);
+    ui32stream_t::part_t sp;
+    
+    // need non-zero items
+    s.reserve(0,sp);
+    assert( sp.flags() & stream_flags::parameter_error_ );
+    
+    // fill the whole buffer
+    s.reserve(2,sp);
+    assert( sp.flags() == stream_flags::ok_ );
+    
+    // confirm that too
+    s.confirm(2,sp);
+    assert( sp.flags() == stream_flags::ok_ );
+
+    // try to reserve
+    s.reserve(2,sp);
+    assert( sp.flags() & stream_flags::buffer_full_ );
+    assert( s.flags() & stream_flags::buffer_full_ );
+    
+    // get all items
+    s.get(2,sp);
+    assert( sp.flags() == stream_flags::ok_ );
+    assert( s.flags() == stream_flags::ok_ );
+    
+    // try to allocate more than available
+    s.reserve(3,sp);
+    assert( sp.flags() & stream_flags::partially_allocated_ );
+    assert( s.flags() & stream_flags::partially_allocated_ );
+    assert( sp.items() == 2 );
+    s.get(4,sp);
+    assert( sp.items() == 2 );
+  }
+
   void test_confirm_failed() {}
   void test_get_failed() {}
   
