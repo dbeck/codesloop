@@ -62,7 +62,6 @@ namespace csl
       
       /* sizes */
       virtual size_t confirmed_items() = 0;
-      virtual size_t has_items() = 0;
       
       virtual ~stream_base() {}
     };
@@ -131,7 +130,6 @@ namespace csl
       
       /* sizes */
       size_t confirmed_items();
-      size_t has_items();
       
       virtual ~stream() {}
       stream(target_t & t, buffer_t & b);

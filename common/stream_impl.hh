@@ -160,6 +160,7 @@ namespace csl
       part_t & ret(buffer_->confirm(n_succeed,sp));
       if( ret.flags() == stream_flags::ok_ )
       {
+        n_confirmed_ += n_succeed;
         flags_.clear_flags( stream_flags::empty_buffer_ | stream_flags::parameter_error_ );
       }
       else
@@ -211,23 +212,8 @@ namespace csl
     stream<T,Buffer,Target,Preallocated,MaxSize>::confirmed_items()
     {
       ENTER_FUNCTION();
-      /* TODO XXX */
       CSL_DEBUGF(L"confirmed_items() => %lld",static_cast<uint64_t>(n_confirmed_));
       RETURN_FUNCTION(n_confirmed_);
-    }
-    
-    template <typename T,
-              template <typename,size_t,size_t> class Buffer,
-              template <typename> class Target,
-              size_t Preallocated,
-              size_t MaxSize>
-    size_t
-    stream<T,Buffer,Target,Preallocated,MaxSize>::has_items()
-    {
-      ENTER_FUNCTION();
-      size_t ret = buffer_->has_items();
-      CSL_DEBUGF(L"has_items() => %lld",static_cast<uint64_t>(ret));
-      RETURN_FUNCTION(ret);
     }
 
     template <typename T,
