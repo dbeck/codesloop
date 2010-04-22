@@ -135,7 +135,9 @@ namespace csl
       part_t & ret(buffer_->reserve(sz,sp));
       if( ret.flags() == stream_flags::ok_ )
       {
-        flags_.clear_flags( stream_flags::parameter_error_ | stream_flags::buffer_full_ );
+        flags_.clear_flags( stream_flags::parameter_error_ |
+                            stream_flags::buffer_full_ |
+                            stream_flags::partially_allocated_ );
       }
       else
       {
@@ -161,7 +163,14 @@ namespace csl
       if( ret.flags() == stream_flags::ok_ )
       {
         n_confirmed_ += n_succeed;
-        flags_.clear_flags( stream_flags::empty_buffer_ | stream_flags::parameter_error_ );
+        flags_.clear_flags( stream_flags::empty_buffer_ |
+                            stream_flags::parameter_error_ );
+                            
+        if( buffer_->n_free() > 0 )
+        {
+          flags_.clear_flags( stream_flags::buffer_full_ |
+                              stream_flags::partially_allocated_ );
+        }
       }
       else
       {
@@ -190,7 +199,14 @@ namespace csl
       part_t & ret(buffer_->get(sz,sp));
       if( ret.flags() == stream_flags::ok_ )
       {
-        flags_.clear_flags( stream_flags::empty_buffer_ | stream_flags::parameter_error_ );
+        flags_.clear_flags( stream_flags::empty_buffer_ |
+                            stream_flags::parameter_error_ );
+
+        if( buffer_->n_free() > 0 )
+        {
+          flags_.clear_flags( stream_flags::buffer_full_ |
+                              stream_flags::partially_allocated_ );
+        }
       }
       else
       {

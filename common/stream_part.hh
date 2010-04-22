@@ -44,16 +44,16 @@ namespace csl
         void reset();
 
         T * data() const;
-        size_t bytes() const;
+        size_t items() const;
 
         void data(T * d);
-        void bytes(size_t b);
+        void items(size_t b);
         
         stream_flags & flags();
 
       private:
         T *            data_;
-        size_t         bytes_;
+        size_t         items_;
         stream_flags   flags_;
 
         CSL_OBJ(csl::common, stream_part);

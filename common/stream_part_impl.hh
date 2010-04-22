@@ -43,14 +43,14 @@ namespace csl
   namespace common
   {
     template<typename T>
-    stream_part<T>::stream_part() : data_(0), bytes_(0) { }
+    stream_part<T>::stream_part() : data_(0), items_(0) { }
 
     template<typename T>
     void stream_part<T>::reset()
     {
       ENTER_FUNCTION();
       data_       = 0;
-      bytes_      = 0;
+      items_      = 0;
       flags_.set_flags(stream_flags::ok_);
       LEAVE_FUNCTION();
     }
@@ -72,18 +72,18 @@ namespace csl
     }
 
     template<typename T>
-    size_t stream_part<T>::bytes() const
+    size_t stream_part<T>::items() const
     {
       ENTER_FUNCTION();
-      RETURN_FUNCTION( bytes_ );
+      RETURN_FUNCTION( items_ );
     }
 
     template<typename T>
-    void stream_part<T>::bytes(size_t b)
+    void stream_part<T>::items(size_t sz)
     {
       ENTER_FUNCTION();
-      CSL_DEBUGF(L"bytes(%lld)",static_cast<uint64_t>(b) );
-      bytes_ = b;
+      CSL_DEBUGF(L"items(%lld)",static_cast<uint64_t>(sz) );
+      items_ = sz;
       LEAVE_FUNCTION();
     }
 

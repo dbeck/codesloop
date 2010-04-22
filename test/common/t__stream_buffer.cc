@@ -73,7 +73,7 @@ namespace test_stream_buffer {
 
     // check results
     assert( &rr == &rr2 );
-    assert( rr.bytes() == 2 );
+    assert( rr.items() == 2 );
     assert( rr.flags() == stream_flags::ok_ );
     assert( rr.data() != NULL );
     assert( o.len() == 2 );
@@ -85,7 +85,7 @@ namespace test_stream_buffer {
 
     // check results
     assert( &rr == &rr3 );
-    assert( rr.bytes() == 1 );
+    assert( rr.items() == 1 );
     assert( rr.flags() == stream_flags::ok_ );
     assert( rr.data() != NULL );
     assert( o.len() == 1 );
@@ -101,7 +101,7 @@ namespace test_stream_buffer {
 
     // reserve 1: 8
     o.reserve(8,rr);
-    assert( rr.bytes() == 8 );
+    assert( rr.items() == 8 );
     assert( o.len() == 8 );
     assert( o.start() == 0 );
     assert( o.buflen() == 8 );
@@ -109,7 +109,7 @@ namespace test_stream_buffer {
 
     // reserve 2: +8 =  16
     o.reserve(8,rr);
-    assert( rr.bytes() == 8 );
+    assert( rr.items() == 8 );
     assert( o.len() == 16 );
     assert( o.start() == 0 );
     assert( o.buflen() == 16 );
@@ -117,7 +117,7 @@ namespace test_stream_buffer {
 
     // reserve 3: +8 = 24 > 20 => 20
     o.reserve(8,rr);
-    assert( rr.bytes() == 4 );
+    assert( rr.items() == 4 );
     assert( o.len() == 20 );
     assert( o.start() == 0 );
     assert( o.buflen() == 20 );
@@ -132,14 +132,14 @@ namespace test_stream_buffer {
     o.reserve(0,rr);
     assert( o.n_free() == 20 );
 
-    assert( rr.bytes() == 0 );
+    assert( rr.items() == 0 );
     assert( rr.data() == NULL );
     assert( o.len() == 0 );
     assert( o.start() == 0 );
     assert( o.buflen() == 0 );
 
     rr.data( reinterpret_cast<lwp_t::item_t *>(33ULL) );     // bad ptr
-    rr.bytes( 999999ULL );                                   // bad size
+    rr.items( 999999ULL );                                   // bad size
     rr.flags() << ( stream_flags::timed_out_ | stream_flags::application_error_ |
                     stream_flags::os_error_  | stream_flags::try_again_ );
 
@@ -148,7 +148,7 @@ namespace test_stream_buffer {
     o.reserve(0,rr);
     assert( o.n_free() == 8 );
 
-    assert( rr.bytes() == 0 );
+    assert( rr.items() == 0 );
     assert( rr.data() == NULL );
     assert( o.len() == 12 );
     assert( o.start() == 0 );
@@ -166,7 +166,7 @@ namespace test_stream_buffer {
     o.confirm(4,rr);
     assert( o.n_free() == 16 );
 
-    assert( rr.bytes() == 4 );
+    assert( rr.items() == 4 );
     assert( rr.data() != NULL );
     assert( o.len() == 4 );
     assert( o.start() == 0 );
@@ -175,16 +175,16 @@ namespace test_stream_buffer {
     rr.reset();
     o.reserve(4,rr);
     assert( o.n_free() == 12 );
-    assert( rr.bytes() == 4 );
+    assert( rr.items() == 4 );
     assert( rr.data() != NULL );
     assert( o.len() == 8 );
     assert( o.buflen() == 8 );
 
-    // 1 byte succeed out of 4 bytes reserved
-    // this means, 3 bytes should be cut off
+    // 1 item succeed out of 4 items reserved
+    // this means, 3 items should be cut off
     o.confirm(1,rr);
     assert( o.n_free() == 15 );
-    assert( rr.bytes() == 1 );
+    assert( rr.items() == 1 );
     assert( rr.data() != NULL );
     assert( o.len() == 5 );
     assert( o.buflen() == 5 );
@@ -197,7 +197,7 @@ namespace test_stream_buffer {
     o_t::part_t rr;
 
     o.reserve(o_t::max_size_,rr);
-    assert( rr.bytes() == o_t::max_size_ );
+    assert( rr.items() == o_t::max_size_ );
     assert( rr.data() != NULL );
     assert( o.len() == o_t::max_size_ );
     assert( o.start() == 0 );
@@ -205,14 +205,14 @@ namespace test_stream_buffer {
     assert( o.n_free() == 0 );
 
     o.confirm(o_t::max_size_,rr);
-    assert( rr.bytes() == o_t::max_size_ );
+    assert( rr.items() == o_t::max_size_ );
     assert( rr.data() != NULL );
     assert( o.len() == o_t::max_size_ );
     assert( o.start() == 0 );
     assert( o.buflen() == o_t::max_size_ );
 
     o.confirm(0,rr);
-    assert( rr.bytes() == 0 );
+    assert( rr.items() == 0 );
     assert( rr.data() == NULL );
     assert( o.len() == 0 );
     assert( o.start() == 0 );
@@ -236,13 +236,13 @@ namespace test_stream_buffer {
 
     rr.reset();
     rr.data( rr2.data() );                         // fix pointer
-    rr.bytes( 999999ULL );                         // bad size
+    rr.items( 999999ULL );                         // bad size
 
     // this should set error flags
     o.confirm(1,rr);
     assert( rr.flags().has_flags(stream_flags::parameter_error_) );
 
-    rr.bytes( rr2.bytes() );                       // fix size
+    rr.items( rr2.items() );                       // fix size
     rr.flags() << ( stream_flags::os_error_ );     // failed
 
     // this should set error flags and keep original errors too
@@ -267,7 +267,7 @@ namespace test_stream_buffer {
     assert( o.buflen() == 20 );
     assert( o.start() == 2 );
     assert( o.n_free() == 0 );
-    assert( rf2.bytes() == 2 );
+    assert( rf2.items() == 2 );
     assert( rf2.data() == rr.data() );
     assert( rf2.flags() == stream_flags::ok_ );
 
@@ -276,7 +276,7 @@ namespace test_stream_buffer {
     assert( o.buflen() == 20 );
     assert( o.start() == 5 );
     assert( o.n_free() == 0 );
-    assert( rf3.bytes() == 3 );
+    assert( rf3.items() == 3 );
     assert( rf3.data() == (rr.data()+2) );
     assert( rf3.flags() == stream_flags::ok_ );
   }
@@ -294,7 +294,7 @@ namespace test_stream_buffer {
     assert( o.buflen() == 0 );
     assert( o.start() == 0 );
     // rr should not be changed either
-    assert( rr.bytes() == 0 );
+    assert( rr.items() == 0 );
     assert( rr.data() == NULL );
     assert( rr.flags() == stream_flags::empty_buffer_ );
 
@@ -305,7 +305,7 @@ namespace test_stream_buffer {
     assert( o.buflen() == 9 );
     assert( o.start() == 0 );
     //
-    assert( rr.bytes() == 9 );
+    assert( rr.items() == 9 );
     assert( rr.data() != NULL );
     assert( rr.flags() == stream_flags::ok_ );
 
@@ -317,7 +317,7 @@ namespace test_stream_buffer {
     assert( o.start() == 0 );
 
     // rr have the data
-    assert( rr.bytes() == 9 );
+    assert( rr.items() == 9 );
     assert( rr.data() != NULL );
     assert( rr.flags() == stream_flags::ok_ );
 
@@ -332,7 +332,7 @@ namespace test_stream_buffer {
     assert( o.buflen() == 14 );
     assert( o.start() == 0 );
 
-    assert( rr.bytes() == 10 );
+    assert( rr.items() == 10 );
     assert( rr.data() != NULL );
     assert( rr.flags() == stream_flags::ok_ );
   }
@@ -350,7 +350,7 @@ namespace test_stream_buffer {
     assert( o.buflen() == 9 );
     assert( o.start() == 0 );
 
-    assert( rr.bytes() == 0 );
+    assert( rr.items() == 0 );
     assert( rr.data() == NULL );
     assert( rr.flags() == stream_flags::parameter_error_ );
   }

@@ -49,7 +49,7 @@ namespace csl
       {
         size_t ret_size = (len_ > sz ? sz : len_);
         sp.data( buf_.private_data() + start_ );
-        sp.bytes( ret_size );
+        sp.items( ret_size );
         start_ += ret_size;
         len_   -= ret_size;
         if( len_ == 0 ) start_ = 0;
@@ -75,11 +75,11 @@ namespace csl
       size_t new_len = start_ + len_ + sz;
       if( new_len > MaxSize )
       {
-        CSL_DEBUGF(L"cannot allocate %lld bytes",static_cast<uint64_t>(sz));
+        CSL_DEBUGF(L"cannot allocate %lld items",static_cast<uint64_t>(sz));
         if( start_ + len_ < MaxSize )
         {
-          CSL_DEBUGF(L"allocate additional %lld bytes instead of the "
-                     "requested %lld bytes [max:%lld-start_:%lld-len_:%lld]",
+          CSL_DEBUGF(L"allocate additional %lld items instead of the "
+                     "requested %lld items [max:%lld-start_:%lld-len_:%lld]",
                      static_cast<uint64_t>(n_free()),
                      static_cast<uint64_t>(sz),
                      static_cast<uint64_t>(start_),
@@ -87,8 +87,9 @@ namespace csl
 
           T * ptr = buf_.allocate( MaxSize );
           sp.data( ptr + start_ + len_ );
-          sp.bytes( n_free() );
+          sp.items( n_free() );
           len_ = MaxSize - start_;
+          sp.flags() << stream_flags::partially_allocated_;
         }
         else
         {
@@ -101,13 +102,14 @@ namespace csl
       {
         CSL_DEBUGF(L"not allocating");
         sp.reset(); // this is to enforce errors
+        sp.flags() << stream_flags::parameter_error_;
       }
       else
       {
-        CSL_DEBUGF(L"allocating %lld bytes",static_cast<uint64_t>(sz));
+        CSL_DEBUGF(L"allocating %lld items",static_cast<uint64_t>(sz));
         T * ptr = buf_.allocate( len_+sz );
         sp.data( ptr + start_ + len_ );
-        sp.bytes( sz );
+        sp.items( sz );
         len_ += sz;
       }
       RETURN_FUNCTION( sp );
@@ -126,10 +128,10 @@ namespace csl
 
       start_offset = sp.data() - buf_.private_data();
 
-      if( sp.bytes() < n_succeed            ||
+      if( sp.items() < n_succeed            ||
           sp.data() == NULL                 ||
-          len_ < sp.bytes()                 ||
-          start_offset !=  (start_+len_-sp.bytes()) )
+          len_ < sp.items()                 ||
+          start_offset !=  (start_+len_-sp.items()) )
       {
         CSL_DEBUGF(L"invalid param received");
         sp.flags() << stream_flags::parameter_error_;
@@ -138,8 +140,8 @@ namespace csl
 
       {
         // set sp 
-        confirm_len = sp.bytes() - n_succeed;
-        sp.bytes( n_succeed );
+        confirm_len = sp.items() - n_succeed;
+        sp.items( n_succeed );
         if( !n_succeed ) sp.data( NULL );
       }
 
@@ -154,7 +156,7 @@ namespace csl
         }
       }
 
-      CSL_DEBUGF(L"length decreased by: %lld bytes",static_cast<uint64_t>(confirm_len));
+      CSL_DEBUGF(L"length decreased by: %lld items",static_cast<uint64_t>(confirm_len));
     bail:
       RETURN_FUNCTION( sp );
     }
