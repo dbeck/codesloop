@@ -78,6 +78,7 @@ namespace csl
         if( f&(1ULL<<27) ) s+= L" os_error_";
         if( f&(1ULL<<28) ) s+= L" peer_exception_";
         if( f&(1ULL<<29) ) s+= L" empty_buffer_";
+        if( f&(1ULL<<30) ) s+= L" partially_allocated_";
       }
       s += L" ]";
     }
