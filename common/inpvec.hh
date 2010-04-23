@@ -49,10 +49,10 @@ namespace csl
         typedef uint32_t  mul_t;
         typedef uint8_t   free_t;
 
-        static const uint16_t  width_         = 64;
-        static const uint16_t  width_in_bits_ = 6;
+        static const uint16_t  width_         = 32;
+        static const uint16_t  width_in_bits_ = 5;
 
-        typedef uint64_t       bitmap_t;
+        typedef uint32_t       bitmap_t;
 
         struct item
         {
@@ -61,8 +61,8 @@ namespace csl
           free_t      free_;
           mul_t       mul_;
           uint8_t *   buffer_;
-          bitmap_t  * bmap_;
-          T         * items_;
+          bitmap_t *  bmap_;
+          T *         items_;
           item *      next_;
           inpvec *    parent_;
 
@@ -72,13 +72,13 @@ namespace csl
             if( free_ ) { free(buffer_); }
           }
 
-          uint64_t size() const { return mul_*width_; }
-          uint64_t n_items() const;
-          uint64_t last_free() const;
-          uint64_t first_free() const;
-          uint64_t n_free() const { return ((width_*mul_)-n_items()); }
+          size_t size() const { return mul_*width_; }
+          size_t n_items() const;
+          size_t last_free() const;
+          size_t first_free() const;
+          size_t n_free() const { return ((width_*mul_)-n_items()); }
           void destroy();
-          void destroy( uint64_t at );
+          void destroy( size_t at );
           void mul_alloc( mul_t m );
 
           inline void in_place_destruct(signed char * d) {}
@@ -97,15 +97,15 @@ namespace csl
             d->~DESTR();
           }
 
-          T * construct(uint64_t at);
-          T * set(uint64_t at, const T & t);
+          T * construct(size_t at);
+          T * set(size_t at, const T & t);
 
           template <typename T1>
-          T * set(uint64_t at, const T1 & t1)
+          T * set(size_t at, const T1 & t1)
           {
             ENTER_FUNCTION();
-            uint64_t off = at/width_;
-            uint64_t pos = at%width_;
+            size_t off = at/width_;
+            size_t pos = at%width_;
 
             CSL_DEBUGF(L"set(%lld,%p) => [off:%lld pos:%lld mul:%d free:%d]",at,&t1,off,pos,mul_,free_);
 
@@ -123,11 +123,11 @@ namespace csl
           }
 
           template <typename T1, typename T2>
-          T * set(uint64_t at, const T1 & t1, const T2 & t2)
+          T * set(size_t at, const T1 & t1, const T2 & t2)
           {
             ENTER_FUNCTION();
-            uint64_t off = at/width_;
-            uint64_t pos = at%width_;
+            size_t off = at/width_;
+            size_t pos = at%width_;
 
             CSL_DEBUGF(L"set(%lld,%p,%p) => [off:%lld pos:%lld mul:%d free:%d]",at,&t1,&t2,off,pos,mul_,free_);
 
@@ -145,11 +145,11 @@ namespace csl
           }
 
           template <typename T1, typename T2, typename T3>
-          T * set(uint64_t at, const T1 & t1, const T2 & t2, const T3 & t3)
+          T * set(size_t at, const T1 & t1, const T2 & t2, const T3 & t3)
           {
             ENTER_FUNCTION();
-            uint64_t off = at/width_;
-            uint64_t pos = at%width_;
+            size_t off = at/width_;
+            size_t pos = at%width_;
 
             CSL_DEBUGF(L"set(%lld,%p,%p,%p) => [off:%lld pos:%lld mul:%d free:%d]",
                        at,&t1,&t2,&t3,off,pos,mul_,free_);
@@ -168,11 +168,11 @@ namespace csl
           }
 
           template <typename T1, typename T2, typename T3, typename T4>
-          T * set(uint64_t at, const T1 & t1, const T2 & t2, const T3 & t3, const T4 & t4)
+          T * set(size_t at, const T1 & t1, const T2 & t2, const T3 & t3, const T4 & t4)
           {
             ENTER_FUNCTION();
-            uint64_t off = at/width_;
-            uint64_t pos = at%width_;
+            size_t off = at/width_;
+            size_t pos = at%width_;
 
             CSL_DEBUGF(L"set(%lld,%p,%p,%p,%p) => [off:%lld pos:%lld mul:%d free:%d]",
                        at,&t1,&t2,&t3,&t4,off,pos,mul_,free_);
@@ -191,12 +191,12 @@ namespace csl
           }
 
           bool is_empty() const;
-          bool is_empty(uint64_t at) const;
+          bool is_empty(size_t at) const;
           void debug();
-          bool is_last(uint64_t at) const;
-          inline T & get(uint64_t at) const;
-          T * get_ptr(uint64_t at) const;
-          T * next_used(uint64_t & at);
+          bool is_last(size_t at) const;
+          inline T & get(size_t at) const;
+          T * get_ptr(size_t at) const;
+          T * next_used(size_t & at);
         };
 
         friend struct item;
@@ -205,7 +205,7 @@ namespace csl
         bitmap_t         pre_bmap_;
         unsigned char *  pre_items_[width_*sizeof(T)];
 
-        uint64_t  n_items_;
+        size_t    n_items_;
         item      head_;
         item *    tail_;
 
@@ -221,8 +221,8 @@ namespace csl
 
           private:
             item *    i_;
-            uint64_t  pos_;
-            uint64_t  gpos_;
+            size_t    pos_;
+            size_t    gpos_;
 
             iterator()
             {
@@ -233,14 +233,14 @@ namespace csl
 
           public:
             /// @brief initializer constructor
-            inline iterator(item * i, uint64_t pos, uint64_t gp) : i_(i), pos_(pos), gpos_(gp)
+            inline iterator(item * i, size_t pos, size_t gp) : i_(i), pos_(pos), gpos_(gp)
             {
               ENTER_FUNCTION_X();
               CSL_DEBUGF_X(L"iterator(item:%p, pos:%lld, gpos:%lld)",i,pos,gp);
               LEAVE_FUNCTION_X();
             }
 
-            void init(item * i, uint64_t pos, uint64_t gp);
+            void init(item * i, size_t pos, size_t gp);
 
             /// @brief copy constructor
             inline iterator(const iterator & other) : i_(other.i_), pos_(other.pos_), gpos_(other.gpos_)
@@ -270,8 +270,8 @@ namespace csl
             T * operator*();
             bool is_empty() const;
             void free();
-            uint64_t n_free() const;
-            uint64_t get_pos() const;
+            size_t n_free() const;
+            size_t get_pos() const;
             T * construct();
             T * set(const T & t);
 
@@ -361,31 +361,31 @@ namespace csl
           LEAVE_FUNCTION_X( );
         }
 
-        uint64_t n_items();
-        uint64_t size();
+        size_t n_items();
+        size_t size();
         void debug();
 
         // last free position
         iterator last_free();
         iterator & last_free(iterator & ii);
-        uint64_t last_free_pos() const;
+        size_t last_free_pos() const;
 
         // first free position
         iterator first_free();
         iterator & first_free(iterator & ii);
-        uint64_t first_free_pos() const;
+        size_t first_free_pos() const;
 
-        iterator iterator_at(uint64_t pos);
-        iterator force_iterator_at(uint64_t pos);
-        iterator & force_iterator_at(uint64_t pos,iterator & ii);
+        iterator iterator_at(size_t pos);
+        iterator force_iterator_at(size_t pos);
+        iterator & force_iterator_at(size_t pos,iterator & ii);
 
-        bool free_at(uint64_t pos);
-        bool is_free_at(uint64_t pos);
+        bool free_at(size_t pos);
+        bool is_free_at(size_t pos);
         void reset();
-        T & get(uint64_t at);
-        T * get_ptr(uint64_t at);
-        uint64_t iterator_pos(const iterator & it);
-        T * construct(uint64_t pos);
+        T & get(size_t at);
+        T * get_ptr(size_t at);
+        size_t iterator_pos(const iterator & it);
+        T * construct(size_t pos);
 
         //////////////////////////////////////////
         // push_back
@@ -432,40 +432,40 @@ namespace csl
         // set
         /////////////////////////////////////////
 
-        T * set(uint64_t pos,const T & t);
+        T * set(size_t pos,const T & t);
 
         template <typename T1>
-        T * set(uint64_t pos, const T1 & t1)
+        T * set(size_t pos, const T1 & t1)
         {
           ENTER_FUNCTION();
-          CSL_DEBUGF(L"set(%lld,t1)",pos);
+          CSL_DEBUGF(L"set(%lld,t1)",static_cast<uint64_t>(pos));
           iterator ii;
           RETURN_FUNCTION(force_iterator_at(pos,ii).set(t1));
         }
 
         template <typename T1,typename T2>
-        T * set(uint64_t pos, const T1 & t1,const T2 & t2)
+        T * set(size_t pos, const T1 & t1,const T2 & t2)
         {
           ENTER_FUNCTION();
-          CSL_DEBUGF(L"set(%lld,t1,t2)",pos);
+          CSL_DEBUGF(L"set(%lld,t1,t2)",static_cast<uint64_t>(pos));
           iterator ii;
           RETURN_FUNCTION(force_iterator_at(pos,ii).set(t1,t2));
         }
 
         template <typename T1,typename T2,typename T3>
-        T * set(uint64_t pos, const T1 & t1,const T2 & t2,const T3 & t3)
+        T * set(size_t pos, const T1 & t1,const T2 & t2,const T3 & t3)
         {
           ENTER_FUNCTION();
-          CSL_DEBUGF(L"set(%lld,t1,t2,t3)",pos);
+          CSL_DEBUGF(L"set(%lld,t1,t2,t3)",static_cast<uint64_t>(pos));
           iterator ii;
           RETURN_FUNCTION(force_iterator_at(pos,ii).set(t1,t2,t3));
         }
 
         template <typename T1,typename T2,typename T3,typename T4>
-        T * set(uint64_t pos, const T1 & t1,const T2 & t2,const T3 & t3,const T4 & t4)
+        T * set(size_t pos, const T1 & t1,const T2 & t2,const T3 & t3,const T4 & t4)
         {
           ENTER_FUNCTION();
-          CSL_DEBUGF(L"set(%lld,t1,t2,t3,t4)",pos);
+          CSL_DEBUGF(L"set(%lld,t1,t2,t3,t4)",static_cast<uint64_t>(pos));
           iterator ii;
           RETURN_FUNCTION(force_iterator_at(pos,ii).set(t1,t2,t3,t4));
         }
