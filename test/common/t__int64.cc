@@ -130,7 +130,7 @@ namespace test_int64 {
     int64 v;
     int64::value_t o = 98765432LL;
     unsigned char l[sizeof(int64::value_t)];
-    uint64_t sz=0;
+    size_t sz=0;
 
     assert( v.from_string(L"98765432") == true );
     assert( v.to_binary(l,sz) == true ); /**/
@@ -143,7 +143,7 @@ namespace test_int64 {
     int64 v;
     int64::value_t o = 98765432LL;
     unsigned char l[sizeof(int64::value_t)];
-    uint64_t sz=0;
+    size_t sz=0;
     void * vp = l;
 
     assert( v.from_string("98765432") == true );
@@ -264,7 +264,7 @@ namespace test_int64 {
     int64::value_t l = 44337788LL;
     assert( o.from_integer(l) == true );
     unsigned char u[sizeof(int64::value_t)];
-    uint64_t sz = 0;
+    size_t sz = 0;
     assert( o.to_binary(u,sz) == true );
     assert( v.from_binary(u,sz) == true ); /**/
     assert( v.value() == l );
@@ -277,7 +277,7 @@ namespace test_int64 {
     int64::value_t l = 44337788LL;
     assert( o.from_integer(l) == true );
     unsigned char u[sizeof(int64::value_t)];
-    uint64_t sz = 0;
+    size_t sz = 0;
     void * vp = u;
     assert( o.to_binary(vp,sz) == true );
     assert( v.from_binary(vp,sz) == true ); /**/

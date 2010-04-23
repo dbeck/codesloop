@@ -84,7 +84,7 @@ namespace csl
         inline const unsigned char * ucharp_data() const { return reinterpret_cast<const unsigned char *>(&value_); }
 
         /** @brief returns the size of the variable data */
-        inline uint64_t var_size() const { return sizeof(value_); }
+        inline size_t var_size() const { return sizeof(value_); }
 
         /* conversions to other types */
         /**
@@ -170,7 +170,7 @@ namespace csl
         this function assumes that v has enough space. sz will be updated to indicate, how
         many bytes were stored.
          */
-        bool to_binary(unsigned char * v, uint64_t & sz) const;
+        bool to_binary(unsigned char * v, size_t & sz) const;
 
         /**
         @brief convert to (ptr+size)
@@ -182,7 +182,7 @@ namespace csl
         many bytes were stored.
 
          */
-        bool to_binary(void * v, uint64_t & sz) const;
+        bool to_binary(void * v, size_t & sz) const;
 
         /** @todo not implemented */
         bool to_xdr(xdrbuf & b) const;
@@ -293,7 +293,7 @@ namespace csl
 
         this function delegates the conversion task to the common::binry class
          */
-        bool from_binary(const unsigned char * v,uint64_t sz);
+        bool from_binary(const unsigned char * v,size_t sz);
 
         /**
         @brief convert a memory region
@@ -302,7 +302,7 @@ namespace csl
 
         this function delegates the conversion task to the common::binry class
          */
-        bool from_binary(const void * v,uint64_t sz);
+        bool from_binary(const void * v,size_t sz);
 
         /** @todo not implemented */
         bool from_xdr(xdrbuf & v);

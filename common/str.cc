@@ -31,11 +31,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/logger.hh"
 
 
-/**
-  @file common/src/str.cc
-  @brief implementation of simple string class
- */
-
 namespace csl
 {
   namespace common
@@ -68,16 +63,16 @@ namespace csl
 
     str::str(const ustr & other) : csl::common::var(), buf_( L'\0' )
     {
-      uint64_t sz = other.size();
+      size_t sz = other.size();
 
-      wchar_t * b = reinterpret_cast<wchar_t *>(buf_.allocate( sz * sizeof(wchar_t) ));
+      wchar_t * b = buf_.allocate( sz );
 
       if( sz && b )
       {
-        uint64_t szz = ::mbstowcs( b, other.data(), static_cast<size_t>(sz) );
+        size_t szz = ::mbstowcs( b, other.data(), sz );
         // fix length, because utf-8 may occupy more then one character that may be converted
         // to a single wchar_t, for this reason we may need to shrink the buffer
-        buf_.allocate( szz * sizeof(wchar_t) );
+        buf_.allocate( szz );
       }
 
       ensure_trailing_zero();
@@ -91,24 +86,24 @@ namespace csl
 
     str & str::operator=(const ustr & other)
     {
-      uint64_t sz = other.size();
+      size_t sz = other.size();
 
-      wchar_t * b = reinterpret_cast<wchar_t *>(buf_.allocate( sz * sizeof(wchar_t) ));
+      wchar_t * b = buf_.allocate( sz );
 
       if( sz && b )
       {
-        uint64_t szz = ::mbstowcs( b, other.data(), static_cast<size_t>(sz) );
+        size_t szz = ::mbstowcs( b, other.data(), sz );
 
         // fix length, because utf-8 may occupy more then one character that may be converted
         // to a single wchar_t, for this reason we may need to shrink the buffer
 
-        if( szz == static_cast<uint64_t>(-1) )
+        if( szz == static_cast<size_t>(-1) )
         {
           buf_.reset();
         }
         else
         {
-          buf_.allocate( szz * sizeof(wchar_t) );
+          buf_.allocate( szz );
         }
       }
 
@@ -119,32 +114,29 @@ namespace csl
 
     void str::ensure_trailing_zero()
     {
-
       wchar_t  c = 0;
-      uint64_t  sz = (nbytes()/sizeof(wchar_t))-1;
 
       if( buf_.size() == 0 )
       {
-        buf_.append( reinterpret_cast<const unsigned char *>(&c),sizeof(wchar_t) );
+        buf_.append( &c,1 );
       }
-      else if( data()[sz] != 0 )
+      else if( data()[buf_.size()-1] != c )
       {
-        buf_.append( reinterpret_cast<const unsigned char *>(&c),sizeof(wchar_t) );
+        buf_.append( &c,1 );
       }
     }
 
     str& str::operator+=(const str& s)
     {
-      uint64_t  sz = size();
+      size_t sz = buf_.size();
 
-      if( nbytes() > 0 && data()[sz] == 0 )
+      if( sz > 0 && data()[sz-1] == 0 )
       {
         // exclude the trailing zero character
-        buf_.allocate( sz * sizeof(wchar_t) );
+        buf_.allocate( sz-1 );
       }
 
       buf_.append( s.buffer() );
-
       ensure_trailing_zero();
 
       return *this;
@@ -152,26 +144,26 @@ namespace csl
 
     str& str::operator+=(const wchar_t * s)
     {
-      uint64_t  sz = size();
+      size_t sz = buf_.size();
 
-      if( nbytes() > 0 && data()[sz] == 0 )
+      if( sz > 0 && data()[sz-1] == 0 )
       {
         // exclude the trailing zero character
-        buf_.allocate( sz * sizeof(wchar_t) );
+        buf_.allocate( sz-1 );
       }
 
-      buf_.append( reinterpret_cast<const unsigned char *>(s), sizeof(wchar_t) * (::wcslen(s)+1) );
-
-      ensure_trailing_zero();
+      buf_.append( s, (::wcslen(s)+1) );
+      // I presume, this is not needed because of wcslen+1
+      // ensure_trailing_zero();
 
       return *this;
     }
 
-    str str::substr(const uint64_t start, const uint64_t length) const
+    str str::substr(const size_t start, const size_t length) const
     {
       str s;
-      uint64_t len = length;
-      uint64_t sz = size();
+      size_t len = length;
+      size_t sz = size();
 
       if ( start > sz )
       {
@@ -182,7 +174,7 @@ namespace csl
       if ( sz < length + start ) len = sz - start;
 
       // copy string
-      s.buf_.set( reinterpret_cast<const unsigned char *>(data() + start), (len*sizeof(wchar_t)) );
+      s.buf_.set( data()+start,len );
       s.ensure_trailing_zero();
 
       return s;
@@ -192,15 +184,15 @@ namespace csl
     {
       if( !st ) return;
 
-      uint64_t len = ::strlen(st)+1;
-      uint64_t ssz = 0;
+      size_t len = ::strlen(st)+1;
+      size_t ssz = 0;
 
-      wchar_t * nptr = reinterpret_cast<wchar_t *>(buf_.allocate( len * sizeof(wchar_t) ));
+      wchar_t * nptr = buf_.allocate( len );
 
-      if ( (ssz = ::mbstowcs( nptr, st, static_cast<size_t>(len) )) != uint64_t(-1) )
+      if ( (ssz = ::mbstowcs( nptr, st, len )) != size_t(-1) )
       {
         // may need to shrink, when utf-8 chars occupy more than one character
-        buf_.allocate( ssz * sizeof(wchar_t) );
+        buf_.allocate( ssz );
         ensure_trailing_zero();
       }
       else
@@ -215,15 +207,15 @@ namespace csl
     {
       if( !st ) return *this;
 
-      uint64_t len =  strlen(st)+1;
-      uint64_t ssz = 0;
+      size_t len =  strlen(st)+1;
+      size_t ssz = 0;
 
-      wchar_t * nptr = reinterpret_cast<wchar_t *>(buf_.allocate( len * sizeof(wchar_t) ));
+      wchar_t * nptr = buf_.allocate( len );
 
-      if ( (ssz = ::mbstowcs( nptr, st, static_cast<size_t>(len) )) != uint64_t(-1) )
+      if ( (ssz = ::mbstowcs( nptr, st, len )) != size_t(-1) )
       {
         // may need to shrink, when utf-8 chars occupy more than one character
-        buf_.allocate( ssz * sizeof(wchar_t) );
+        buf_.allocate( ssz );
         ensure_trailing_zero();
       }
       else
@@ -235,12 +227,12 @@ namespace csl
       return *this;
     }
 
-    uint64_t str::find(wchar_t c) const
+    size_t str::find(wchar_t c) const
     {
-      uint64_t ret = npos;
-      uint64_t len = size();
+      size_t ret = npos;
+      size_t len = size();
 
-      for ( uint64_t pos = 0; pos < len ; pos++ )
+      for ( size_t pos = 0; pos < len ; pos++ )
       {
         if ( (*this)[pos] == c ) {
           ret = pos;
@@ -251,12 +243,12 @@ namespace csl
       return ret;
     }
 
-    uint64_t str::rfind(wchar_t c) const
+    size_t str::rfind(wchar_t c) const
     {
-      uint64_t ret = npos;
-      uint64_t len = size();
+      size_t ret = npos;
+      size_t len = size();
 
-      for ( uint64_t pos = len-1; pos >= 0 ; --pos )
+      for ( size_t pos = len-1; pos >= 0 ; --pos )
       {
         if ( (*this)[pos] == c ) {
           ret = pos;
@@ -267,10 +259,10 @@ namespace csl
       return ret;
     }
 
-    uint64_t str::find(const str & s) const
+    size_t str::find(const str & s) const
     {
       const wchar_t * p = ::wcsstr( data(), s.data() );
-      uint64_t ret = npos;
+      size_t ret = npos;
 
       if ( p != NULL ) {
         ret = p - data();
@@ -279,7 +271,7 @@ namespace csl
       return ret;
     }
 
-    uint64_t str::find(const wchar_t * strv) const
+    size_t str::find(const wchar_t * strv) const
     {
       if( empty() )  return npos;
       if( !strv )    return npos;
@@ -291,7 +283,7 @@ namespace csl
       return (res-data());
     }
 
-    wchar_t str::at(const uint64_t n) const
+    wchar_t str::at(const size_t n) const
     {
       if ( n > ::wcslen( data() ) )
       {
@@ -334,18 +326,18 @@ namespace csl
       return true;
     }
 
-    bool str::to_binary(unsigned char * v, uint64_t & sz) const
+    bool str::to_binary(unsigned char * v, size_t & sz) const
     {
       if( !v ) { sz = 0; return false; }
-      ::memcpy( v, data(), static_cast<size_t>(nbytes()) );
+      ::memcpy( v, data(), nbytes() );
       sz = nbytes();
       return true;
     }
 
-    bool str::to_binary(void * v, uint64_t & sz) const
+    bool str::to_binary(void * v, size_t & sz) const
     {
       if( !v ) { sz = 0; return false; }
-      ::memcpy( v, data(), static_cast<size_t>(nbytes()) );
+      ::memcpy( v, data(), nbytes() );
       sz = nbytes();
       return true;
     }
@@ -366,16 +358,16 @@ namespace csl
     /* conversions from other types */
     bool str::from_integer(int64_t v)
     {
-      wchar_t * p = reinterpret_cast<wchar_t *>(buf_.allocate(buf_size-1));
+      wchar_t * p = buf_.allocate( buf_items );
       int ret = SWPRINTF(p,(buf_size-1),L"%lld",v);
-      return (buf_.allocate( (ret+1)*sizeof(wchar_t) ) != 0);
+      return (buf_.allocate( ret+1 ) != 0);
     }
 
     bool str::from_double(double v)
     {
-      wchar_t * p = reinterpret_cast<wchar_t *>(buf_.allocate(buf_size-1));
+      wchar_t * p = buf_.allocate( buf_items-1 );
       int ret = SWPRINTF(p,(buf_size-1),L"%.12f",v);
-      return (buf_.allocate( (ret+1)*sizeof(wchar_t) ) != 0);
+      return (buf_.allocate( ret+1 ) != 0);
     }
 
     bool str::from_string(const std::string & v)
@@ -399,7 +391,7 @@ namespace csl
       return true;
     }
 
-    bool str::from_binary(const unsigned char * v,uint64_t sz)
+    bool str::from_binary(const unsigned char * v, size_t sz)
     {
       if( !v || !sz )
       {
@@ -407,13 +399,15 @@ namespace csl
       }
       else
       {
-        buf_.set( v, sz );
+        size_t my_size = (sz+sizeof(wchar_t)-1)/sizeof(wchar_t);
+        wchar_t * b = buf_.allocate( my_size );
+        ::memcpy( b,v,sz );
         ensure_trailing_zero();
       }
       return true;
     }
 
-    bool str::from_binary(const void * v,uint64_t sz)
+    bool str::from_binary(const void * v, size_t sz)
     {
       if( !v || !sz )
       {
@@ -421,7 +415,9 @@ namespace csl
       }
       else
       {
-        buf_.set( reinterpret_cast<const unsigned char *>(v), sz );
+        size_t my_size = (sz+sizeof(wchar_t)-1)/sizeof(wchar_t);
+        wchar_t * b = buf_.allocate( my_size );
+        ::memcpy( b,v,sz );
         ensure_trailing_zero();
       }
       return true;
@@ -450,6 +446,67 @@ namespace csl
           crc = CRCTable[(crc ^ *seq++) & 0xff] ^ (crc >> 8);
 
       return int64(static_cast<int64_t>(crc));
+    }
+    
+    str str::trim()
+    {
+      size_t start = npos, length = 0;
+
+      for ( size_t pos = 0; pos < size() ; pos ++ )
+      {
+        if ( start == npos && !iswspace( (*this)[pos] )  )
+                start = pos;
+        else if ( start != npos && !iswspace( (*this)[pos] ) )
+                length = pos - start + 1;
+      }
+      return substr(start,length);
+    }
+    
+    str::str(const wchar_t * wcs) : csl::common::var(), buf_(L'\0')
+    {
+      if( !wcs ) return;
+      // wcslen only cares about trailing zero, so combining characters will not confuse here
+      buf_.set( wcs, ::wcslen(wcs)+1 );
+    }
+
+    str& str::operator=(const wchar_t * wcs)
+    {
+      if( !wcs ) return *this;
+      // wcslen only cares about trailing zero, so combining characters will not confuse here
+      buf_.set( wcs, ::wcslen(wcs)+1 );
+      return *this;
+    }
+    
+    str & str::assign(const wchar_t * start, const wchar_t * end)
+    {
+      buf_.set( start, end-start );
+      return *this;
+    }
+
+    void str::reset()
+    {
+      buf_.reset();
+      buf_.set( L"\0",1 );
+    }
+    
+    str::str() : csl::common::var(), buf_( L'\0' )
+    {
+    }
+    
+    str::str(const str& s) : csl::common::var(), buf_( L'\0' )
+    {
+      buf_ = s.buf_;
+    }
+
+    str& str::operator=(const str& s)
+    {
+      buf_ = s.buf_;
+      return *this;
+    }
+    
+    const unsigned char * str::ucharp_data() const
+    {
+      return reinterpret_cast<const unsigned char*>(buf_.data());
     }
 
   };

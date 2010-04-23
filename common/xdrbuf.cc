@@ -435,7 +435,8 @@ namespace csl
 
       if( !sz ) { val.clear(); return *this; }
 
-      unsigned char * cp = val.buffer().allocate(sz);
+      unsigned char * cp = 
+        reinterpret_cast<unsigned char *>(val.buffer().allocate(sz));
 
       if( cp && sz > 0 )
       {

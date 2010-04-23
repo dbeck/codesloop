@@ -38,18 +38,18 @@ namespace csl
 {
   namespace common
   {
-    ustr::ustr(const str & other) : csl::common::var(), buf_( static_cast<unsigned char>(0) )
+    ustr::ustr(const str & other) : csl::common::var(), buf_('\0')
     {
-      uint64_t sz = other.nbytes()-1;
+      size_t sz = other.nbytes()-1;
 
       /* over allocating, but this saves our arse when utf-8 results more then 1 character */
-      char * b = reinterpret_cast<char *>(buf_.allocate( sz ));
+      char * b = buf_.allocate( sz );
 
       if( sz>0 && b!=0 )
       {
-        uint64_t szz = ::wcstombs( b, other.data(), static_cast<size_t>(sz) );
+        size_t szz = ::wcstombs( b, other.data(), sz );
 
-        if( szz == static_cast<uint64_t>(-1) )
+        if( szz == static_cast<size_t>(-1) )
         {
           buf_.reset();
         }
@@ -70,16 +70,16 @@ namespace csl
 
     ustr & ustr::operator=(const str & other)
     {
-      uint64_t sz = other.nbytes()-1;
+      size_t sz = other.nbytes()-1;
 
       /* over allocating, but this saves our arse when utf-8 results more then 1 character */
-      char * b = reinterpret_cast<char *>(buf_.allocate( sz ));
+      char * b = buf_.allocate( sz );
 
       if( sz && b )
       {
-        uint64_t szz = ::wcstombs( b, other.data(), static_cast<size_t>(sz) );
+        size_t szz = ::wcstombs( b, other.data(), sz );
 
-        if( szz == static_cast<uint64_t>(-1) )
+        if( szz == static_cast<size_t>(-1) )
         {
           buf_.reset();
         }
@@ -96,8 +96,8 @@ namespace csl
 
     void ustr::ensure_trailing_zero()
     {
-      unsigned char c = 0;
-      uint64_t     sz = buf_.size();
+      char c = 0;
+      size_t sz = buf_.size();
 
       if( buf_.size() == 0 )       { buf_.append( &c,1 ); }
       if( buf_.data()[sz-1] != 0 ) { buf_.append( &c,1 ); }
@@ -105,7 +105,7 @@ namespace csl
 
     ustr& ustr::operator+=(const ustr& s)
     {
-      uint64_t sz = buf_.size();
+      size_t sz = buf_.size();
 
       if( sz > 0 && data()[sz-1] == 0 ) buf_.allocate( sz-1 );
 
@@ -118,23 +118,23 @@ namespace csl
 
     ustr& ustr::operator+=(const char * s)
     {
-      uint64_t sz = buf_.size();
+      size_t sz = buf_.size();
 
       if( sz > 0 && data()[sz-1] == 0 ) buf_.allocate( sz-1 );
 
       // strlen only cares about trailing zero, so multibyte chars will not confuse here
-      buf_.append( reinterpret_cast<const unsigned char *>(s), (::strlen(s)+1) );
+      buf_.append( s, (::strlen(s)+1) );
 
       ensure_trailing_zero();
 
       return *this;
     }
 
-    ustr ustr::substr(const uint64_t start, const uint64_t length) const
+    ustr ustr::substr(const size_t start, const size_t length) const
     {
       ustr s;
-      uint64_t len = length;
-      uint64_t sz = size();
+      size_t len = length;
+      size_t sz = size();
 
       if ( start > sz )
         throw exc(exc::rs_invalid_param,L"out of range");
@@ -143,18 +143,18 @@ namespace csl
       if ( sz < length + start ) len = sz - start;
 
       // copy string
-      s.buf_.set( reinterpret_cast<const unsigned char *>(data() + start), len );
+      s.buf_.set( data()+start, len );
       s.ensure_trailing_zero();
 
       return s;
     }
 
-    uint64_t ustr::find(char c) const
+    size_t ustr::find(char c) const
     {
-      uint64_t ret = npos;
-      uint64_t len = size();
+      size_t ret = npos;
+      size_t len = size();
 
-      for ( uint64_t pos = 0; pos < len ; pos++ )
+      for ( size_t pos = 0; pos < len ; pos++ )
       {
         if ( (*this)[pos] == c ) {
           ret = pos;
@@ -165,12 +165,12 @@ namespace csl
       return ret;
     }
 
-    uint64_t ustr::rfind(char c) const
+    size_t ustr::rfind(char c) const
     {
-      uint64_t ret = npos;
-      uint64_t len = size();
+      size_t ret = npos;
+      size_t len = size();
 
-      for ( uint64_t pos = len-1; pos >= 0 ; --pos )
+      for ( size_t pos = len-1; pos >= 0 ; --pos )
       {
         if ( (*this)[pos] == c ) {
           ret = pos;
@@ -181,10 +181,10 @@ namespace csl
       return ret;
     }
 
-    uint64_t ustr::find(const ustr & s) const
+    size_t ustr::find(const ustr & s) const
     {
       const char * p = strstr( data(), s.data() );
-      uint64_t ret = npos;
+      size_t ret = npos;
 
       if ( p != NULL ) {
         ret = p - data();
@@ -193,7 +193,7 @@ namespace csl
       return ret;
     }
 
-    uint64_t ustr::find(const char * str) const
+    size_t ustr::find(const char * str) const
     {
       if( empty() ) return npos;
       if( !str )    return npos;
@@ -205,7 +205,7 @@ namespace csl
       return (res-data());
     }
 
-    char ustr::at(const uint64_t n) const
+    char ustr::at(const size_t n) const
     {
       if ( n > nbytes() )
         THR(exc::rs_invalid_param,0);
@@ -232,18 +232,18 @@ namespace csl
       return true;
     }
 
-    bool ustr::to_binary(unsigned char * v, uint64_t & sz) const
+    bool ustr::to_binary(unsigned char * v, size_t & sz) const
     {
       if( !v ) { sz = 0; return false; }
-      ::memcpy( v, data(), static_cast<size_t>(nbytes()) );
+      ::memcpy( v, data(), nbytes() );
       sz = nbytes();
       return true;
     }
 
-    bool ustr::to_binary(void * v, uint64_t & sz) const
+    bool ustr::to_binary(void * v, size_t & sz) const
     {
       if( !v ) { sz = 0; return false; }
-      ::memcpy( v, data(), static_cast<size_t>(nbytes()) );
+      ::memcpy( v, data(), nbytes() );
       sz = nbytes();
       return true;
     }
@@ -264,14 +264,14 @@ namespace csl
     /* conversions from other types */
     bool ustr::from_integer(int64_t v)
     {
-      char * p = reinterpret_cast<char *>(buf_.allocate(buf_size-1));
+      char * p = buf_.allocate(buf_size-1);
       int ret = SNPRINTF(p,(buf_size-1),"%lld",v);
       return (buf_.allocate( ret+1 ) != 0);
     }
 
     bool ustr::from_double(double v)
     {
-      char * p = reinterpret_cast<char *>(buf_.allocate(buf_size-1));
+      char * p = buf_.allocate(buf_size-1);
       int ret = SNPRINTF(p,(buf_size-1),"%.12f",v);
       return (buf_.allocate( ret+1 ) != 0);
     }
@@ -297,7 +297,7 @@ namespace csl
       return true;
     }
 
-    bool ustr::from_binary(const unsigned char * v,uint64_t sz)
+    bool ustr::from_binary(const unsigned char * v,size_t sz)
     {
       if( !v || !sz )
       {
@@ -305,13 +305,13 @@ namespace csl
       }
       else
       {
-        buf_.set( v, sz );
+        buf_.set( reinterpret_cast<const char*>(v), sz );
         ensure_trailing_zero();
       }
       return true;
     }
 
-    bool ustr::from_binary(const void * v,uint64_t sz)
+    bool ustr::from_binary(const void * v,size_t sz)
     {
       if( !v || !sz )
       {
@@ -319,7 +319,7 @@ namespace csl
       }
       else
       {
-        buf_.set( reinterpret_cast<const unsigned char *>(v), sz );
+        buf_.set( reinterpret_cast<const char*>(v), sz );
         ensure_trailing_zero();
       }
       return true;

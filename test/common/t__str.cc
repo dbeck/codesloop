@@ -28,9 +28,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    @brief Tests to verify wide character string
  */
 
+#if 0
 #ifndef DEBUG
 #define DEBUG
+#define DEBUG_ENABLE_INDENT
+//#define DEBUG_VERBOSE
 #endif /* DEBUG */
+#endif
 
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/exc.hh"
@@ -132,20 +136,6 @@ namespace test_str {
     assert( s.nbytes() == sizeof(wchar_t) );
     assert( s.size() == 0 );
     assert( s.nchars() == 0 );
-  }
-
-  void test_opeq_pbuf()
-  {
-    str s;
-    pbuf pb;
-    pb.append(L"Hello");
-    s = pb;
-    assert( pb.size() == 6*sizeof(wchar_t) );
-    assert( s.size() == 5 );
-    assert( s.nbytes() == 6*sizeof(wchar_t) );
-    assert( s.nchars() == 5 );
-    assert( s == L"Hello" );
-    assert( memcmp( s.data(),L"Hello",6*sizeof(wchar_t) ) == 0 );
   }
 
   void test_cpyconstr()
@@ -307,11 +297,11 @@ namespace test_str {
     str b("árvíztűrő tükörfúrógép ÁRVÍZTŰRŐ TÜKÖRFÚRÓGÉP");
     b.use_exc(true);
     unsigned char o[300];
-    uint64_t sz = 0;
+    size_t sz = 0;
     assert( b.to_binary(o,sz) == true );
     assert( sz == b.nbytes() );
     assert( sz > 10 );
-    assert( b == reinterpret_cast<wchar_t *>(o) );
+    assert( b == reinterpret_cast<const wchar_t *>(o) );
   }
 
   void to_binary_v()
@@ -320,7 +310,7 @@ namespace test_str {
     b.use_exc(true);
     unsigned char o[300];
     void * vp = o;
-    uint64_t sz = 0;
+    size_t sz = 0;
     assert( b.to_binary(vp,sz) == true );
     assert( sz == b.nbytes() );
     assert( sz > 10 );
@@ -432,7 +422,7 @@ namespace test_str {
     b.use_exc(true);
     str o(L"árvíztűrő tükörfúrógép ÁRVÍZTŰRŐ TÜKÖRFÚRÓGÉP");
     o.use_exc(true);
-    assert( b.from_binary( o.buffer().data(), o.buffer().size() ) == true );
+    assert( b.from_binary( o.data(), o.nbytes() ) == true );
     assert( b == "árvíztűrő tükörfúrógép ÁRVÍZTŰRŐ TÜKÖRFÚRÓGÉP" );
   }
 
@@ -442,7 +432,7 @@ namespace test_str {
     b.use_exc(true);
     str o(L"árvíztűrő tükörfúrógép ÁRVÍZTŰRŐ TÜKÖRFÚRÓGÉP");
     o.use_exc(true);
-    assert( b.from_binary( reinterpret_cast<const void *>(o.buffer().data()), o.buffer().size() ) == true );
+    assert( b.from_binary( reinterpret_cast<const void *>(o.data()), o.nbytes() ) == true );
     assert( b == "árvíztűrő tükörfúrógép ÁRVÍZTŰRŐ TÜKÖRFÚRÓGÉP" );
   }
 
@@ -506,7 +496,8 @@ int main()
 
   assert( s3.size() == 5 );
   assert( wcscmp(s3.c_str(), L"HELLO") == 0 );
-
+  assert( s2.size() == 5 );
+  
   s2 += L" WORLD";
   assert( s2.size() == 11 );
   assert( wcscmp(s2.c_str(), L"HELLO WORLD") == 0 );
@@ -535,7 +526,7 @@ int main()
 
   cs = L"Árvíztűrő tükörfúrógép";
   assert( cs.size() == 22 );
-  assert( cs.buffer().size() == sizeof(wchar_t) * (cs.size() + 1) );
+  assert( cs.buffer().size() == (cs.size() + 1) );
   assert( wcscmp(cs.c_str(), L"Árvíztűrő tükörfúrógép" ) == 0 );
 
   /* conversions */
@@ -568,7 +559,6 @@ int main()
 
   /* functional tests */
   csl_common_print_results( "empty_constr       ", csl_common_test_timer_v0(test_empty_constr),"" );
-  csl_common_print_results( "opeq_pbuf          ", csl_common_test_timer_v0(test_opeq_pbuf),"" );
   csl_common_print_results( "cpyconstr          ", csl_common_test_timer_v0(test_cpyconstr),"" );
   csl_common_print_results( "cpy0               ", csl_common_test_timer_v0(test_cpy0),"" );
   csl_common_print_results( "cpyop              ", csl_common_test_timer_v0(test_cpyop),"" );

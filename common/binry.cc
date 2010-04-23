@@ -42,7 +42,7 @@ namespace csl
   {
     binry::binry() : var() { }
 
-    binry::binry(const unsigned char * ptr,uint64_t sz) : var()
+    binry::binry(const unsigned char * ptr,size_t sz) : var()
     {
       if( ptr && sz ) value_.set( ptr,sz );
     }
@@ -51,20 +51,14 @@ namespace csl
     bool binry::to_integer(int64_t & v) const
     {
       if( value_.size() < sizeof(int64_t) ) { return false; }
-
-      const int64_t * p = reinterpret_cast<const int64_t *>(value_.data());
-      v = *p;
-
+      ::memcpy( &v, value_.data(), sizeof(int64_t) );
       return true;
     }
 
     bool binry::to_double(double & v) const
     {
       if( value_.size() < sizeof(double) ) { return false; }
-
-      const double * p = reinterpret_cast<const double *>(value_.data());
-      v = *p;
-
+      ::memcpy( &v, value_.data(), sizeof(double) );
       return true;
     }
 
@@ -86,7 +80,7 @@ namespace csl
       }
       else
       {
-        uint64_t sz = value_.size();
+        size_t sz = value_.size();
         if( value_.data()[sz-1] == 0 ) --sz;
         v.assign( reinterpret_cast<const char *>(value_.data()),
                   reinterpret_cast<const char *>(value_.data()+sz) );
@@ -94,7 +88,7 @@ namespace csl
       return true;
     }
 
-    bool binry::to_binary(unsigned char * v, uint64_t & sz) const
+    bool binry::to_binary(unsigned char * v, size_t & sz) const
     {
       if( !v ) return false;
       ::memcpy( v,value_.data(),static_cast<size_t>(value_.size()) );
@@ -102,7 +96,7 @@ namespace csl
       return true;
     }
 
-    bool binry::to_binary(void * v, uint64_t & sz) const
+    bool binry::to_binary(void * v, size_t & sz) const
     {
       if( !v ) return false;
       ::memcpy( v, value_.data(), static_cast<size_t>(value_.size()) );
@@ -126,15 +120,15 @@ namespace csl
     /* conversions from other types */
     bool binry::from_integer(int64_t v)
     {
-      int64_t * p = reinterpret_cast<int64_t *>(value_.allocate(sizeof(int64_t)));
-      *p = v;
+      uint8_t * p = value_.allocate(sizeof(int64_t));
+      ::memcpy( p,&v,sizeof(int64_t));
       return true;
     }
 
     bool binry::from_double(double v)
     {
-      double * p = reinterpret_cast<double *>(value_.allocate(sizeof(double)));
-      *p = v;
+      uint8_t * p = value_.allocate(sizeof(double));
+      ::memcpy( p,&v,sizeof(double));
       return true;
     }
 
@@ -175,14 +169,14 @@ namespace csl
       return true;
     }
 
-    bool binry::from_binary(const unsigned char * v,uint64_t sz)
+    bool binry::from_binary(const unsigned char * v,size_t sz)
     {
       if( !v ) return false;
       if( !sz ) { value_.reset(); return true; }
       return value_.set(v,sz);
     }
 
-    bool binry::from_binary(const void * v,uint64_t sz)
+    bool binry::from_binary(const void * v,size_t sz)
     {
       if( !v ) return false;
       if( !sz ) { value_.reset(); return true; }

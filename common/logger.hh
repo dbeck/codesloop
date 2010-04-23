@@ -293,9 +293,9 @@ namespace csl {
           {
             /* create indent string */
             if( indent <= 0 ) indent = 0;
-            tbuf<128> tb;
+            preallocated_array<wchar_t,128> tb;
 
-            wchar_t * p = reinterpret_cast<wchar_t *>(tb.allocate( (indent+6)*sizeof(wchar_t) ));
+            wchar_t * p = tb.allocate( indent+6 );
             if( indent > 0 )
             {
               swprintf( p,indent+5,L"  %*s| ",indent," ");

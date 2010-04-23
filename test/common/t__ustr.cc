@@ -28,9 +28,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    @brief Tests to verify unicode character string
  */
 
+#if 0
 #ifndef DEBUG
 #define DEBUG
 #endif /* DEBUG */
+#endif 
 
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/exc.hh"
@@ -131,20 +133,6 @@ namespace test_ustr {
     assert( s.nbytes() == 1 );
     assert( s.size() == 0 );
     assert( s.nchars() == 0 );
-  }
-
-  void test_opeq_pbuf()
-  {
-    ustr s;
-    pbuf pb;
-    pb.append("Hello");
-    s = pb;
-    assert( pb.size() == 6 );
-    assert( s.size() == 5 );
-    assert( s.nbytes() == 6 );
-    assert( s.nchars() == 5 );
-    assert( s == "Hello" );
-    assert( memcmp( s.data(),"Hello",6 ) == 0 );
   }
 
   void test_cpyconstr()
@@ -307,7 +295,7 @@ namespace test_ustr {
     ustr b("árvíztűrő tükörfúrógép ÁRVÍZTŰRŐ TÜKÖRFÚRÓGÉP");
     b.use_exc(true);
     unsigned char o[300];
-    uint64_t sz = 0;
+    size_t sz = 0;
     assert( b.to_binary(o,sz) == true );
     assert( sz == b.nbytes() );
     assert( sz > 10 );
@@ -320,7 +308,7 @@ namespace test_ustr {
     b.use_exc(true);
     unsigned char o[300];
     void * vp = o;
-    uint64_t sz = 0;
+    size_t sz = 0;
     assert( b.to_binary(vp,sz) == true );
     assert( sz == b.nbytes() );
     assert( sz > 10 );
@@ -555,7 +543,6 @@ int main()
 
   /* functional tests */
   csl_common_print_results( "empty_constr       ", csl_common_test_timer_v0(test_empty_constr),"" );
-  csl_common_print_results( "opeq_pbuf          ", csl_common_test_timer_v0(test_opeq_pbuf),"" );
   csl_common_print_results( "cpyconstr          ", csl_common_test_timer_v0(test_cpyconstr),"" );
   csl_common_print_results( "cpy0               ", csl_common_test_timer_v0(test_cpy0),"" );
   csl_common_print_results( "cpyop              ", csl_common_test_timer_v0(test_cpyop),"" );
