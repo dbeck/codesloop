@@ -129,14 +129,12 @@ namespace csl
           return str(lhs) += rhs;
         }
 
-        /** @brief is equal operator */
         inline bool operator==(const wchar_t * s) const
         {
           int ret = wcscmp( data(), s );
           return (ret == 0);
         }
 
-        /** @brief returns the background c str */
         inline const wchar_t * c_str() const
         {
           return( data() ); // TODO: have a char * version
@@ -150,7 +148,6 @@ namespace csl
         **    std::string operations
         ** ------------------------------------------------------------------------ */
 
-        /** @brief let equal operator */
         str& operator=(const std::string & s)
         {
           return operator=(s.c_str());
@@ -259,7 +256,6 @@ namespace csl
         }
 
       private:
-        //tbuf<buf_size>   buf_;
         preallocated_array<wchar_t,buf_items> buf_;
     };
 

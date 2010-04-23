@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__str.cc
-   @brief Tests to verify wide character string
- */
-
 #if 0
 #ifndef DEBUG
 #define DEBUG
@@ -52,43 +47,36 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::common;
 
-/** @brief contains tests related to str */
 namespace test_str {
 
-  /** @test baseline for performance comparison */
   void string_baseline()
   {
     std::string b;
   }
 
-  /** @test baseline for performance comparison */
-  inline void str_baseline()
+  void str_baseline()
   {
     str b;
   }
-
-  /** @test @todo */
+  
   void string_hello()
   {
     std::string b;
     b = "Hello";
   }
 
-  /** @test @todo */
   void str_hello()
   {
     str b;
     b = L"Hello";
   }
 
-  /** @test @todo */
   void string_concat()
   {
     std::string b;
     b = "Hello" + std::string("world");
   }
 
-  /** @test @todo */
   void str_concat()
   {
     str b;
@@ -98,7 +86,6 @@ namespace test_str {
     assert( b.nbytes() == 11*sizeof(wchar_t) );
   }
 
-  /** @test @todo */
   void string_append()
   {
     std::string b;
@@ -107,7 +94,6 @@ namespace test_str {
     b += "world!";
   }
 
-  /** @test @todo */
   void str_append()
   {
     str b;
@@ -119,7 +105,6 @@ namespace test_str {
     assert( b.nbytes() == 13*sizeof(wchar_t) );
   }
 
-  /** @test @todo */
   void str_opeq()
   {
     str b("Hello world");

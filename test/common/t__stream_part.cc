@@ -37,11 +37,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/test_timer.h"
 #include <assert.h>
 
-//using namespace csl::comm;
 using namespace csl::common;
-//using namespace csl::nthread;
 
-/** @brief @todo */
 namespace test_stream_part {
 
   /*

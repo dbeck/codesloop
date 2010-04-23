@@ -26,10 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_queue_hh_included
 #define _csl_common_queue_hh_included
 
-/**
-    @file queue.hh
-    @brief TODO: complete description
-*/
 
 #include "codesloop/common/inpvec.hh"
 #include "codesloop/common/logger.hh"

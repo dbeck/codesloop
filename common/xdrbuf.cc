@@ -34,10 +34,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/arch.hh"
 #include <memory>
 
-/**
-   @file xdrbuf.cc
-   @brief XDR helper to reduce XDR dependecies
-*/
 
 namespace csl
 {
