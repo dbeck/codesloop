@@ -23,13 +23,8 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_comm_tcp_lstnr_hh_included_
-#define _csl_comm_tcp_lstnr_hh_included_
-
-/**
-   @file tcp_lstnr.hh
-   @brief TODO: complete description
- */
+#ifndef _csl_comm_tcp_lstnr_old0_hh_included_
+#define _csl_comm_tcp_lstnr_old0_hh_included_
 
 #include "codesloop/comm/sai.hh"
 #include "codesloop/comm/bfd.hh"
@@ -50,11 +45,11 @@ namespace csl
   {
     namespace tcp
     {
-      class lstnr
+      class lstnr_old0
       {
         public:
-          lstnr();
-          virtual ~lstnr();
+          lstnr_old0();
+          virtual ~lstnr_old0();
 
           /* address, to be setup during initialization */
           const SAI & own_addr() const;
@@ -72,11 +67,11 @@ namespace csl
           std::auto_ptr<impl> impl_;
 
           /* no-copy */
-          lstnr(const lstnr & other);
-          lstnr & operator=(const lstnr & other);
+          lstnr_old0(const lstnr_old0 & other);
+          lstnr_old0 & operator=(const lstnr_old0 & other);
 
           /* for trace and debug */
-          CSL_OBJ(csl::comm::tcp,lstnr);
+          CSL_OBJ(csl::comm::tcp,lstnr_old0);
           USE_EXC();
       };
     }
@@ -84,4 +79,4 @@ namespace csl
 }
 
 #endif /*__cplusplus*/
-#endif /*_csl_comm_tcp_lstnr_hh_included_*/
+#endif /*_csl_comm_tcp_lstnr_old0_hh_included_*/

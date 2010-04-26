@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file tcp_client.cc
-   @brief @todo
- */
-
 #if 0
 #ifndef DEBUG
 #define DEBUG
@@ -36,7 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif /* DEBUG */
 #endif
 
-#include "codesloop/comm/tcp_client.hh"
+#include "codesloop/comm/tcp_client_old0.hh"
 #include "codesloop/comm/exc.hh"
 #include "codesloop/common/logger.hh"
 
@@ -46,7 +41,7 @@ namespace csl
   {
     namespace tcp
     {
-      client::client() : use_exc_(false)
+      client_old0::client_old0() : use_exc_(false)
       {
         in_addr_t saddr = inet_addr("127.0.0.1");
         ::memcpy( &(own_addr_.sin_addr),&saddr,sizeof(saddr) );
@@ -55,7 +50,7 @@ namespace csl
         peer_addr_           = own_addr_;
       }
 
-      bool client::init(SAI address)
+      bool client_old0::init(SAI address)
       {
         ENTER_FUNCTION();
         CSL_DEBUGF( L"init(%s:%d)",inet_ntoa(address.sin_addr),ntohs(address.sin_port));

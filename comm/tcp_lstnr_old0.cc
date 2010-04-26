@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-  @file tcp_lstnr.cc
-  @brief TODO: complete description
-*/
-
 #if 0
 #ifndef DEBUG
 #define DEBUG
@@ -42,7 +37,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/queue.hh"
 #include "codesloop/common/logger.hh"
 #include "codesloop/comm/exc.hh"
-#include "codesloop/comm/tcp_lstnr.hh"
+#include "codesloop/comm/tcp_lstnr_old0.hh"
 #include "codesloop/comm/bfd.hh"
 #include "codesloop/comm/sai.hh"
 #include "codesloop/nthread/mutex.hh"
@@ -119,26 +114,26 @@ namespace csl
         class data_handler : public thread::callback
         {
           private:
-            lstnr::impl * lstnr_;
+            lstnr_old0::impl * lstnr_;
             conn_queue  * queue_;
           public:
-            data_handler(lstnr::impl * l, conn_queue  * q)
+            data_handler(lstnr_old0::impl * l, conn_queue  * q)
               : lstnr_(l),
                 queue_(q)  { }
 
             virtual void operator()(void);
             virtual ~data_handler() { }
         };
-      };
+      }; /* end of ns:csl::comm::tcp::anonymous */
 
-      struct lstnr::impl
+      struct lstnr_old0::impl
       {
         class listener_entry : public thread::callback
         {
           private:
-            lstnr::impl * impl_;
+            lstnr_old0::impl * impl_;
           public:
-            listener_entry(lstnr::impl * i) : impl_(i) { }
+            listener_entry(lstnr_old0::impl * i) : impl_(i) { }
             virtual void operator()(void) { impl_->listener_entry_cb(); }
         };
 
@@ -629,7 +624,7 @@ namespace csl
           return listener_thread_.exit_event();
         }
 
-        CSL_OBJ(csl::comm, lstnr::impl);
+        CSL_OBJ(csl::comm, lstnr_old0::impl);
         USE_EXC();
       };
 
@@ -640,25 +635,25 @@ namespace csl
         //
         void lstnr_accept_cb( struct ev_loop *loop, struct ev_io *w, int revents )
         {
-          lstnr::impl * this_ptr = reinterpret_cast<lstnr::impl *>(w->data);
+          lstnr_old0::impl * this_ptr = reinterpret_cast<lstnr_old0::impl *>(w->data);
           this_ptr->accept_cb(w, revents);
         }
 
         void lstnr_wakeup_cb( struct ev_loop *loop, struct ev_async *w, int revents )
         {
-          lstnr::impl * this_ptr = reinterpret_cast<lstnr::impl *>(w->data);
+          lstnr_old0::impl * this_ptr = reinterpret_cast<lstnr_old0::impl *>(w->data);
           this_ptr->wakeup_cb(w, revents);
         }
 
         void lstnr_timer_cb( struct ev_loop *loop, struct ev_timer *w, int revents)
         {
-          lstnr::impl * this_ptr = reinterpret_cast<lstnr::impl *>(w->data);
+          lstnr_old0::impl * this_ptr = reinterpret_cast<lstnr_old0::impl *>(w->data);
           this_ptr->timer_cb(w, revents);
         }
 
         void lstnr_new_data_cb( struct ev_loop *loop, ev_io *w, int revents )
         {
-          lstnr::impl * this_ptr = reinterpret_cast<lstnr::impl *>(w->data);
+          lstnr_old0::impl * this_ptr = reinterpret_cast<lstnr_old0::impl *>(w->data);
           this_ptr->new_data_cb(w, revents);
         }
 
@@ -675,30 +670,30 @@ namespace csl
       }
 
       /* forwarding functions */
-      const SAI & lstnr::own_addr() const             { return impl_->addr_;         }
+      const SAI & lstnr_old0::own_addr() const             { return impl_->addr_;         }
 
-      bool lstnr::init(handler & h, SAI address, int backlog)
+      bool lstnr_old0::init(handler & h, SAI address, int backlog)
       {
         return impl_->init(h,address,backlog);
       }
 
-      bool lstnr::start() { return impl_->start(); }
-      bool lstnr::stop()  { return impl_->stop();  }
+      bool lstnr_old0::start() { return impl_->start(); }
+      bool lstnr_old0::stop()  { return impl_->stop();  }
 
-      pevent & lstnr::start_event() { return impl_->start_event(); }
-      pevent & lstnr::exit_event()  { return impl_->exit_event();  }
+      pevent & lstnr_old0::start_event() { return impl_->start_event(); }
+      pevent & lstnr_old0::exit_event()  { return impl_->exit_event();  }
 
       /* default constructor, destructor */
-      lstnr::lstnr() : impl_(new impl()) { }
-      lstnr::~lstnr() { }
+      lstnr_old0::lstnr_old0() : impl_(new impl()) { }
+      lstnr_old0::~lstnr_old0() { }
 
       /* no copy */
-      lstnr::lstnr(const lstnr & other) : impl_(reinterpret_cast<impl *>(0))
+      lstnr_old0::lstnr_old0(const lstnr_old0 & other) : impl_(reinterpret_cast<impl *>(0))
       {
         THRNORET(exc::rs_not_implemented);
       }
 
-      lstnr & lstnr::operator=(const lstnr & other)
+      lstnr_old0 & lstnr_old0::operator=(const lstnr_old0 & other)
       {
         THR(exc::rs_not_implemented, *this);
         return *this;

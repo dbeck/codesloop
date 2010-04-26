@@ -23,14 +23,8 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_comm_tcp_client_hh_included_
-#define _csl_comm_tcp_client_hh_included_
-
-/**
-   @file tcp_client.hh
-   @brief @todo
- */
-
+#ifndef _csl_comm_tcp_client_old0_hh_included_
+#define _csl_comm_tcp_client_old0_hh_included_
 
 #include "codesloop/comm/sai.hh"
 #include "codesloop/comm/bfd.hh"
@@ -48,11 +42,11 @@ namespace csl
   {
     namespace tcp
     {
-      class client
+      class client_old0
       {
         public:
-          client();
-          virtual ~client() { }
+          client_old0();
+          virtual ~client_old0() { }
 
           bool init(SAI address);
 
@@ -79,11 +73,11 @@ namespace csl
           SAI peer_addr_;
 
           /* no-copy */
-          client(const client & other) { }
-          client & operator=(const client & other) { return *this; }
+          client_old0(const client_old0 & other) { }
+          client_old0 & operator=(const client_old0 & other) { return *this; }
 
           /* for trace and debug */
-          CSL_OBJ(csl::comm::tcp,client);
+          CSL_OBJ(csl::comm::tcp,client_old0);
           USE_EXC();
       };
     }
@@ -91,4 +85,4 @@ namespace csl
 }
 
 #endif /*__cplusplus*/
-#endif /* _csl_comm_tcp_client_hh_included_ */
+#endif /* _csl_comm_tcp_client_old0_hh_included_ */
