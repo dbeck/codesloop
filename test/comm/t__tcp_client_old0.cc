@@ -23,10 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-  @file t__tcp_client.cc
-  @brief @todo
-*/
 
 #if 0
 #ifndef DEBUG
@@ -37,7 +33,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include "codesloop/comm/bfd.hh"
-#include "codesloop/comm/tcp_client.hh"
+#include "codesloop/comm/tcp_client_old0.hh"
 #include "codesloop/comm/initcomm.hh"
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/ustr.hh"
@@ -60,7 +56,7 @@ namespace test_tcp_client {
   static inline const wchar_t * get_class_name()  { return L"test_tcp_client::noclass"; }
   static inline const wchar_t * get_class_short() { return L"noclass"; }
 
-  void baseline() { client o; }
+  void baseline() { client_old0 o; }
 
   void conn()
   {
@@ -74,7 +70,7 @@ namespace test_tcp_client {
     peer.sin_family  = AF_INET;
     peer.sin_port = htons( 631 );
 
-    client c;
+    client_old0 c;
     bool iret = c.init( peer );
 
     CSL_DEBUGF( L"c.init() returned %s", (iret==true?"TRUE":"FALSE") );

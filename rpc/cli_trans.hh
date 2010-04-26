@@ -27,12 +27,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_rpc_cli_trans_hh_included_
 
 #include "codesloop/common/common.h"
-#ifdef __cplusplus
 #include "codesloop/common/obj.hh"
 #include "codesloop/common/pbuf.hh"
 #include "codesloop/common/inpvec.hh"
 #include "codesloop/rpc/handle.hh"
-#include "codesloop/comm/tcp_client.hh"
+#include "codesloop/comm/tcp_client_old0.hh"
+#ifdef __cplusplus
 
 #include <map>
 

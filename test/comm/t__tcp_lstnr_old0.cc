@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-  @file t__tcp_lstnr.cc
-  @brief @todo
-*/
-
 #if 0
 #ifndef DEBUG
 #define DEBUG
@@ -37,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include "codesloop/comm/bfd.hh"
-#include "codesloop/comm/tcp_lstnr.hh"
-#include "codesloop/comm/tcp_client.hh"
+#include "codesloop/comm/tcp_lstnr_old0.hh"
+#include "codesloop/comm/tcp_client_old0.hh"
 #include "codesloop/comm/initcomm.hh"
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/common.h"
@@ -61,7 +56,7 @@ namespace test_tcp_lstnr {
   static inline const wchar_t * get_class_name()  { return L"test_tcp_lstnr::noclass"; }
   static inline const wchar_t * get_class_short() { return L"noclass"; }
 
-  void baseline() { lstnr o; }
+  void baseline() { lstnr_old0 o; }
 
   template <int L>
   class limited_handler : public csl::comm::handler
@@ -125,7 +120,7 @@ namespace test_tcp_lstnr {
     addr.sin_family  = AF_INET;
     addr.sin_port    = htons(49912);
 
-    lstnr l;
+    lstnr_old0 l;
     my_tcp_handler h;
     l.init(h, addr);
     l.start();
@@ -149,7 +144,7 @@ namespace test_tcp_lstnr {
     addr.sin_family  = AF_INET;
     addr.sin_port    = htons(49912);
 
-    lstnr l;
+    lstnr_old0 l;
     my_tcp_handler h;
     l.init(h, addr);
     l.start();
@@ -168,7 +163,7 @@ namespace test_tcp_lstnr {
       virtual ~client_actor() { }
       virtual void operator()(void)
       {
-        client c;
+        client_old0 c;
         assert( c.init( server_addr_ ) );
         uint8_t text[] = { 'H', 'e', 'l', 'l', 'o', ' ',
                            'W', 'o', 'r', 'l', 'd', '\n'  };
@@ -189,7 +184,7 @@ namespace test_tcp_lstnr {
     addr.sin_family  = AF_INET;
     addr.sin_port    = htons(49912);
 
-    lstnr l;
+    lstnr_old0 l;
     l1k_handler h;
     l.init(h, addr);
     l.start();

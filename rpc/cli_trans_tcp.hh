@@ -31,7 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/obj.hh"
 #include "codesloop/common/pbuf.hh"
 #include "codesloop/rpc/handle.hh"
-#include "codesloop/comm/tcp_client.hh"
+#include "codesloop/comm/tcp_client_old0.hh"
 #include "codesloop/rpc/cli_trans.hh"
 
 
@@ -58,7 +58,7 @@ namespace csl
       void send(handle &, csl::common::pbuf *);
 
     private:
-      csl::comm::tcp::client client_;
+      csl::comm::tcp::client_old0 client_;
 
     };
   }

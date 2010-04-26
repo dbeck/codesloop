@@ -260,3 +260,5 @@ test/common/t__work_buffer_part
 test/common/t__stream_part
 test/common/t__stream_buffer
 test/common/t__stream
+test/comm/t__tcp_client_old0
+test/comm/t__tcp_lstnr_old0

@@ -27,7 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/rpc/cli_trans_tcp.hh"
 #include "codesloop/common/common.h"
-#include "codesloop/comm/tcp_client.hh"
+#include "codesloop/comm/tcp_client_old0.hh"
 #include "codesloop/comm/exc.hh"
 #include "codesloop/rpc/exc.hh"
 

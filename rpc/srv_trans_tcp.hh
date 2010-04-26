@@ -27,12 +27,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_rpc_srv_trans_tcp_hh_included_
 
 #include "codesloop/common/common.h"
-#ifdef __cplusplus
 #include "codesloop/common/obj.hh"
 #include "codesloop/common/arch.hh"
-#include "codesloop/comm/tcp_lstnr.hh"
+#include "codesloop/comm/tcp_lstnr_old0.hh"
 #include "codesloop/rpc/client_info.hh"
 #include "codesloop/rpc/srv_trans.hh"
+#ifdef __cplusplus
 
 using namespace csl::comm;
 using namespace csl::comm::tcp;

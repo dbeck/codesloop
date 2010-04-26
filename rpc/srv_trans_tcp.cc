@@ -54,7 +54,7 @@ namespace csl
       addr.sin_family  = AF_INET;
       addr.sin_port    = htons(port);
 
-      lstnr l;
+      lstnr_old0 l;
       l.init(*this, addr);
       l.start();
       CSL_DEBUGF( L"the listener has been started. wait 7 secs for connections" );
