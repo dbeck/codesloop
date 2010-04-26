@@ -36,8 +36,8 @@ LINK_LIBRARIES( csl_common_libev csl_common )
 
 ADD_LIBRARY( csl_comm STATIC
              # -- TCP --
-             tcp_lstnr.cc         tcp_lstnr.hh
-             tcp_client.cc        tcp_client.hh
+             tcp_lstnr_old0.cc         tcp_lstnr_old0.hh
+             tcp_client_old0.cc        tcp_client_old0.hh
              # -- UDP --
              udp_recvr.cc         udp_recvr.hh
              udp_hello.cc         udp_hello.hh
