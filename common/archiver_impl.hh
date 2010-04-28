@@ -23,28 +23,10 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_nthread_waitable_stream_hh_included_
-#define _csl_nthread_waitable_stream_hh_included_
-#include "codesloop/common/stream.hh"
+#ifndef _csl_common_archiver_impl_hh_included_
+#define _csl_common_archiver_impl_hh_included_
 #ifdef __cplusplus
 
-namespace csl
-{
-  namespace nthread
-  {
-    class event;
-
-    template <typename T>
-    class waitable_stream_base : virtual public stream_base<T>
-    {
-    public:
-      virtual event & on_data() = 0;
-      virtual ~waitable_stream_base() {}
-    };
-  }
-}
-
 #endif /*__cplusplus*/
-#include "codesloop/nthread/waitable_stream_impl.hh"
-#endif /*_csl_nthread_waitable_stream_hh_included_*/
+#endif /*_csl_common_archiver_impl_hh_included_*/
 

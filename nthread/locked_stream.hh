@@ -32,6 +32,15 @@ namespace csl
 {
   namespace nthread
   {
+    class mutex;
+
+    template <typename T>
+    class locked_stream_base : virtual public stream_base<T>
+    {
+    public:
+      virtual mutex & get_lock() = 0;
+      virtual ~locked_stream_base() {}
+    };
   }
 }
 

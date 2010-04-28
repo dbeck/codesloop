@@ -51,9 +51,8 @@ namespace csl
     Allows you to save a complex network of objects in a permanent binary
     form (usually disk storage) that persists after those objects are deleted.
     */
-    class arch : public obj
+    class arch
     {
-      CSL_OBJ(csl::common,arch);
       public:
         /** @brief specifies arch object's behaviour.
 
@@ -117,6 +116,9 @@ namespace csl
         pbuf * pbuf_;
         xdrbuf * xdrbuf_;
         direction direction_;
+        
+      CSL_OBJ(csl::common,arch);
+      USE_EXC();
     };
   }
 }
