@@ -38,13 +38,17 @@ ADD_LIBRARY( csl_comm STATIC
              # -- TCP --
              tcp_lstnr_old0.cc         tcp_lstnr_old0.hh
              tcp_client_old0.cc        tcp_client_old0.hh
+	     tcp_lstnr.hh              tcp_lstnr_impl.hh
+	     tcp_client.hh             tcp_client_impl.hh
              # -- UDP --
              udp_recvr.cc         udp_recvr.hh
              udp_hello.cc         udp_hello.hh
              udp_auth.cc          udp_auth.hh
              udp_data.cc          udp_data.hh
              # -- Generic --
+	     network_support.cc   network_support.hh
 	     network_stream.hh    network_stream_impl.hh
+	     tcp_stream.hh        tcp_stream_impl.hh
              bfd.cc               bfd.hh
              exc.cc               exc.hh
              initcomm.cc          initcomm.hh
