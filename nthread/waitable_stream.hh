@@ -35,16 +35,17 @@ namespace csl
     class event;
 
     template <typename T>
-    class waitable_stream_base : virtual public stream_base<T>
+    class waitable_stream : virtual public stream_base<T>
     {
     public:
-      virtual event & on_data() = 0;
+      virtual event & on_data() { return evt_; }
       virtual ~waitable_stream_base() {}
+    private:
+      event evt_;
     };
   }
 }
 
 #endif /*__cplusplus*/
-#include "codesloop/nthread/waitable_stream_impl.hh"
 #endif /*_csl_nthread_waitable_stream_hh_included_*/
 

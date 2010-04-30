@@ -26,6 +26,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_nthread_locked_stream_hh_included_
 #define _csl_nthread_locked_stream_hh_included_
 #include "codesloop/common/stream.hh"
+#include "codesloop/nthread/mutex.hh"
 #ifdef __cplusplus
 
 namespace csl
@@ -35,16 +36,17 @@ namespace csl
     class mutex;
 
     template <typename T>
-    class locked_stream_base : virtual public stream_base<T>
+    class locked_stream : virtual public stream_base<T>
     {
     public:
-      virtual mutex & get_lock() = 0;
+      virtual mutex & get_lock() { return mtx_; }
       virtual ~locked_stream_base() {}
+    private:
+      mutex mtx_;
     };
   }
 }
 
 #endif /*__cplusplus*/
-#include "codesloop/nthread/locked_stream_impl.hh"
 #endif /*_csl_nthread_locked_stream_hh_included_*/
 

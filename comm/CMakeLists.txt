@@ -47,7 +47,7 @@ ADD_LIBRARY( csl_comm STATIC
              udp_data.cc          udp_data.hh
              # -- Generic --
 	     network_support.cc   network_support.hh
-	     network_stream.hh    network_stream_impl.hh
+	     network_stream.hh
 	     tcp_stream.hh        tcp_stream_impl.hh
              bfd.cc               bfd.hh
              exc.cc               exc.hh

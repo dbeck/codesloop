@@ -35,8 +35,8 @@ ADD_LIBRARY( csl_nthread STATIC
              thread.cc    thread.hh
              thrpool.cc   thrpool.hh
 	     # -- streams --
-	     waitable_stream.hh waitable_stream_impl.hh
-	     locked_stream.hh locked_stream_impl.hh )
+	     waitable_stream.hh 
+	     locked_stream.hh )
 
 FILE(GLOB includes "${CMAKE_CURRENT_SOURCE_DIR}/*.h*")
 INSTALL( FILES ${includes} DESTINATION include/codesloop/nthread )

@@ -107,7 +107,7 @@ namespace csl
               template <typename> class Target = stream_nop_target,
               size_t Preallocated=1024,
               size_t MaxSize=(256*1024)>
-    class stream : public stream_base<T>
+    class stream : virtual public stream_base<T>
     {
     public:
       typedef stream_base<T>                  base_t;

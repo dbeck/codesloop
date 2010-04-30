@@ -34,8 +34,8 @@ namespace csl
   namespace comm
   {
     template <typename T>
-    class network_stream_base : public waitable_stream_base<T>,
-                                public locked_stream_base<T>
+    class network_stream_base : public waitable_stream<T>,
+                                public locked_stream<T>
     {
     public:
       virtual ~network_stream_base() {}
@@ -44,6 +44,5 @@ namespace csl
 }
 
 #endif /*__cplusplus*/
-#include "codesloop/comm/network_stream_impl.hh"
 #endif /*_csl_comm_network_stream_hh_included_*/
 
