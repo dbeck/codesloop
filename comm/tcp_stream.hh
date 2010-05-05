@@ -39,10 +39,16 @@ namespace csl
                 template <typename> class Target = csl::common::stream_nop_target,
                 size_t Preallocated=1024,
                 size_t MaxSize=(256*1024)>
-      class stream : public csl::comm::network_stream_base<T>
+      class stream : public csl::comm::network_stream_base<T>,
+                     public csl::common::stream<T,Buffer,Target,Preallocated,MaxSize>
       {
       public:
+      
+        stream(target_t & t, buffer_t & b);
+        stream(buffer_t & b);
+
       private:
+        CSL_OBJ(csl::common::tcp,stream);
       };
     }
   }

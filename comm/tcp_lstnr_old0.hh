@@ -27,10 +27,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_comm_tcp_lstnr_old0_hh_included_
 
 #include "codesloop/comm/sai.hh"
-#include "codesloop/comm/bfd.hh"
 #include "codesloop/comm/connid.hh"
 #include "codesloop/comm/handler.hh"
-#include "codesloop/common/read_res.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/obj.hh"
 #include "codesloop/nthread/pevent.hh"
