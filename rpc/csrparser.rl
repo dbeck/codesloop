@@ -44,7 +44,8 @@ const char * csl::rpc::token_type_name[] = {
   "parameter modifier",
   "parameter type",
   "parameter name",
-  "comment"
+  "comment",
+  "async"
 };
 
 const char * csl::rpc::param_kind_name[] = { 
@@ -97,7 +98,7 @@ const char * csl::rpc::param_kind_name[] = {
   }
 
   action func_name {
-    if ( token_.type != TT_DISPOSABLE_FUNCTION )
+    if ( token_.type != TT_DISPOSABLE_FUNCTION  && token_.type != TT_ASYNC_FUNCTION)
       token_.type = TT_FUNCTION;
     save();
   }
@@ -119,12 +120,12 @@ const char * csl::rpc::param_kind_name[] = {
   inout     = 'inout'       >s %{token_.modifier = MD_INOUT;};
   exc       = 'exception'   >s %{token_.modifier = MD_EXCEPTION;};
   disp      = 'disposable'     %{token_.type     = TT_DISPOSABLE_FUNCTION;};
+  async     = 'async'          %{token_.type     = TT_ASYNC_FUNCTION;};
   incl      = 'include'        %{token_.type     = TT_INCLUDE;};
   name      = 'name'           %{token_.type     = TT_NAME;};
   version   = 'version'        %{token_.type     = TT_VERSION;};
   namespc   = 'namespace'      %{token_.type     = TT_NAMESPACE;};
   transport = 'transport'      %{token_.type     = TT_TRANSPORT;};
-  
 
   # literals, identifiers
   dquote      = ( 'L'? '"' ( [^"\\\n] | /\\./ )* '"' )  >s;
@@ -154,7 +155,7 @@ const char * csl::rpc::param_kind_name[] = {
                                 parameter_spec ws* ('}' >s %end_function) )
                           ;
 
-  function    = (disp ws+)? <: identifier %func_name ws* '{'                 
+  function    = ((disp|async) ws+)? <: identifier %func_name ws* '{'                 
                 func_param_line*         # regular lines with comma ending
                 func_param_lastline      # last line with bracket ends
                 ;
@@ -187,7 +188,7 @@ const char * csl::rpc::param_kind_name[] = {
                 ;
 
   if_transprt = '#' ws_no_nl* transport ws_no_nl+
-                ('tcp'|'udp'|'mq') >s
+                ('tcp'|'udp'|'sctp') >s
                 ws_no_nl* newline
                 ;
 
@@ -272,6 +273,7 @@ namespace csl
         case TT_INCLUDE:
           iface_.add_include(token_);
           break;
+        case TT_ASYNC_FUNCTION:
         case TT_DISPOSABLE_FUNCTION:
         case TT_FUNCTION:
           iface_.add_function(token_);
