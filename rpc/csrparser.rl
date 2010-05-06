@@ -45,6 +45,7 @@ const char * csl::rpc::token_type_name[] = {
   "parameter type",
   "parameter name",
   "comment",
+  "transport",
   "async"
 };
 

@@ -50,8 +50,7 @@ namespace csl
       TT_COMMENT    = 11, ///< comment
       TT_TRANSPORT  = 12, ///< transport method
       TT_ASYNC_FUNCTION = 13, ///< asynchronous call
-      TT_TRANSPORT  = 14, ///< transport type
-      TT_LAST       = 15
+      TT_LAST       = 14
     };
     extern const char * token_type_name[];
 
