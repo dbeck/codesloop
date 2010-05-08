@@ -348,7 +348,7 @@ namespace csl
         {
           pbuf::iterator oldit = it_;
           uint64_t oldpos  = pos_;
-          uint32_t sz;
+          uint64_t sz;
           (*this) >> sz;
           it_  = oldit;
           pos_ = oldpos;

@@ -188,7 +188,7 @@ namespace csl
 
         inline size_t nbytes() const
         {
-          return buf_.size() * sizeof(wchar_t);
+          return buf_.nbytes();
         }
 
         inline size_t nchars() const

@@ -49,7 +49,7 @@ namespace csl
 
     void size_and_buf_to_pbuf(common::pbuf * b, const void * p, uint64_t sz)
     {
-      if( !b || !p || !sz )
+      if( !b || !p )
       {
         throw common::exc(exc::rs_cannot_append,L"",L"",L""__FILE__,__LINE__);
         return;
@@ -166,12 +166,10 @@ namespace csl
 
     xdrbuf & xdrbuf::operator<<(const common::serializable & val)
     {
-      common::pbuf pb;
       common::arch ar(common::arch::SERIALIZE);
-      ar.set_pbuf( pb );
       const_cast<common::serializable&>(val).serialize( ar );
       
-      (*this) << pb;
+      (*this) << *(ar.get_pbuf());
 
       return *this;
     }
@@ -373,12 +371,12 @@ namespace csl
 
     xdrbuf & xdrbuf::operator>>(common::serializable & val)
     {
-      common::pbuf pb;
       common::arch ar(common::arch::DESERIALIZE);
 
-      (*this) >> pb;
+      (*this) >> *(ar.get_pbuf());
+
+      ar.set_pbuf( *ar.get_pbuf() );
       
-      ar.set_pbuf( pb );
       val.serialize( ar );
 
       return *this;
@@ -399,7 +397,7 @@ namespace csl
 
       if( !sz ) { val.clear(); return *this; }
 
-      wchar_t * wcp = reinterpret_cast<wchar_t *>(val.buffer().allocate(sz));
+      wchar_t * wcp = reinterpret_cast<wchar_t *>(val.buffer().allocate(sz/sizeof(wchar_t)));
 
       if( wcp && sz > 0 )
       {
@@ -548,6 +546,7 @@ namespace csl
     uint64_t xdrbuf::get_data(unsigned char * where, uint64_t size)
     {
       uint64_t ret = 0;
+
       if( it_ == b_->end() ) return ret;
 
       /* need to step forward */
