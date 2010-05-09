@@ -57,8 +57,11 @@ namespace csl
           std::string name;           ///< function name
           bool disposable;            ///< true when invoker can omit return values
           std::vector<param> params;  ///< parameters in original order
+          std::vector<func> callbacks;///< parameters in original order          
           typedef std::vector<param>::const_iterator 
             param_iterator;           ///< iterator for parameters
+          typedef std::vector<func>::const_iterator 
+            callback_iterator;           ///< iterator for parameters
         };
 
         /*
@@ -70,6 +73,7 @@ namespace csl
         void set_transport(const token_info &); ///< sets namespace 
 
         void add_function(const token_info &);   ///< adds one function 
+        void add_callback(const token_info &);   ///< adds callback function inside a function
         void set_param_type(const token_info &); ///< adds a parameter type 
         void set_param_name(const token_info &); ///< adds a parameter name
         void set_arry_len(int);                  ///< sets parameter's array attribute

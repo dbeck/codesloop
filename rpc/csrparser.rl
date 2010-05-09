@@ -105,6 +105,11 @@ const char * csl::rpc::param_kind_name[] = {
     save();
   }
 
+  action callback_name {
+    token_.type = TT_CALLBACK; 
+    save();
+  }
+
   action add_arry_digit {
     token_.array_length = token_.array_length * 10 + (fc - '0');
   }
@@ -160,7 +165,7 @@ const char * csl::rpc::param_kind_name[] = {
   callback_param_lastline  =  (ws* parameter_spec ws* ('}') )
                           ;
 
-  callback    = identifier ws* '{'                 
+  callback    = identifier ws* '{' %callback_name                 
                  callback_param_line*         # regular lines with comma ending
                  callback_param_lastline      # last line with bracket ends
                 ;
@@ -310,6 +315,9 @@ namespace csl
           break;
         case TT_PARAM_NAME:
           iface_.set_param_name(token_);
+          break;
+        case TT_CALLBACK:
+          iface_.add_callback(token_);
           break;
         default:
           break;

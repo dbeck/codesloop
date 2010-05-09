@@ -25,6 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/rpc/iface.hh"
 #include "codesloop/common/common.h"
+#include "codesloop/common/logger.hh"
 
 /**
   @file rpc/src/iface.cc
@@ -68,6 +69,14 @@ namespace csl
       functions_.push_back(f);
     }
 
+    void iface::add_callback(const token_info & ti)   
+    {
+      struct func f;
+      f.disposable = false;
+      f.name = token_to_string(ti);
+      functions_[functions_.size()-1].callbacks.push_back(f);
+    }
+
     void iface::set_transport(const token_info & ti)
     {
       transport_ = token_to_string(ti);
@@ -105,6 +114,14 @@ namespace csl
       p.is_array = false;
 
       functions_[functions_.size()-1].params.push_back(p);
+
+      // if this is a callback parameter, register it in callbacks
+      if ( ti.modifier == MD_RESULTS )
+      {
+        size_t last_callback = functions_[functions_.size()-1].callbacks.size()-1;
+        functions_[functions_.size()-1].callbacks[last_callback].params.push_back(p);
+      }
+
     }
 
     void iface::set_arry_len(int size) 
@@ -136,6 +153,10 @@ namespace csl
           (functions_[i].disposable ? " disposable\n" : "\n");
         for (size_t j = 0; j < functions_[i].params.size(); j++ ) 
         {
+          // results printed after normal parameters
+          if ( functions_[i].params[j].kind == MD_RESULTS )
+            continue;
+
           ret += "\t\ttype: " + functions_[i].params[j].type + " (";
           ret += param_kind_name[functions_[i].params[j].kind];
           ret += ")\n";
@@ -148,6 +169,26 @@ namespace csl
 
           ret += "\n\n";
         }
+        // end of parameters
+
+        for (size_t c = 0; c < functions_[i].callbacks.size(); c++ ) 
+        {
+          struct func callback = functions_[i].callbacks[c];
+
+          ret += "\t\tcallback: " + callback.name + "\n";
+
+          for (size_t j = 0; j < callback.params.size(); j++ )
+          {
+            ret += "\t\t\ttype: " + callback.params[j].type + "\n";
+            ret += "\t\t\tname: " + callback.params[j].name;
+            if ( callback.params[j].array_length > 0 )
+              ret += " (static sized array)";
+            else if ( callback.params[j].is_array == true )
+              ret += " (dynamic sized array)";
+            ret += "\n\n";
+          }
+        }
+        // end of callbacks
       }
 
       return ret;
@@ -158,7 +199,7 @@ namespace csl
       char * pos = ti.p;
 
       // rtrim spaces, array decls and param separators
-      while( (isspace(*pos)||*pos==','||*pos=='[') && ti.ts <= pos )
+      while( (isspace(*pos)||*pos==','||*pos=='['||*pos=='{') && ti.ts <= pos )
         pos--;
 
       return std::string( ti.ts, pos-ti.ts+1 );
