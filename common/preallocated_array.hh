@@ -74,6 +74,7 @@ namespace csl
         inline bool is_dynamic() const      { return (data_ && data_ != preallocated_); }
 
         inline size_t size() const      { return size_; }
+        inline size_t nbytes() const    { return size_*item_size_; }
         inline const T * data() const   { return data_; }
         inline T * private_data() const { return data_; }
 

@@ -69,9 +69,12 @@ namespace csl
 
     void arch::set_pbuf( const pbuf & src )
     {
-      *pbuf_ = src;
-      if ( xdrbuf_ )
-        delete xdrbuf_;
+      if (  &src != pbuf_) 
+      {
+        *pbuf_ = src;
+        if ( xdrbuf_ )
+          delete xdrbuf_;
+      }
 
       xdrbuf_ = new xdrbuf(*pbuf_);
 

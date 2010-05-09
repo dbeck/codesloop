@@ -24,6 +24,6 @@ disposable function_name {
      std::exc std_exc
 }
 
-func2 { 
+async func2 { 
   double d_
 }
