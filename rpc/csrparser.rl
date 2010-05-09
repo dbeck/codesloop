@@ -46,14 +46,15 @@ const char * csl::rpc::token_type_name[] = {
   "parameter name",
   "comment",
   "transport",
-  "async"
+  "callback"
 };
 
 const char * csl::rpc::param_kind_name[] = { 
   "input", 
   "output", 
   "inout", 
-  "exception" 
+  "exception",
+  "results"
 };
 
 %%{
@@ -99,7 +100,7 @@ const char * csl::rpc::param_kind_name[] = {
   }
 
   action func_name {
-    if ( token_.type != TT_DISPOSABLE_FUNCTION  && token_.type != TT_ASYNC_FUNCTION)
+    if ( token_.type != TT_DISPOSABLE_FUNCTION )
       token_.type = TT_FUNCTION;
     save();
   }
@@ -120,8 +121,8 @@ const char * csl::rpc::param_kind_name[] = {
   output    = 'output'      >s %{token_.modifier = MD_OUTPUT;};
   inout     = 'inout'       >s %{token_.modifier = MD_INOUT;};
   exc       = 'exception'   >s %{token_.modifier = MD_EXCEPTION;};
+  results   = 'results'     >s %{token_.modifier = MD_RESULTS;};
   disp      = 'disposable'     %{token_.type     = TT_DISPOSABLE_FUNCTION;};
-  async     = 'async'          %{token_.type     = TT_ASYNC_FUNCTION;};
   incl      = 'include'        %{token_.type     = TT_INCLUDE;};
   name      = 'name'           %{token_.type     = TT_NAME;};
   version   = 'version'        %{token_.type     = TT_VERSION;};
@@ -147,16 +148,42 @@ const char * csl::rpc::param_kind_name[] = {
   parameter_spec  = type_ident %type_name ws+ :>> (identifier %obj_name)
                     array_decl? 
                     ;
-  parameter_type  = (input|output|inout|exc) ':' %{token_.type = TT_PARAM_MOD;};
+  parameter_type  = (input|output|inout|exc) ':' 
+                    %{token_.type = TT_PARAM_MOD;}
+                    ;
+  results_type    = (results) ':' 
+                    %{token_.type = TT_PARAM_MOD;}
+                    ;
 
-  func_param_line      =  (ws* (parameter_type ws+)?  
-                                parameter_spec ws*  ',')
+  callback_param_line      =  (ws* parameter_spec ws*  ',')
                           ;
-  func_param_lastline  =  (ws* (parameter_type ws+)?  
-                                parameter_spec ws* ('}' >s %end_function) )
+  callback_param_lastline  =  (ws* parameter_spec ws* ('}') )
                           ;
 
-  function    = ((disp|async) ws+)? <: identifier %func_name ws* '{'                 
+  callback    = identifier ws* '{'                 
+                 callback_param_line*         # regular lines with comma ending
+                 callback_param_lastline      # last line with bracket ends
+                ;
+
+  func_param_line      =  (ws* ( ( (results_type ws*)? 
+                                    callback)
+                                 |
+                                 ( (parameter_type ws+)?  
+                                    parameter_spec)
+                               ) ws* ','
+                          )
+                          ;
+  func_param_lastline  =  (ws* ( ( (results_type ws*)?
+                                      callback)
+                                 |
+                                 ( (parameter_type ws+)?  
+                                    parameter_spec)
+                               )
+                               ws* ('}' >s %end_function)                                
+                          )
+                          ;
+
+  function    = (disp ws+)? <: identifier %func_name ws* '{'                 
                 func_param_line*         # regular lines with comma ending
                 func_param_lastline      # last line with bracket ends
                 ;
@@ -274,7 +301,6 @@ namespace csl
         case TT_INCLUDE:
           iface_.add_include(token_);
           break;
-        case TT_ASYNC_FUNCTION:
         case TT_DISPOSABLE_FUNCTION:
         case TT_FUNCTION:
           iface_.add_function(token_);

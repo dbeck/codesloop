@@ -19,11 +19,23 @@ disposable function_name {
  output:
      int64 ret,
      retclass e,
+ results: 
+   edesanyad {
+    szeret csokol,
+    imad olel
+   },
+   edesapad {
+    lekuld boltba
+   },
  exception:
      exc csl_exc,
      std::exc std_exc
 }
 
-async func2 { 
-  double d_
+func2 { 
+  double d_,
+results: 
+  hallo {
+   ocsi haho
+  }
 }
