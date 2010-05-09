@@ -59,7 +59,6 @@ int main()
       caught = 0;
       cli.hello( 0, L"", &result );
     } catch ( csl::common::exc & e ) {
-      wprintf(L"Exception caugth: %ls\n", e.text_.c_str() );
       CSL_DEBUG_ASSERT( e.text_ == L"Can not echo empty string" );
       caught = 1;
     }
@@ -68,7 +67,7 @@ int main()
 
 
 
-//    csl_common_print_results( "ping             ", csl_common_test_timer_v0(test_ping_time),"" );
+    csl_common_print_results( "ping             ", csl_common_test_timer_v0(test_ping_time),"" );
 
     exit(0);
 }

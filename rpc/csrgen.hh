@@ -49,7 +49,7 @@ namespace csl
       TT_PARAM_NAME = 10, ///< parameter name
       TT_COMMENT    = 11, ///< comment
       TT_TRANSPORT  = 12, ///< transport method
-      TT_ASYNC_FUNCTION = 13, ///< asynchronous call
+      TT_CALLBACK   = 13, ///< callback function's name
       TT_LAST       = 14
     };
     extern const char * token_type_name[];
@@ -58,7 +58,8 @@ namespace csl
       MD_INPUT      = 0, ///< input parameter
       MD_OUTPUT     = 1, ///< output parameter
       MD_INOUT      = 2, ///< bidirectional parameter
-      MD_EXCEPTION  = 3  ///< server side exception 
+      MD_EXCEPTION  = 3, ///< server side exception 
+      MD_RESULTS    = 4  ///< results thru callback
     };
     extern const char * param_kind_name[];
 
