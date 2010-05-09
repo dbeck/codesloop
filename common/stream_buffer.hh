@@ -52,7 +52,7 @@ namespace csl
         // there is an important design decision here: data is always allocated at
         // the end of the buffer. even if space is available at the beginning of
         // the buffer, it can only be used if all data is returned by get().
-        // this behaviour forces the application to care about the buffer, thus
+        // this behaviour forces the application to care about the buffer, and
         // not enforcing unneccessary and time consuming memory copies.
         
         part_t & reserve( size_t sz, part_t & sp );        
@@ -63,6 +63,7 @@ namespace csl
         size_t buflen()    const { return buf_.size(); }
         size_t n_free()    const { return (MaxSize-len_-start_); }        
         size_t has_items() const { return len(); }
+        size_t max_items() const { return max_size_; }
 
         const T * data() const { return buf_.data()+start_; }
 

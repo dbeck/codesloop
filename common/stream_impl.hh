@@ -50,7 +50,11 @@ namespace csl
               size_t Preallocated,
               size_t MaxSize>
     const stream_flags &
-    stream<T,Buffer,Target,Preallocated,MaxSize>::start()
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::start()
     {
       ENTER_FUNCTION();
       if( !target_ ) RETURN_FUNCTION(flags_);
@@ -65,7 +69,11 @@ namespace csl
               size_t Preallocated,
               size_t MaxSize>
     const stream_flags &
-    stream<T,Buffer,Target,Preallocated,MaxSize>::end()
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::end()
     {
       ENTER_FUNCTION();
       if( !target_ ) RETURN_FUNCTION(flags_);
@@ -80,7 +88,11 @@ namespace csl
               size_t Preallocated,
               size_t MaxSize>
     const stream_flags &
-    stream<T,Buffer,Target,Preallocated,MaxSize>::flush()
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::flush()
     {
       ENTER_FUNCTION();
       if( !target_ ) RETURN_FUNCTION(flags_);
@@ -95,7 +107,11 @@ namespace csl
               size_t Preallocated,
               size_t MaxSize>
     stream_flags &
-    stream<T,Buffer,Target,Preallocated,MaxSize>::flags()
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::flags()
     {
       ENTER_FUNCTION();
 #ifdef DEBUG
@@ -126,17 +142,20 @@ namespace csl
               template <typename> class Target,
               size_t Preallocated,
               size_t MaxSize>
-    typename stream<T,Buffer,Target,Preallocated,MaxSize>::part_t &
-    stream<T,Buffer,Target,Preallocated,MaxSize>::reserve(
-                               size_t sz,
-                               stream<T,Buffer,Target,Preallocated,MaxSize>::part_t & sp )
+    typename output_stream<T,Buffer,Target,Preallocated,MaxSize>::part_t &
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::reserve(size_t sz,
+                                    output_stream<T,Buffer,Target,Preallocated,MaxSize>::part_t & sp)
     {
       ENTER_FUNCTION();
       part_t & ret(buffer_->reserve(sz,sp));
       if( ret.flags() == stream_flags::ok_ )
       {
-        flags_.clear_flags( stream_flags::parameter_error_ |
-                            stream_flags::buffer_full_ |
+        flags_.clear_flags( stream_flags::parameter_error_     |
+                            stream_flags::buffer_full_         |
                             stream_flags::partially_allocated_ );
       }
       else
@@ -153,17 +172,20 @@ namespace csl
               template <typename> class Target,
               size_t Preallocated,
               size_t MaxSize>
-    typename stream<T,Buffer,Target,Preallocated,MaxSize>::part_t &
-    stream<T,Buffer,Target,Preallocated,MaxSize>::confirm(
-                               size_t n_succeed,
-                               stream<T,Buffer,Target,Preallocated,MaxSize>::part_t & sp )
+    typename output_stream<T,Buffer,Target,Preallocated,MaxSize>::part_t &
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::confirm(size_t n_succeed,
+                                    output_stream<T,Buffer,Target,Preallocated,MaxSize>::part_t & sp )
     {
       ENTER_FUNCTION();
       part_t & ret(buffer_->confirm(n_succeed,sp));
       if( ret.flags() == stream_flags::ok_ )
       {
         n_confirmed_ += n_succeed;
-        flags_.clear_flags( stream_flags::empty_buffer_ |
+        flags_.clear_flags( stream_flags::empty_buffer_    |
                             stream_flags::parameter_error_ );
                             
         if( buffer_->n_free() > 0 )
@@ -190,21 +212,24 @@ namespace csl
               template <typename> class Target,
               size_t Preallocated,
               size_t MaxSize>
-    typename stream<T,Buffer,Target,Preallocated,MaxSize>::part_t &
-    stream<T,Buffer,Target,Preallocated,MaxSize>::get(
-                               size_t sz,
-                               stream<T,Buffer,Target,Preallocated,MaxSize>::part_t & sp )
+    typename output_stream<T,Buffer,Target,Preallocated,MaxSize>::part_t &
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::get(size_t sz,
+                                output_stream<T,Buffer,Target,Preallocated,MaxSize>::part_t & sp)
     {
       ENTER_FUNCTION();
       part_t & ret(buffer_->get(sz,sp));
       if( ret.flags() == stream_flags::ok_ )
       {
-        flags_.clear_flags( stream_flags::empty_buffer_ |
+        flags_.clear_flags( stream_flags::empty_buffer_    |
                             stream_flags::parameter_error_ );
 
         if( buffer_->n_free() > 0 )
         {
-          flags_.clear_flags( stream_flags::buffer_full_ |
+          flags_.clear_flags( stream_flags::buffer_full_         |
                               stream_flags::partially_allocated_ );
         }
       }
@@ -224,12 +249,31 @@ namespace csl
               template <typename> class Target,
               size_t Preallocated,
               size_t MaxSize>
-    size_t
-    stream<T,Buffer,Target,Preallocated,MaxSize>::confirmed_items()
+    const stream_flags &
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::poll(size_t & available_items,
+                                 uint32_t & timeout_ms)
     {
       ENTER_FUNCTION();
-      CSL_DEBUGF(L"confirmed_items() => %lld",static_cast<uint64_t>(n_confirmed_));
-      RETURN_FUNCTION(n_confirmed_);
+      //
+      // default implementation of this function makes little sense for an output stream
+      // however we might still use it in this form:
+      //   - if buffer has items than return its count (up to available_items)
+      //   - if has items than don't touch timeout
+      //      - otherwise simulate timeout, but do not touch the flags
+      //
+      if( available_items > has_n_items() )
+      {
+        available_items = has_n_items();
+      }
+      if( available_items == 0 )
+      {
+        timeout_ms = 0;
+      }
+      RETURN_FUNCTION(flags_);
     }
 
     template <typename T,
@@ -237,9 +281,84 @@ namespace csl
               template <typename> class Target,
               size_t Preallocated,
               size_t MaxSize>
-    stream<T,Buffer,Target,Preallocated,MaxSize>::stream(
-                                    stream<T,Buffer,Target,Preallocated,MaxSize>::target_t & t,
-                                    stream<T,Buffer,Target,Preallocated,MaxSize>::buffer_t & b)
+    size_t
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::total_confirmed_items()
+    {
+      ENTER_FUNCTION();
+      CSL_DEBUGF(L"total_confirmed_items() => %lld",static_cast<uint64_t>(n_confirmed_));
+      RETURN_FUNCTION(n_confirmed_);
+    }
+    
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
+    size_t
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::free_item_count()
+    {
+      ENTER_FUNCTION();
+      size_t ret = buffer_->n_free();
+      CSL_DEBUGF(L"free_item_count() => %lld",static_cast<uint64_t>(ret));
+      RETURN_FUNCTION(ret);
+    }
+
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
+    size_t
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::max_item_count()
+    {
+      ENTER_FUNCTION();
+      size_t ret = buffer_->max_items();
+      CSL_DEBUGF(L"max_item_count() => %lld",static_cast<uint64_t>(ret));
+      RETURN_FUNCTION(ret);
+    }
+
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
+    size_t
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::has_n_items()
+    {
+      ENTER_FUNCTION();
+      size_t ret = buffer_->has_items();
+      CSL_DEBUGF(L"has_n_items() => %lld",static_cast<uint64_t>(ret));
+      RETURN_FUNCTION(ret);
+    }
+
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              template <typename> class Target,
+              size_t Preallocated,
+              size_t MaxSize>
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::output_stream(
+                                output_stream<T,Buffer,Target,Preallocated,MaxSize>::target_t & t,
+                                output_stream<T,Buffer,Target,Preallocated,MaxSize>::buffer_t & b)
             : target_(&t),
               buffer_(&b),
               n_confirmed_(0)
@@ -254,8 +373,12 @@ namespace csl
               template <typename> class Target,
               size_t Preallocated,
               size_t MaxSize>
-    stream<T,Buffer,Target,Preallocated,MaxSize>::stream(
-                                    stream<T,Buffer,Target,Preallocated,MaxSize>::buffer_t & b)
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::output_stream(
+                                output_stream<T,Buffer,Target,Preallocated,MaxSize>::buffer_t & b)
             : target_(0),
               buffer_(&b),
               n_confirmed_(0)
@@ -270,8 +393,13 @@ namespace csl
               template <typename> class Target,
               size_t Preallocated,
               size_t MaxSize>
-    void stream<T,Buffer,Target,Preallocated,MaxSize>::set_target(
-                                         stream<T,Buffer,Target,Preallocated,MaxSize>::target_t & t)
+    void
+    output_stream<T,
+                  Buffer,
+                  Target,
+                  Preallocated,
+                  MaxSize>::set_target(
+                                output_stream<T,Buffer,Target,Preallocated,MaxSize>::target_t & t)
     {
       ENTER_FUNCTION();
       target_ = &t;

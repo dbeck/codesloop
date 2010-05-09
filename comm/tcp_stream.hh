@@ -43,10 +43,10 @@ namespace csl
                      public csl::common::stream<T,Buffer,Target,Preallocated,MaxSize>
       {
       public:
+        stream_flags & poll(uint32_t & timeout);
       
         stream(target_t & t, buffer_t & b);
         stream(buffer_t & b);
-
       private:
         CSL_OBJ(csl::common::tcp,stream);
       };
