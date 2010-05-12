@@ -289,14 +289,14 @@ namespace csl
 #endif
 
     template <typename T,
-              template <typename,size_t,size_t> class Buffer,
               template <typename> class Target,
+              template <typename,size_t,size_t> class Buffer,
               size_t Preallocated,
               size_t MaxSize>
     const stream_flags &
     output_stream<T,
-                  Buffer,
                   Target,
+                  Buffer,
                   Preallocated,
                   MaxSize>::start()
     {
@@ -308,14 +308,14 @@ namespace csl
     }
     
     template <typename T,
-              template <typename,size_t,size_t> class Buffer,
               template <typename> class Target,
+              template <typename,size_t,size_t> class Buffer,
               size_t Preallocated,
               size_t MaxSize>
     const stream_flags &
     output_stream<T,
-                  Buffer,
                   Target,
+                  Buffer,
                   Preallocated,
                   MaxSize>::end()
     {
@@ -327,14 +327,14 @@ namespace csl
     }
     
     template <typename T,
-              template <typename,size_t,size_t> class Buffer,
               template <typename> class Target,
+              template <typename,size_t,size_t> class Buffer,
               size_t Preallocated,
               size_t MaxSize>
     const stream_flags &
     output_stream<T,
-                  Buffer,
                   Target,
+                  Buffer,
                   Preallocated,
                   MaxSize>::flush()
     {
@@ -348,14 +348,14 @@ namespace csl
 #undef DEBUG_FLAGS_AND_TARGETOP
                                                 
     template <typename T,
-              template <typename,size_t,size_t> class Buffer,
               template <typename> class Target,
+              template <typename,size_t,size_t> class Buffer,
               size_t Preallocated,
               size_t MaxSize>
     stream_flags &
     output_stream<T,
-                  Buffer,
                   Target,
+                  Buffer,
                   Preallocated,
                   MaxSize>::flags()
     {
@@ -369,17 +369,17 @@ namespace csl
     }
 
     template <typename T,
-              template <typename,size_t,size_t> class Buffer,
               template <typename> class Target,
+              template <typename,size_t,size_t> class Buffer,
               size_t Preallocated,
               size_t MaxSize>
     output_stream<T,
-                  Buffer,
                   Target,
+                  Buffer,
                   Preallocated,
                   MaxSize>::output_stream(
-                                output_stream<T,Buffer,Target,Preallocated,MaxSize>::target_t & t,
-                                output_stream<T,Buffer,Target,Preallocated,MaxSize>::buffer_t & b)
+                                output_stream<T,Target,Buffer,Preallocated,MaxSize>::target_t & t,
+                                output_stream<T,Target,Buffer,Preallocated,MaxSize>::buffer_t & b)
             : buffered_stream<T,Buffer,Preallocated,MaxSize>(b),
               target_(&t)
     {
@@ -389,16 +389,16 @@ namespace csl
     }
     
     template <typename T,
-              template <typename,size_t,size_t> class Buffer,
               template <typename> class Target,
+              template <typename,size_t,size_t> class Buffer,
               size_t Preallocated,
               size_t MaxSize>
     output_stream<T,
-                  Buffer,
                   Target,
+                  Buffer,
                   Preallocated,
                   MaxSize>::output_stream(
-                                output_stream<T,Buffer,Target,Preallocated,MaxSize>::buffer_t & b)
+                                output_stream<T,Target,Buffer,Preallocated,MaxSize>::buffer_t & b)
             : buffered_stream<T,Buffer,Preallocated,MaxSize>(b),
               target_(0)
     {
@@ -408,17 +408,17 @@ namespace csl
     }
     
     template <typename T,
-              template <typename,size_t,size_t> class Buffer,
               template <typename> class Target,
+              template <typename,size_t,size_t> class Buffer,
               size_t Preallocated,
               size_t MaxSize>
     void
     output_stream<T,
-                  Buffer,
                   Target,
+                  Buffer,
                   Preallocated,
                   MaxSize>::set_target(
-                                output_stream<T,Buffer,Target,Preallocated,MaxSize>::target_t & t)
+                                output_stream<T,Target,Buffer,Preallocated,MaxSize>::target_t & t)
     {
       ENTER_FUNCTION();
       target_ = &t;

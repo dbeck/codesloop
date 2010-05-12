@@ -104,7 +104,7 @@ namespace test_stream {
   void test_flags()
   {
     stream_buffer<uint32_t,1,2> b;
-    typedef output_stream<uint32_t,stream_buffer,stream_nop_target,1,2> ui32stream_t;
+    typedef output_stream<uint32_t,stream_nop_target,stream_buffer,1,2> ui32stream_t;
     
     ui32stream_t s(b);
     // initial flags are ok_
@@ -122,7 +122,7 @@ namespace test_stream {
   {
     stream_buffer<uint32_t,1,2> b;
     counting_target<uint32_t> t;
-    typedef output_stream<uint32_t,stream_buffer,counting_target,1,2> ui32stream_t;
+    typedef output_stream<uint32_t,counting_target,stream_buffer,1,2> ui32stream_t;
     ui32stream_t s(t,b);
     ui32stream_t::part_t sp;
     s.reserve(1,sp);
@@ -138,7 +138,7 @@ namespace test_stream {
   {
     stream_buffer<uint32_t,1,2> b;
     counting_target<uint32_t> t;
-    typedef output_stream<uint32_t,stream_buffer,counting_target,1,2> ui32stream_t;
+    typedef output_stream<uint32_t,counting_target,stream_buffer,1,2> ui32stream_t;
     ui32stream_t s(t,b);
     ui32stream_t::part_t sp;
     s.reserve(2,sp);
@@ -158,7 +158,7 @@ namespace test_stream {
   {
     stream_buffer<uint32_t,1,2> b;
     counting_target<uint32_t> t;
-    typedef output_stream<uint32_t,stream_buffer,counting_target,1,2> ui32stream_t;
+    typedef output_stream<uint32_t,counting_target,stream_buffer,1,2> ui32stream_t;
     ui32stream_t s(t,b);
     ui32stream_t::part_t sp;
     s.reserve(2,sp);
@@ -176,7 +176,7 @@ namespace test_stream {
   {
     stream_buffer<uint32_t,1,2> b;
     counting_target<uint32_t> t;
-    typedef output_stream<uint32_t,stream_buffer,counting_target,1,2> ui32stream_t;
+    typedef output_stream<uint32_t,counting_target,stream_buffer,1,2> ui32stream_t;
     ui32stream_t s(t,b);
     assert( s.start() == stream_flags::ok_ );
     assert( t.start_count_ == 1 );
@@ -187,7 +187,7 @@ namespace test_stream {
   {
     stream_buffer<uint32_t,1,2> b;
     counting_target<uint32_t> t;
-    typedef output_stream<uint32_t,stream_buffer,counting_target,1,2> ui32stream_t;
+    typedef output_stream<uint32_t,counting_target,stream_buffer,1,2> ui32stream_t;
     ui32stream_t s(t,b);
     assert( s.end() == stream_flags::ok_ );
     assert( t.end_count_ == 1 );
@@ -198,7 +198,7 @@ namespace test_stream {
   {
     stream_buffer<uint32_t,1,2> b;
     counting_target<uint32_t> t;
-    typedef output_stream<uint32_t,stream_buffer,counting_target,1,2> ui32stream_t;
+    typedef output_stream<uint32_t,counting_target,stream_buffer,1,2> ui32stream_t;
     ui32stream_t s(t,b);
     assert( s.flush() == stream_flags::ok_ );
     assert( t.flush_count_ == 1 );
@@ -209,7 +209,7 @@ namespace test_stream {
   {
     stream_buffer<uint32_t,1,2> b;
     counting_target<uint32_t> t;
-    typedef output_stream<uint32_t,stream_buffer,counting_target,1,2> ui32stream_t;
+    typedef output_stream<uint32_t,counting_target,stream_buffer,1,2> ui32stream_t;
     ui32stream_t s(t,b);
     ui32stream_t::part_t sp;
     
@@ -248,7 +248,7 @@ namespace test_stream {
   {
     stream_buffer<double,1,2> b;
     counting_target<double> t;
-    typedef output_stream<double,stream_buffer,counting_target,1,2> dblstream_t;
+    typedef output_stream<double,counting_target,stream_buffer,1,2> dblstream_t;
     dblstream_t s(t,b);
     dblstream_t::part_t sp,sp2;
     
@@ -282,7 +282,7 @@ namespace test_stream {
   {
     stream_buffer<double,1,2> b;
     counting_target<double> t;
-    typedef output_stream<double,stream_buffer,counting_target,1,2> dblstream_t;
+    typedef output_stream<double,counting_target,stream_buffer,1,2> dblstream_t;
     dblstream_t s(t,b);
     dblstream_t::part_t sp;
     
@@ -303,7 +303,7 @@ namespace test_stream {
     stream_buffer<double,1,2> b;
     counting_target<double> t;
     t.flags_ << stream_flags::security_error_;
-    typedef output_stream<double,stream_buffer,counting_target,1,2> dblstream_t;
+    typedef output_stream<double,counting_target,stream_buffer,1,2> dblstream_t;
     dblstream_t s(t,b);
     assert( s.start() == stream_flags::security_error_ );
     assert( t.start_count_ == 1 );
@@ -314,7 +314,7 @@ namespace test_stream {
     stream_buffer<double,1,2> b;
     counting_target<double> t;
     t.flags_ << stream_flags::security_error_;
-    typedef output_stream<double,stream_buffer,counting_target,1,2> dblstream_t;
+    typedef output_stream<double,counting_target,stream_buffer,1,2> dblstream_t;
     dblstream_t s(t,b);
     assert( s.end() == stream_flags::security_error_ );
     assert( t.end_count_ == 1 );
@@ -325,7 +325,7 @@ namespace test_stream {
     stream_buffer<double,1,2> b;
     counting_target<double> t;
     t.flags_ << stream_flags::security_error_;
-    typedef output_stream<double,stream_buffer,counting_target,1,2> dblstream_t;
+    typedef output_stream<double,counting_target,stream_buffer,1,2> dblstream_t;
     dblstream_t s(t,b);
     assert( s.flush() == stream_flags::security_error_ );
     assert( t.flush_count_ == 1 );
