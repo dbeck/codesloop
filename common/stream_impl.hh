@@ -273,7 +273,7 @@ namespace csl
 #undef DEBUG_FLAGS_AND_BUFFEROP
 
     /*
-    ** OUTPUT STREAM
+    ** OUTPUT STREAM ******************************************
     */
 
 #ifdef DEBUG
@@ -423,6 +423,149 @@ namespace csl
       ENTER_FUNCTION();
       target_ = &t;
       CSL_DEBUGF(L"set_target(target:%p)",&t);
+      LEAVE_FUNCTION();
+    }
+    
+    /*
+    ** INPUT STREAM ******************************************
+    */
+
+#ifdef DEBUG
+#define DEBUG_FLAGS_AND_SOURCEOP(fun) \
+          do { \
+            str flags_str___; \
+            flags_.to_str(flags_str___); \
+            CSL_DEBUGF(fun L"() => stream flags:[%x:%ls]", \
+                      flags_.flags(),flags_str___.c_str() ); \
+          } while(false)
+#else
+#define DEBUG_FLAGS_AND_SOURCEOP(fun)
+#endif
+
+    template <typename T,
+              template <typename> class Source,
+              template <typename,size_t,size_t> class Buffer,
+              size_t Preallocated,
+              size_t MaxSize>
+    const stream_flags &
+    input_stream<T,
+                 Source,
+                 Buffer,
+                 Preallocated,
+                 MaxSize>::start()
+    {
+      ENTER_FUNCTION();
+      flags_ << source_->start(*this);
+      DEBUG_FLAGS_AND_SOURCEOP(L"start");
+      RETURN_FUNCTION(flags_);
+    }
+    
+    template <typename T,
+              template <typename> class Source,
+              template <typename,size_t,size_t> class Buffer,
+              size_t Preallocated,
+              size_t MaxSize>
+    const stream_flags &
+    input_stream<T,
+                 Source,
+                 Buffer,
+                 Preallocated,
+                 MaxSize>::end()
+    {
+      ENTER_FUNCTION();
+      flags_ << source_->end(*this);
+      DEBUG_FLAGS_AND_SOURCEOP(L"end");
+      RETURN_FUNCTION(flags_);
+    }
+    
+    template <typename T,
+              template <typename> class Source,
+              template <typename,size_t,size_t> class Buffer,
+              size_t Preallocated,
+              size_t MaxSize>
+    const stream_flags &
+    input_stream<T,
+                 Source,
+                 Buffer,
+                 Preallocated,
+                 MaxSize>::flush()
+    {
+      ENTER_FUNCTION();
+      flags_ << source_->flush(*this);
+      DEBUG_FLAGS_AND_SOURCEOP(L"flush");
+      RETURN_FUNCTION(flags_);
+    }
+
+    template <typename T,
+              template <typename> class Source,
+              template <typename,size_t,size_t> class Buffer,
+              size_t Preallocated,
+              size_t MaxSize>
+    const stream_flags &
+    input_stream<T,
+                 Source,
+                 Buffer,
+                 Preallocated,
+                 MaxSize>::poll(size_t & available_items,
+                                uint32_t & timeout_ms)
+    {
+      ENTER_FUNCTION();
+      CSL_DEBUGF(L"poll(available_items:%lld,timeout_ms:%lld)",
+                 static_cast<int64_t>(available_items),
+                 static_cast<int64_t>(timeout_ms));
+      const stream_flags & flret(source_->poll(timeout_ms));
+      flags_ << flret;
+      if( available_items > buffered_stream_t::has_n_items() )
+      {
+        available_items = buffered_stream_t::has_n_items();
+      }
+      CSL_DEBUGF(L"poll(available_items:%lld,timeout_ms:%lld)",
+                 static_cast<int64_t>(available_items),
+                 static_cast<int64_t>(timeout_ms));
+      DEBUG_FLAGS_AND_SOURCEOP(L"poll");
+      RETURN_FUNCTION(flags_);
+    }
+
+#undef DEBUG_FLAGS_AND_SOURCEOP
+
+    template <typename T,
+              template <typename> class Source,
+              template <typename,size_t,size_t> class Buffer,
+              size_t Preallocated,
+              size_t MaxSize>
+    stream_flags &
+    input_stream<T,
+                 Source,
+                 Buffer,
+                 Preallocated,
+                 MaxSize>::flags()
+    {
+      ENTER_FUNCTION();
+#ifdef DEBUG
+      str flags_str; flags_.to_str(flags_str);
+      CSL_DEBUGF(L"flags() => flags:[%x:%ls]",
+        flags_.flags(),flags_str.c_str() );
+#endif /*DEBUG*/
+      RETURN_FUNCTION(flags_);
+    }
+                                    
+    template <typename T,
+              template <typename> class Source,
+              template <typename,size_t,size_t> class Buffer,
+              size_t Preallocated,
+              size_t MaxSize>
+    input_stream<T,
+                 Source,
+                 Buffer,
+                 Preallocated,
+                 MaxSize>::input_stream(
+                                input_stream<T,Source,Buffer,Preallocated,MaxSize>::source_t & s,
+                                input_stream<T,Source,Buffer,Preallocated,MaxSize>::buffer_t & b)
+            : buffered_stream<T,Buffer,Preallocated,MaxSize>(b),
+              source_(&s)
+    {
+      ENTER_FUNCTION();
+      CSL_DEBUGF(L"input_stream::input_stream(source:%p,buffer:%p)",&s,&b);
       LEAVE_FUNCTION();
     }
   }
