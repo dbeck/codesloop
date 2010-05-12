@@ -23,13 +23,8 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_comm_handler_hh_included_
-#define _csl_comm_handler_hh_included_
-
-/**
-   @file handler.hh
-   @brief @todo
- */
+#ifndef _csl_comm_handler_old0_hh_included_
+#define _csl_comm_handler_old0_hh_included_
 
 #include "codesloop/comm/connid.hh"
 #include "codesloop/comm/sai.hh"
@@ -41,7 +36,7 @@ namespace csl
 {
   namespace comm
   {
-    class handler
+    class handler_old0
     {
       public:
         virtual bool on_connected( connid_t id,
@@ -64,11 +59,11 @@ namespace csl
           return;
         }
 
-        virtual ~handler() {}
+        virtual ~handler_old0() {}
     };
   }
 }
 
 #endif /*__cplusplus*/
-#endif /* _csl_comm_handler_hh_included_ */
+#endif /* _csl_comm_handler_old0_hh_included_ */
 

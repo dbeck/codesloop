@@ -59,7 +59,7 @@ namespace test_tcp_lstnr {
   void baseline() { lstnr_old0 o; }
 
   template <int L>
-  class limited_handler : public csl::comm::handler
+  class limited_handler : public csl::comm::handler_old0
   {
     private:
       int n_;

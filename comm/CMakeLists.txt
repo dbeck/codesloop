@@ -53,7 +53,7 @@ ADD_LIBRARY( csl_comm STATIC
              exc.cc               exc.hh
              initcomm.cc          initcomm.hh
              sai.hh               connid.hh
-             handler.hh
+             handler_old0.hh
              csl_comm.hh
            )
 

@@ -41,6 +41,7 @@ ADD_LIBRARY( csl_common STATIC
              mpool.hh      tbuf.hh
              logger.cc     logger.hh
              arch.cc       arch.hh
+	     ydr_util.cc   ydr_util.hh
              serializable.hh
              obj.cc        obj.hh
              hlprs.cc      hlprs.hh

@@ -28,7 +28,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/comm/sai.hh"
 #include "codesloop/comm/connid.hh"
-#include "codesloop/comm/handler.hh"
+#include "codesloop/comm/handler_old0.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/obj.hh"
 #include "codesloop/nthread/pevent.hh"
@@ -52,7 +52,7 @@ namespace csl
           /* address, to be setup during initialization */
           const SAI & own_addr() const;
 
-          bool init(handler & h, SAI address, int backlog=100);
+          bool init(handler_old0 & h, SAI address, int backlog=100);
           bool start();
           bool stop();
 

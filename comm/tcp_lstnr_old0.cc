@@ -150,7 +150,7 @@ namespace csl
         thread               listener_thread_;
         bool                 stop_me_;
         mutex                mtx_;
-        handler *            handler_;
+        handler_old0 *       handler_;
         ev_data_vec_t        ev_pool_;
         conn_queue           new_data_queue_;
         data_handler         new_data_handler_;
@@ -204,7 +204,7 @@ namespace csl
           loop_ = 0;
         }
 
-        bool init(handler & h, SAI address, int backlog)
+        bool init(handler_old0 & h, SAI address, int backlog)
         {
           ENTER_FUNCTION();
           {
@@ -672,7 +672,7 @@ namespace csl
       /* forwarding functions */
       const SAI & lstnr_old0::own_addr() const             { return impl_->addr_;         }
 
-      bool lstnr_old0::init(handler & h, SAI address, int backlog)
+      bool lstnr_old0::init(handler_old0 & h, SAI address, int backlog)
       {
         return impl_->init(h,address,backlog);
       }
