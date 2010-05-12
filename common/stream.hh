@@ -74,22 +74,15 @@ namespace csl
     
     template <typename T,
               template <typename,size_t,size_t> class Buffer = stream_buffer,
-              template <typename> class Target = stream_nop_target,
               size_t Preallocated=1024,
               size_t MaxSize=(256*1024)>
-    class output_stream : virtual public stream_base<T>
+    class buffered_stream : virtual public stream_base<T>
     {
     public:
       typedef stream_base<T>                  base_t;
       typedef stream_part<T>                  part_t;
-      typedef Target<T>                       target_t;
       typedef Buffer<T,Preallocated,MaxSize>  buffer_t;
-      
-      /* packet frame */
-      const stream_flags & start();
-      const stream_flags & end();
-      const stream_flags & flush();
-      
+
       /* error handling */
       stream_flags & flags();
 
@@ -100,13 +93,55 @@ namespace csl
       /* receiving data */
       part_t & get( size_t sz, part_t & sp );
       const stream_flags & poll( size_t & available_items, uint32_t & timeout_ms );
-      
+
       /* sizes */
       size_t total_confirmed_items();
       size_t free_item_count();
       size_t max_item_count();
       size_t has_n_items();
+
+      virtual ~buffered_stream() {}
+      buffered_stream(buffer_t & b);
       
+    protected:
+      /* event upcalls */
+      virtual void on_reserved( size_t sz ) {}
+      virtual void on_confirmed( size_t n_succeed ) {}
+      virtual void on_get( size_t sz ) {}
+      virtual void on_poll( size_t & available_items,  uint32_t & timeout_ms ) {}
+
+    private:
+      // no default construction: at least a buffer is needed
+      buffered_stream() : buffer_(0), n_confirmed_(0) {}
+      
+      stream_flags  flags_;
+      buffer_t *    buffer_;
+      size_t        n_confirmed_;
+      
+      CSL_OBJ(csl::common,buffered_stream);
+    };
+    
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer = stream_buffer,
+              template <typename> class Target = stream_nop_target,
+              size_t Preallocated=1024,
+              size_t MaxSize=(256*1024)>
+    class output_stream : virtual public buffered_stream<T,Buffer,Preallocated,MaxSize>
+    {
+    public:
+      typedef Target<T>                                      target_t;
+      typedef buffered_stream<T,Buffer,Preallocated,MaxSize> buffered_stream_t;
+      typedef Buffer<T,Preallocated,MaxSize>                 buffer_t;
+      
+      
+      /* packet frame */
+      const stream_flags & start();
+      const stream_flags & end();
+      const stream_flags & flush();
+      
+      /* error handling */
+      stream_flags & flags();
+            
       virtual ~output_stream() {}
       output_stream(target_t & t, buffer_t & b);
       output_stream(buffer_t & b);
@@ -114,12 +149,10 @@ namespace csl
       
     private:
       // no default construction: at least a buffer is needed
-      output_stream() : target_(0), buffer_(0), n_confirmed_(0) {}
+      output_stream() : target_(0) {}
       
       stream_flags  flags_;
       target_t *    target_;
-      buffer_t *    buffer_;
-      size_t        n_confirmed_;
       
       CSL_OBJ(csl::common,output_stream);
     };
