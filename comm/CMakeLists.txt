@@ -55,6 +55,11 @@ ADD_LIBRARY( csl_comm STATIC
              sai.hh               connid.hh
              handler_old0.hh
              csl_comm.hh
+	     # -- New comm layer --
+	     handler.hh channel.hh endpoint.hh
+	     handler_factory.hh
+	     channel_factory.hh
+	     listener.hh
            )
 
 ADD_DEPENDENCIES( csl_comm ../common/libev/config.h )
