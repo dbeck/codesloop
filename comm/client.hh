@@ -23,20 +23,30 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_comm_tcp_stream_impl_hh_included_
-#define _csl_comm_tcp_stream_impl_hh_included_
+#ifndef _csl_comm_client_hh_included_
+#define _csl_comm_client_hh_included_
+#include "codesloop/comm/channel_factory.hh"
+#include "codesloop/comm/endpoint.hh"
 #ifdef __cplusplus
 
 namespace csl
 {
   namespace comm
   {
-    namespace tcp
+    class client
     {
-    }
+    public:
+      virtual bool init( channel_factory & chn_ftry,
+                         endpoint & me,
+                         endpoint & peer ) = 0;
+
+      virtual bool start() = 0;
+      virtual bool stop() = 0;
+
+      virtual channel & get_channel() = 0;
+    };
   }
 }
 
-#endif /*__cplusplus*/
-#endif /*_csl_comm_tcp_stream_impl_hh_included_*/
-
+#endif __cplusplus
+#endif */ _csl_comm_client_hh_included_ */

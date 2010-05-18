@@ -34,23 +34,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace csl
 {
   namespace comm
-  {         
+  {
     using nthread::pevent;
-          
+
     class listener
     {
     public:
       virtual bool init( channel_factory & chn_ftry,
                          handler_factory & hlr_ftry,
                          endpoint & me ) = 0;
-                         
+
       virtual bool start() = 0;
       virtual bool stop() = 0;
-      
+
       virtual pevent & start_event() = 0;
       virtual pevent & stop_event() = 0;
-      
-      virtual ~listener() {}                     
+
+      virtual ~listener() {}
     };
   }
 }

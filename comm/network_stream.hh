@@ -26,17 +26,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_comm_network_stream_hh_included_
 #define _csl_comm_network_stream_hh_included_
 #include "codesloop/nthread/locked_stream.hh"
+#include "codesloop/common/common.h"
 #ifdef __cplusplus
 
 namespace csl
 {
   namespace comm
   {
-    template <typename T>
-    class network_stream_base : public locked_stream<T>
+    class network_stream_base : public locked_stream<uint8_t>
     {
     public:
-      virtual stream_flags & poll(uint32_t & timeout) = 0;
+      typedef uint8_t item_t;
       virtual ~network_stream_base() {}
     };
   }

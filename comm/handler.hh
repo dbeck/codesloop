@@ -37,9 +37,13 @@ namespace csl
       // channel, endpoints and all other
       // details are set by the handler_factory
 
+      // the return value of these functions tell
+      // the listener whether to keep the connection
+      // or not ; false=drop ; true=keep
+
       virtual bool on_connect() = 0;
       virtual bool on_data() = 0;
-      virtual bool on_disconnect() = 0;
+      virtual void on_disconnect() = 0;
 
       virtual ~handler() {}
     };

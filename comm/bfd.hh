@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_comm_bfd_hh_included_
 #define _csl_comm_bfd_hh_included_
 
-/**
-   @file bfd.hh
-   @brief buffered file descriptor (fd)
- */
-
 #include "codesloop/comm/sai.hh"
 #include "codesloop/common/rdbuf.hh"
 #include "codesloop/common/read_res.hh"

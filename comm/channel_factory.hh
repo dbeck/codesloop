@@ -41,7 +41,7 @@ namespace csl
                                 channel::stream_t & net_out,
                                 endpoint & me,
                                 endpoint & peer );
-                               
+
       virtual ~channel_factory() {}
     };
   }

@@ -38,29 +38,33 @@ ADD_LIBRARY( csl_comm STATIC
              # -- TCP --
              tcp_lstnr_old0.cc         tcp_lstnr_old0.hh
              tcp_client_old0.cc        tcp_client_old0.hh
-	     tcp_lstnr.hh              tcp_lstnr_impl.hh
-	     tcp_client.hh             tcp_client_impl.hh
              # -- UDP --
-             udp_recvr.cc         udp_recvr.hh
-             udp_hello.cc         udp_hello.hh
-             udp_auth.cc          udp_auth.hh
-             udp_data.cc          udp_data.hh
+             udp_recvr.cc              udp_recvr.hh
+             udp_hello.cc              udp_hello.hh
+             udp_auth.cc               udp_auth.hh
+             udp_data.cc               udp_data.hh
              # -- Generic --
-	     network_support.cc   network_support.hh
-	     network_stream.hh
-	     tcp_stream.hh        tcp_stream_impl.hh
-             bfd.cc               bfd.hh
-             exc.cc               exc.hh
-             initcomm.cc          initcomm.hh
-             sai.hh               connid.hh
+             network_support.cc        network_support.hh
+             bfd.cc                    bfd.hh
+             exc.cc                    exc.hh
+             initcomm.cc               initcomm.hh
+             sai.hh                    connid.hh
              handler_old0.hh
              csl_comm.hh
-	     # -- New comm layer --
-	     handler.hh channel.hh endpoint.hh
-	     handler_factory.hh
-	     channel_factory.hh
-	     listener.hh
-           )
+             # -- New comm layer --
+             endpoint.hh
+             handler.hh                handler_factory.hh
+             channel.hh                channel_factory.hh
+             listener.hh
+             client.hh
+             network_stream.hh
+             # -- New TCP layer --
+             tcp_stream.cc             tcp_stream.hh
+             tcp_stream_source.cc      tcp_stream_source.hh
+             tcp_stream_target.cc      tcp_stream_target.hh
+             tcp_lstnr.cc              tcp_lstnr.hh
+             tcp_client.cc             tcp_client.hh
+             )
 
 ADD_DEPENDENCIES( csl_comm ../common/libev/config.h )
 

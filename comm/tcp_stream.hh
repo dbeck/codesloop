@@ -34,27 +34,22 @@ namespace csl
   {
     namespace tcp
     {
-      template <typename T,
-                template <typename,size_t,size_t> class Buffer = csl::common::stream_buffer,
-                template <typename> class Target = csl::common::stream_nop_target,
-                size_t Preallocated=1024,
-                size_t MaxSize=(256*1024)>
-      class stream : public csl::comm::network_stream_base<T>,
-                     public csl::common::stream<T,Buffer,Target,Preallocated,MaxSize>
+      class output_stream :
+        public network_stream_base,
+        public csl::common::output_stream<uint8_t,
+                                          Target,
+                                          csl::common::stream_buffer,
+                                          1024,
+                                          256*1024>
       {
-      public:
-        stream_flags & poll(uint32_t & timeout);
-      
-        stream(target_t & t, buffer_t & b);
-        stream(buffer_t & b);
-      private:
-        CSL_OBJ(csl::common::tcp,stream);
+      };
+
+      class input_stream
+      {
       };
     }
   }
 }
 
 #endif /*__cplusplus*/
-#include "codesloop/comm/tcp_stream_impl.hh"
 #endif /*_csl_comm_tcp_stream_hh_included_*/
-
