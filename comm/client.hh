@@ -48,5 +48,5 @@ namespace csl
   }
 }
 
-#endif __cplusplus
-#endif */ _csl_comm_client_hh_included_ */
+#endif /*__cplusplus*/
+#endif /*_csl_comm_client_hh_included_*/

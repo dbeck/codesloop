@@ -26,9 +26,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_comm_tcp_lstnr_hh_included_
 #define _csl_comm_tcp_lstnr_hh_included_
 
-#include "codesloop/comm/sai.hh"
-#include "codesloop/comm/connid.hh"
-// #include "codesloop/comm/handler_old0.hh"
+#include "codesloop/comm/channel_factory.hh"
+#include "codesloop/comm/handler_factory.hh"
+#include "codesloop/comm/listener.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/obj.hh"
 #include "codesloop/nthread/pevent.hh"
@@ -43,25 +43,25 @@ namespace csl
   {
     namespace tcp
     {
-      class lstnr
+      class lstnr : public csl::comm::listener
       {
         public:
           lstnr();
           virtual ~lstnr();
 
-          /* address, to be setup during initialization */
-          const SAI & own_addr() const;
+          bool init( channel_factory & chn_ftry,
+                     handler_factory & hlr_ftry,
+                     endpoint & me ) = 0;
 
-          // bool init(handler & h, SAI address, int backlog=100);
           bool start();
           bool stop();
 
           pevent & start_event();
           pevent & exit_event();
 
-          struct impl;
         private:
           /* private implementation */
+          struct impl;
           std::auto_ptr<impl> impl_;
 
           /* no-copy */

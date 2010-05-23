@@ -425,7 +425,7 @@ namespace csl
       CSL_DEBUGF(L"set_target(target:%p)",&t);
       LEAVE_FUNCTION();
     }
-    
+
     /*
     ** INPUT STREAM ******************************************
     */
@@ -459,7 +459,7 @@ namespace csl
       DEBUG_FLAGS_AND_SOURCEOP(L"start");
       RETURN_FUNCTION(flags_);
     }
-    
+
     template <typename T,
               template <typename> class Source,
               template <typename,size_t,size_t> class Buffer,
@@ -477,7 +477,7 @@ namespace csl
       DEBUG_FLAGS_AND_SOURCEOP(L"end");
       RETURN_FUNCTION(flags_);
     }
-    
+
     template <typename T,
               template <typename> class Source,
               template <typename,size_t,size_t> class Buffer,
@@ -548,7 +548,7 @@ namespace csl
 #endif /*DEBUG*/
       RETURN_FUNCTION(flags_);
     }
-                                    
+
     template <typename T,
               template <typename> class Source,
               template <typename,size_t,size_t> class Buffer,

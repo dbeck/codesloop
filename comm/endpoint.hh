@@ -25,7 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_comm_endpoint_hh_included_
 #define _csl_comm_endpoint_hh_included_
-#include "codesloop/common/ustr.h"
+#include "codesloop/common/ustr.hh"
 #include "codesloop/common/common.h"
 #ifdef __cplusplus
 

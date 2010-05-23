@@ -26,6 +26,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_comm_tcp_stream_hh_included_
 #define _csl_comm_tcp_stream_hh_included_
 #include "codesloop/comm/network_stream.hh"
+#include "codesloop/comm/tcp_stream_target.hh"
+#include "codesloop/comm/tcp_stream_source.hh"
 #ifdef __cplusplus
 
 namespace csl
@@ -34,18 +36,34 @@ namespace csl
   {
     namespace tcp
     {
-      class output_stream :
-        public network_stream_base,
-        public csl::common::output_stream<uint8_t,
-                                          Target,
-                                          csl::common::stream_buffer,
-                                          1024,
-                                          256*1024>
+      typedef csl::common::output_stream<
+                      uint8_t,
+                      csl::comm::tcp::stream_target,
+                      csl::common::stream_buffer,
+                      1024,
+                      256*1024> tcp_output_stream_base;
+
+      typedef csl::common::input_stream<
+                      uint8_t,
+                      csl::comm::tcp::stream_source,
+                      csl::common::stream_buffer,
+                      1024,
+                      256*1024> tcp_input_stream_base;
+
+      class output_stream : virtual public network_stream, virtual public tcp_output_stream_base
       {
+      public:
+        typedef csl::comm::tcp::stream_target<uint8_t> tcp_target_t;
+
+        virtual ~output_stream() {}
       };
 
-      class input_stream
+      class input_stream : virtual public network_stream, virtual public tcp_input_stream_base
       {
+      public:
+        typedef csl::comm::tcp::stream_source<uint8_t> tcp_source_t;
+
+        virtual ~input_stream() {}
       };
     }
   }

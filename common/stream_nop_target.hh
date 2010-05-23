@@ -36,7 +36,7 @@ namespace csl
   namespace common
   {
     template <typename T> class stream_base;
-    
+
     template <typename T>
     class stream_nop_target
     {
@@ -45,7 +45,7 @@ namespace csl
         const stream_flags & end(stream_base<T> &)          { return flags_; }
         const stream_flags & flush(stream_base<T> &)        { return flags_; }
         const stream_flags & data(stream_base<T> &, size_t) { return flags_; }
-        
+
       private:
         stream_flags flags_;
     };

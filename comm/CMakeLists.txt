@@ -44,7 +44,6 @@ ADD_LIBRARY( csl_comm STATIC
              udp_auth.cc               udp_auth.hh
              udp_data.cc               udp_data.hh
              # -- Generic --
-             network_support.cc        network_support.hh
              bfd.cc                    bfd.hh
              exc.cc                    exc.hh
              initcomm.cc               initcomm.hh

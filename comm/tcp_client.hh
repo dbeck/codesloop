@@ -26,7 +26,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_comm_tcp_client_hh_included_
 #define _csl_comm_tcp_client_hh_included_
 
-#include "codesloop/comm/sai.hh"
+#include "codesloop/comm/tcp_stream.hh"
+#include "codesloop/comm/endpoint.hh"
+#include "codesloop/comm/client.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/obj.hh"
 #ifdef __cplusplus
@@ -38,25 +40,48 @@ namespace csl
   {
     namespace tcp
     {
-      class client
+      class client : public csl::comm::client
       {
         public:
           client();
-          virtual ~client() { }
+          virtual ~client();
 
-          bool init(SAI address);
+          bool init( channel_factory & chn_ftry,
+                     endpoint & me,
+                     endpoint & peer );
 
-          /* network ops */
+          bool start();
+          bool stop();
 
-          /* address, to be setup during initialization */
-          const SAI & peer_addr() const { return peer_addr_; }
+          channel & get_channel();
 
-          /* info ops */
-          const SAI & own_addr() const { return own_addr_; }
+          const endpoint & own_addr()  const { return own_addr_;  }
+          const endpoint & peer_addr() const { return peer_addr_; }
 
         private:
-          SAI own_addr_;
-          SAI peer_addr_;
+          typedef csl::comm::tcp::output_stream           out_stream_t;
+          typedef csl::comm::tcp::input_stream            in_stream_t;
+          typedef out_stream_t::buffer_t                  out_buf_t;
+          typedef in_stream_t::buffer_t                   in_buf_t;
+          typedef csl::comm::tcp::stream_target<uint8_t>  target_t;
+          typedef csl::comm::tcp::stream_target<uint8_t>  source_t;
+
+          endpoint                own_addr_;
+          endpoint                peer_addr_;
+          channel_factory *       chn_ftry_;
+
+          /* this is the abstraction seen by the users */
+          std::auto_ptr<channel> channel_;
+
+          /* these are the internal details needed */
+          std::auto_ptr<target_t>      target_;
+          std::auto_ptr<target_t>      source_;
+
+          std::auto_ptr<out_stream_t>  out_buf_;
+          std::auto_ptr<out_stream_t>  in_buf_;
+
+          std::auto_ptr<out_stream_t>  out_;
+          std::auto_ptr<in_stream_t>   in_;
 
           /* no-copy */
           client(const client & other) { }
@@ -72,4 +97,3 @@ namespace csl
 
 #endif /*__cplusplus*/
 #endif /* _csl_comm_tcp_client_hh_included_ */
-

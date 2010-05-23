@@ -33,15 +33,14 @@ namespace csl
 {
   namespace comm
   {
-    class network_stream_base : public locked_stream<uint8_t>
+    class network_stream : virtual public csl::nthread::locked_stream<uint8_t>
     {
     public:
       typedef uint8_t item_t;
-      virtual ~network_stream_base() {}
+      virtual ~network_stream() {}
     };
   }
 }
 
 #endif /*__cplusplus*/
 #endif /*_csl_comm_network_stream_hh_included_*/
-

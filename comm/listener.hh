@@ -26,8 +26,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_comm_listener_hh_included_
 #define _csl_comm_listener_hh_included_
 #include "codesloop/nthread/pevent.hh"
-#include "codesloop/comm/channel_factory.h"
-#include "codesloop/comm/handler_factory.h"
+#include "codesloop/comm/channel_factory.hh"
+#include "codesloop/comm/handler_factory.hh"
 #include "codesloop/common/common.h"
 #ifdef __cplusplus
 
