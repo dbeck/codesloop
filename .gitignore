@@ -264,3 +264,7 @@ test/comm/t__tcp_client_old0
 test/comm/t__tcp_lstnr_old0
 test/common/t__input_stream
 test/common/t__output_stream
+test/comm/t__tcp_stream_source
+test/comm/t__tcp_stream_target
+test/comm/t__tcp_input_stream
+test/comm/t__tcp_output_stream

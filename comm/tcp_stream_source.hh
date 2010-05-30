@@ -26,6 +26,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_comm_tcp_stream_source_hh_included_
 #define _csl_comm_tcp_stream_source_hh_included_
 #include "codesloop/common/stream_flags.hh"
+#include "codesloop/common/stream.hh"
 #ifdef __cplusplus
 
 namespace csl
@@ -36,8 +37,8 @@ namespace csl
     {
       class input_stream;
 
-      template <typename T>
-      class stream_source
+      /* default dummy implementation */
+      template <typename T> class stream_source
       {
       public:
         typedef csl::common::input_stream<
@@ -47,16 +48,42 @@ namespace csl
                         1024,
                         256*1024> stream_t;
 
-        typedef csl::common::stream_flags      flags_t;
+        typedef csl::common::stream_flags flags_t;
 
-        const flags_t & start(stream_t &)        { return flags_; }
-        const flags_t & end(stream_t &)          { return flags_; }
-        const flags_t & flush(stream_t &)        { return flags_; }
-        const flags_t & poll(uint32_t &)         { return flags_; }
+        /* interface functions */
+        const flags_t & start(stream_t &)  { return flags_; }
+        const flags_t & end(stream_t &)    { return flags_; }
+        const flags_t & flush(stream_t &)  { return flags_; }
+        const flags_t & poll(uint32_t &)   { return flags_; }
 
       private:
         flags_t flags_;
       };
+
+      /* most common implementation */
+      template <> class stream_source<uint8_t>
+      {
+      public:
+        typedef csl::common::input_stream<
+                        uint8_t,
+                        csl::comm::tcp::stream_source,
+                        csl::common::stream_buffer,
+                        1024,
+                        256*1024> stream_t;
+
+        typedef csl::common::stream_flags flags_t;
+
+        /* interface functions */
+        const flags_t & start(stream_t & s);
+        const flags_t & end(stream_t & s);
+        const flags_t & flush(stream_t & s);
+        const flags_t & poll(uint32_t & timeout_ms);
+
+      private:
+        flags_t flags_;
+        int     fd_;
+      };
+
     }
   }
 }

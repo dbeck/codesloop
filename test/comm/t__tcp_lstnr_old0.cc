@@ -44,9 +44,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace csl::comm;
 using namespace csl::comm::tcp;
 using namespace csl::nthread;
-//using namespace csl::common;
 
-/** @brief @todo */
 namespace test_tcp_lstnr {
 
   /*
@@ -231,4 +229,3 @@ int main()
 }
 
 /* EOF */
-
