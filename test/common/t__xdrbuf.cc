@@ -23,14 +23,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__xdrbuf.cc
-   @brief Tests to verify xdr utilities
- */
-
+#if 0
 #ifndef DEBUG
 #define DEBUG
+#define DEBUG_ENABLE_INDENT
+//#define DEBUG_VERBOSE
 #endif /* DEBUG */
+#endif
 
 #include "codesloop/common/xdrbuf.hh"
 #include "codesloop/common/pbuf.hh"
@@ -45,10 +44,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::common;
 
-/** @brief contains tests related to xdr buffer */
-namespace test_xdrbuf {
-
-  /** @test baseline for performance comparison */
+namespace test_xdrbuf
+{
   void baseline()
   {
     pbuf pb;
@@ -56,7 +53,6 @@ namespace test_xdrbuf {
     assert( xb.position() == 0 );
   }
 
-  /** @test copy constructor */
   void test_copy()
   {
     pbuf pb;
@@ -65,7 +61,6 @@ namespace test_xdrbuf {
     assert( xb == xc );
   }
 
-  /** @test integer de/serialization */
   void test_longlong()
   {
     pbuf pb;
@@ -97,7 +92,6 @@ namespace test_xdrbuf {
     assert( caught == true );
   }
 
-  /** @test integer de/serialization */
   void test_int()
   {
     pbuf pb;
@@ -129,7 +123,6 @@ namespace test_xdrbuf {
     assert( caught == true );
   }
 
-  /** @test string de/serialization */
   void test_string()
   {
     pbuf pb;
@@ -189,7 +182,6 @@ namespace test_xdrbuf {
     assert( caught == false );
   }
 
-  /** @test string de/serialization */
   void test_ustring()
   {
     pbuf pb;
@@ -249,7 +241,6 @@ namespace test_xdrbuf {
     assert( caught == false );
   }
 
-  /** @test xdrbuf::bindata_t de/serialization */
   void test_bin()
   {
     zfile zf;
@@ -277,7 +268,6 @@ namespace test_xdrbuf {
     assert( ::memcmp( ptr, ptr2, static_cast<size_t>(sz) ) == 0 );
   }
 
-  /** @test pbuf de/serialization */
   void test_pbuf()
   {
     zfile zf;
@@ -303,7 +293,6 @@ namespace test_xdrbuf {
     assert( ptr == ptr2 );
   }
 
-  /** @test reading 2048 bytes of garbage integer */
   void garbage_int_small()
   {
     zfile zf;
@@ -333,7 +322,6 @@ namespace test_xdrbuf {
     assert( exc_caught == csl::common::exc::rs_xdr_eof );
   }
 
-  /** @test reading 204800 bytes of garbage integer */
   void garbage_int_large()
   {
     zfile zf;
@@ -366,7 +354,6 @@ namespace test_xdrbuf {
     assert( exc_caught == csl::common::exc::rs_xdr_eof );
   }
 
-  /** @test reading 2048 bytes of garbage string */
   void garbage_string_small()
   {
     zfile zf;
@@ -396,7 +383,6 @@ namespace test_xdrbuf {
     assert( exc_caught == csl::common::exc::rs_xdr_invalid );
   }
 
-  /** @test reading 204800 bytes of garbage string */
   void garbage_string_large()
   {
     zfile zf;
@@ -426,7 +412,6 @@ namespace test_xdrbuf {
     assert( exc_caught == csl::common::exc::rs_xdr_invalid );
   }
 
-  /** @test reading 2048 bytes of garbage binary data to pbuf */
   void garbage_pbuf_small()
   {
     zfile zf;
@@ -456,7 +441,6 @@ namespace test_xdrbuf {
     assert( exc_caught == csl::common::exc::rs_xdr_invalid );
   }
 
-  /** @test reading 204800 bytes of garbage binary data to pbuf */
   void garbage_pbuf_large()
   {
     zfile zf;

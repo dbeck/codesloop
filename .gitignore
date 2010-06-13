@@ -268,3 +268,4 @@ test/comm/t__tcp_stream_source
 test/comm/t__tcp_stream_target
 test/comm/t__tcp_input_stream
 test/comm/t__tcp_output_stream
+test/common/t__ydr_util

@@ -72,6 +72,9 @@ namespace csl
       virtual ~stream_base() {}
     };
 
+    typedef stream_base<uint8_t>  u8_stream_base_t;
+    typedef stream_base<int32_t>  i32_stream_base_t;
+
     template <typename T,
               template <typename,size_t,size_t> class Buffer = stream_buffer,
               size_t Preallocated=1024,
@@ -82,6 +85,11 @@ namespace csl
       typedef stream_base<T>                  base_t;
       typedef stream_part<T>                  part_t;
       typedef Buffer<T,Preallocated,MaxSize>  buffer_t;
+
+      /* packet frame */
+      virtual const stream_flags & start();
+      virtual const stream_flags & end();
+      virtual const stream_flags & flush();
 
       /* error handling */
       stream_flags & flags();

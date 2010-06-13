@@ -35,6 +35,63 @@ namespace csl
               template <typename,size_t,size_t> class Buffer,
               size_t Preallocated,
               size_t MaxSize>
+    const stream_flags &
+    buffered_stream<T,
+                    Buffer,
+                    Preallocated,
+                    MaxSize>::start()
+    {
+      ENTER_FUNCTION();
+#ifdef DEBUG
+      str flags_str; flags_.to_str(flags_str);
+      CSL_DEBUGF(L"start() => flags:[%x:%ls]",
+        flags_.flags(),flags_str.c_str() );
+#endif /*DEBUG*/
+      RETURN_FUNCTION(flags_);
+    }
+
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              size_t Preallocated,
+              size_t MaxSize>
+    const stream_flags &
+    buffered_stream<T,
+                    Buffer,
+                    Preallocated,
+                    MaxSize>::end()
+    {
+      ENTER_FUNCTION();
+#ifdef DEBUG
+      str flags_str; flags_.to_str(flags_str);
+      CSL_DEBUGF(L"end() => flags:[%x:%ls]",
+        flags_.flags(),flags_str.c_str() );
+#endif /*DEBUG*/
+      RETURN_FUNCTION(flags_);
+    }
+
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              size_t Preallocated,
+              size_t MaxSize>
+    const stream_flags &
+    buffered_stream<T,
+                    Buffer,
+                    Preallocated,
+                    MaxSize>::flush()
+    {
+      ENTER_FUNCTION();
+#ifdef DEBUG
+      str flags_str; flags_.to_str(flags_str);
+      CSL_DEBUGF(L"flush() => flags:[%x:%ls]",
+        flags_.flags(),flags_str.c_str() );
+#endif /*DEBUG*/
+      RETURN_FUNCTION(flags_);
+    }
+
+    template <typename T,
+              template <typename,size_t,size_t> class Buffer,
+              size_t Preallocated,
+              size_t MaxSize>
     stream_flags &
     buffered_stream<T,
                     Buffer,
