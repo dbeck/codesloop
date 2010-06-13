@@ -23,13 +23,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <typeinfo>
 #include "codesloop/common/obj.hh"
-
-/**
-  @file common/src/obj.cc
-  @brief implementation of simple string class
- */
 
 namespace csl
 {

@@ -76,7 +76,7 @@ namespace csl
               template <typename,size_t,size_t> class Buffer = stream_buffer,
               size_t Preallocated=1024,
               size_t MaxSize=(256*1024)>
-    class buffered_stream : virtual public stream_base<T>
+    class buffered_stream : public stream_base<T>
     {
     public:
       typedef stream_base<T>                  base_t;
@@ -126,7 +126,7 @@ namespace csl
               template <typename,size_t,size_t> class Buffer = stream_buffer,
               size_t Preallocated=1024,
               size_t MaxSize=(256*1024)>
-    class output_stream : virtual public buffered_stream<T,Buffer,Preallocated,MaxSize>
+    class output_stream : public buffered_stream<T,Buffer,Preallocated,MaxSize>
     {
     public:
       typedef Target<T>                                      target_t;
@@ -148,7 +148,10 @@ namespace csl
 
     private:
       // no default construction
-      output_stream() : target_(0) {}
+      output_stream()
+        : buffered_stream<T,Buffer,Preallocated,MaxSize>(
+            *(new Buffer<T,Preallocated,MaxSize>())),
+          target_(0) { throw "not implemented"; }
 
       stream_flags  flags_;
       target_t *    target_;
@@ -161,7 +164,7 @@ namespace csl
               template <typename,size_t,size_t> class Buffer = stream_buffer,
               size_t Preallocated=1024,
               size_t MaxSize=(256*1024)>
-    class input_stream : virtual public buffered_stream<T,Buffer,Preallocated,MaxSize>
+    class input_stream : public buffered_stream<T,Buffer,Preallocated,MaxSize>
     {
     public:
       typedef Source<T>                                      source_t;
@@ -184,7 +187,10 @@ namespace csl
 
     private:
       // no default construction
-      input_stream() : source_(0) {}
+      input_stream()
+        : buffered_stream<T,Buffer,Preallocated,MaxSize>(
+            *(new Buffer<T,Preallocated,MaxSize>())),
+          source_(0) { throw "not implemented"; }
 
       stream_flags  flags_;
       source_t *    source_;

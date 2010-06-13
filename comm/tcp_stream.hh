@@ -50,20 +50,30 @@ namespace csl
                       1024,
                       256*1024> tcp_input_stream_base;
 
-      class output_stream : virtual public network_stream, virtual public tcp_output_stream_base
+      class output_stream : /*public network_stream,*/ public tcp_output_stream_base
       {
       public:
         typedef csl::comm::tcp::stream_target<uint8_t> tcp_target_t;
+        typedef buffer_t                               tcp_buffer_t;
 
+        output_stream(target_t & t, buffer_t & b);
         virtual ~output_stream() {}
+
+      private:
+        output_stream();
       };
 
-      class input_stream : virtual public network_stream, virtual public tcp_input_stream_base
+      class input_stream : /*public network_stream,*/ public tcp_input_stream_base
       {
       public:
         typedef csl::comm::tcp::stream_source<uint8_t> tcp_source_t;
+        typedef buffer_t                               tcp_buffer_t;
 
+        input_stream(source_t & s, buffer_t & b);
         virtual ~input_stream() {}
+
+      private:
+        input_stream();
       };
     }
   }

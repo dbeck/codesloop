@@ -31,11 +31,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/xdrbuf.hh"
 #include "codesloop/common/exc.hh"
 
-/**
-  @file common/src/binry.cc
-  @brief implementation of binary object type
- */
-
 namespace csl
 {
   namespace common

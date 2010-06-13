@@ -30,11 +30,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/var.hh"
 #include "codesloop/common/xdrbuf.hh"
 
-/**
-   @file arch.cc
-   @brief arch saves a complex network of objects in a permanent binary form
-*/
-
 namespace csl
 {
   namespace common

@@ -25,11 +25,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/hash.hh"
 
-/**
-  @file common/src/hash.cc
-  @brief hash table implementation
- */
-
 namespace csl
 {
   namespace common

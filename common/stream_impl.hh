@@ -91,7 +91,7 @@ namespace csl
       DEBUG_FLAGS_AND_BUFFEROP(L"reserve",sz);
       RETURN_FUNCTION(ret);
     }
-    
+
     template <typename T,
               template <typename,size_t,size_t> class Buffer,
               size_t Preallocated,
@@ -110,7 +110,7 @@ namespace csl
         n_confirmed_ += n_succeed;
         flags_.clear_flags( stream_flags::empty_buffer_    |
                             stream_flags::parameter_error_ );
-                            
+
         if( buffer_->n_free() > 0 )
         {
           flags_.clear_flags( stream_flags::buffer_full_ |
@@ -125,7 +125,7 @@ namespace csl
       DEBUG_FLAGS_AND_BUFFEROP(L"confirm",n_succeed);
       RETURN_FUNCTION(ret);
     }
-    
+
     template <typename T,
               template <typename,size_t,size_t> class Buffer,
               size_t Preallocated,
@@ -203,7 +203,7 @@ namespace csl
       CSL_DEBUGF(L"total_confirmed_items() => %lld",static_cast<uint64_t>(n_confirmed_));
       RETURN_FUNCTION(n_confirmed_);
     }
-    
+
     template <typename T,
               template <typename,size_t,size_t> class Buffer,
               size_t Preallocated,
@@ -306,7 +306,7 @@ namespace csl
       DEBUG_FLAGS_AND_TARGETOP(L"start");
       RETURN_FUNCTION(flags_);
     }
-    
+
     template <typename T,
               template <typename> class Target,
               template <typename,size_t,size_t> class Buffer,
@@ -325,7 +325,7 @@ namespace csl
       DEBUG_FLAGS_AND_TARGETOP(L"end");
       RETURN_FUNCTION(flags_);
     }
-    
+
     template <typename T,
               template <typename> class Target,
               template <typename,size_t,size_t> class Buffer,
@@ -346,7 +346,7 @@ namespace csl
     }
 
 #undef DEBUG_FLAGS_AND_TARGETOP
-                                                
+
     template <typename T,
               template <typename> class Target,
               template <typename,size_t,size_t> class Buffer,
@@ -387,7 +387,7 @@ namespace csl
       CSL_DEBUGF(L"output_stream::output_stream(target:%p,buffer:%p)",&t,&b);
       LEAVE_FUNCTION();
     }
-    
+
     template <typename T,
               template <typename> class Target,
               template <typename,size_t,size_t> class Buffer,
@@ -406,7 +406,7 @@ namespace csl
       CSL_DEBUGF(L"output_stream::output_stream(buffer:%p)",&b);
       LEAVE_FUNCTION();
     }
-    
+
     template <typename T,
               template <typename> class Target,
               template <typename,size_t,size_t> class Buffer,
@@ -573,4 +573,3 @@ namespace csl
 
 #endif /* __cplusplus */
 #endif /* _csl_common_stream_impl_hh_included_ */
-
