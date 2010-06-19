@@ -75,10 +75,10 @@ namespace csl
         typedef stream_flags   flags_t;
         typedef stream_base<T> stream_t;
 
-        const flags_t & start(stream_t &)  { return flags_; }
-        const flags_t & end(stream_t &)    { return flags_; }
-        const flags_t & flush(stream_t &)  { return flags_; }
-        const flags_t & poll(uint32_t &)   { return flags_; }
+        const flags_t & start(stream_t &)        { return flags_; }
+        const flags_t & end(stream_t &)          { return flags_; }
+        const flags_t & flush(stream_t &)        { return flags_; }
+        const flags_t & poll(size_t,uint32_t &)  { return flags_; }
 
       private:
         flags_t flags_;

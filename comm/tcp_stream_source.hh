@@ -51,10 +51,10 @@ namespace csl
         typedef csl::common::stream_flags flags_t;
 
         /* interface functions */
-        const flags_t & start(stream_t &)  { return flags_; }
-        const flags_t & end(stream_t &)    { return flags_; }
-        const flags_t & flush(stream_t &)  { return flags_; }
-        const flags_t & poll(uint32_t &)   { return flags_; }
+        const flags_t & start(stream_t &)        { return flags_; }
+        const flags_t & end(stream_t &)          { return flags_; }
+        const flags_t & flush(stream_t &)        { return flags_; }
+        const flags_t & poll(size_t,uint32_t &)  { return flags_; }
 
       private:
         flags_t flags_;
@@ -77,7 +77,7 @@ namespace csl
         const flags_t & start(stream_t & s);
         const flags_t & end(stream_t & s);
         const flags_t & flush(stream_t & s);
-        const flags_t & poll(uint32_t & timeout_ms);
+        const flags_t & poll(size_t request_items, uint32_t & timeout_ms);
 
       private:
         flags_t flags_;

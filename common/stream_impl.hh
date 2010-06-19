@@ -224,7 +224,8 @@ namespace csl
     buffered_stream<T,
                     Buffer,
                     Preallocated,
-                    MaxSize>::poll(size_t & available_items,
+                    MaxSize>::poll(size_t requested_items,
+                                   size_t & available_items,
                                    uint32_t & timeout_ms)
     {
       ENTER_FUNCTION();
@@ -235,7 +236,7 @@ namespace csl
       //   - if has items than don't touch timeout
       //      - otherwise simulate timeout, but do not touch the flags
       //
-      if( available_items > has_n_items() )
+      if( requested_items > has_n_items() )
       {
         available_items = has_n_items();
       }
@@ -563,20 +564,23 @@ namespace csl
                  Source,
                  Buffer,
                  Preallocated,
-                 MaxSize>::poll(size_t & available_items,
+                 MaxSize>::poll(size_t requested_items,
+                                size_t & available_items,
                                 uint32_t & timeout_ms)
     {
       ENTER_FUNCTION();
-      CSL_DEBUGF(L"poll(available_items:%lld,timeout_ms:%lld)",
+      CSL_DEBUGF(L"poll(requested_items:%lld,available_items:%lld,timeout_ms:%lld)",
+                 static_cast<int64_t>(requested_items),
                  static_cast<int64_t>(available_items),
                  static_cast<int64_t>(timeout_ms));
-      const stream_flags & flret(source_->poll(timeout_ms));
+      const stream_flags & flret(source_->poll(requested_items,timeout_ms));
       flags_ << flret;
       if( available_items > buffered_stream_t::has_n_items() )
       {
         available_items = buffered_stream_t::has_n_items();
       }
-      CSL_DEBUGF(L"poll(available_items:%lld,timeout_ms:%lld)",
+      CSL_DEBUGF(L"poll(requested_items:%lld,available_items:%lld,timeout_ms:%lld)",
+                 static_cast<int64_t>(requested_items),
                  static_cast<int64_t>(available_items),
                  static_cast<int64_t>(timeout_ms));
       DEBUG_FLAGS_AND_SOURCEOP(L"poll");

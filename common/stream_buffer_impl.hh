@@ -61,7 +61,7 @@ namespace csl
         CSL_DEBUGF(L"no data to be returned");
       }
       RETURN_FUNCTION( sp );
-    }  
+    }
 
     template <typename T, size_t Preallocated, size_t MaxSize>  
     typename stream_buffer<T,Preallocated,MaxSize>::part_t &
@@ -71,7 +71,7 @@ namespace csl
       ENTER_FUNCTION();
       CSL_DEBUGF(L"resrerve(sz:%lld,sp)",static_cast<uint64_t>(sz));
       sp.reset();
-      
+
       size_t new_len = start_ + len_ + sz;
       if( new_len > MaxSize )
       {
@@ -162,7 +162,7 @@ namespace csl
       CSL_DEBUGF(L"length decreased by: %lld items",static_cast<uint64_t>(confirm_len));
     bail:
       RETURN_FUNCTION( sp );
-    }  
+    }
   }
 }
 

@@ -54,10 +54,10 @@ namespace csl
         // the buffer, it can only be used if all data is returned by get().
         // this behaviour forces the application to care about the buffer, and
         // not enforcing unneccessary and time consuming memory copies.
-        
-        part_t & reserve( size_t sz, part_t & sp );        
+
+        part_t & reserve( size_t sz, part_t & sp );
         part_t & confirm( size_t n_succeed, part_t & sp );
-        
+
         size_t start()     const { return start_;      }
         size_t len()       const { return len_;        }
         size_t buflen()    const { return buf_.size(); }

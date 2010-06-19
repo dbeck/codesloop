@@ -62,7 +62,9 @@ namespace csl
 
       /* receiving data */
       virtual part_t & get( size_t sz, part_t & sp ) = 0;
-      virtual const stream_flags & poll( size_t & available_items, uint32_t & timeout_ms ) = 0;
+      virtual const stream_flags & poll( size_t requested_items,
+                                         size_t & available_items,
+                                         uint32_t & timeout_ms ) = 0;
 
       /* sizes */
       virtual size_t total_confirmed_items() = 0;
@@ -101,7 +103,9 @@ namespace csl
 
       /* receiving data */
       part_t & get( size_t sz, part_t & sp );
-      virtual const stream_flags & poll( size_t & available_items, uint32_t & timeout_ms );
+      virtual const stream_flags & poll( size_t requested_items,
+                                         size_t & available_items,
+                                         uint32_t & timeout_ms );
 
       /* sizes */
       size_t total_confirmed_items();
@@ -117,7 +121,9 @@ namespace csl
       virtual void on_reserved( size_t sz ) {}
       virtual void on_confirmed( size_t n_succeed ) {}
       virtual void on_get( size_t sz ) {}
-      virtual void on_poll( size_t & available_items,  uint32_t & timeout_ms ) {}
+      virtual void on_poll( size_t requested_items,
+                            size_t & available_items,
+                            uint32_t & timeout_ms ) {}
 
     private:
       // no default construction: at least a buffer is needed
@@ -186,7 +192,9 @@ namespace csl
       const stream_flags & flush();
 
       /* receiving data */
-      const stream_flags & poll( size_t & available_items, uint32_t & timeout_ms );
+      const stream_flags & poll( size_t requested_items,
+                                 size_t & available_items,
+                                 uint32_t & timeout_ms );
 
       /* error handling */
       stream_flags & flags();
