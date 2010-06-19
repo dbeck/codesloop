@@ -40,17 +40,19 @@ namespace csl
     {
       switch( rc )
       {
-        case rs_invalid_param:   return L"Invalid parameter received";
-        case rs_cannot_append:   return L"Cannot append data to pbuf";
-        case rs_cannot_get:      return L"Cannot get data from pbuf";
-        case rs_xdr_eof:         return L"End of XDR data";
-        case rs_xdr_invalid:     return L"Invalid XDR data";
+        case rs_invalid_param:   return L"Invalid parameter received.";
+        case rs_cannot_append:   return L"Cannot append data to pbuf.";
+        case rs_cannot_get:      return L"Cannot get data from pbuf.";
+        case rs_xdr_eof:         return L"End of XDR data.";
+        case rs_xdr_invalid:     return L"Invalid XDR data.";
         case rs_empty:           return L"Empty container.";
         case rs_conv_error:      return L"Cannot convert character.";
         case rs_invalid_state:   return L"Component state invalid.";
         case rs_lookup_error:    return L"Lookup error.";
         case rs_out_of_memory:   return L"Out of memory.";
         case rs_assert:          return L"Assert failed.";
+        case rs_stream_push:     return L"Cannot push to stream.";
+        case rs_stream_pop:      return L"Cannot pop from stream.";
         case rs_unknown:
           default:               return L"Unknown reason";
       };

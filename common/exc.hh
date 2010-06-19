@@ -61,6 +61,8 @@ namespace csl
           rs_lookup_error,   ///<Lookup error.
           rs_out_of_memory,  ///<Can not allocate memory
           rs_assert,         ///<Assert failed
+          rs_stream_push,    ///<Cannot push to stream
+          rs_stream_pop,     ///<Cannot pop from stream
         };
 
         /** @brief converts reason code to string */
