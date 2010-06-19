@@ -25,6 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/stream_buffer.hh"
 #include "codesloop/common/stream.hh"
+#include "codesloop/common/ydr_util.hh"
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
@@ -63,8 +64,26 @@ namespace test_ydr_util
     buffered_stream<int32_t> bs(buf);
   }
 
-  void test_u8_int() {}
-  void test_i32_int() {}
+  template <typename ST,typename TESTED>
+  bool test_type(TESTED v)
+  {
+    stream_buffer<ST> buf;
+    buffered_stream<ST> bs(buf);
+    TESTED x;
+    bs << v;
+    bs >> x;
+    return (v == x);
+  }
+
+  void test_u8_int()
+  {
+    assert( (test_type<uint8_t,int>(123456) == true) );
+  }
+
+  void test_i32_int()
+  {
+    assert( (test_type<int32_t,int>(123456) == true) );
+  }
 
 } /* end of test_ydr_util */
 
