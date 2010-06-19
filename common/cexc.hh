@@ -150,6 +150,20 @@ namespace csl
     } while(false);
 #endif /*THRR*/
 
+#ifndef THRS
+#define THRS(REASON,MSG,RET) \
+    do { \
+      CSL_DEBUGF(L"Exception(%ls:%d): [%ls] [%ls] [%ls]\n", \
+                 L""__FILE__,__LINE__, \
+                 get_class_name(), \
+                 exc::reason_string(REASON), \
+                 MSG ); \
+      if( use_exc() ) \
+            throw exc(REASON,get_class_name(),MSG,L""__FILE__,__LINE__); \
+      RETURN_FUNCTION( RET ); \
+    } while(false);
+#endif /*THRS*/
+
 #ifndef THRRNORET
 #define THRRNORET(REASON,MSG) \
     do { \
@@ -162,6 +176,19 @@ namespace csl
             throw exc(REASON,get_class_name(),MSG,L""__FILE__,__LINE__); \
     } while(false);
 #endif /*THRRNORET*/
+
+#ifndef THRSNORET
+#define THRSNORET(REASON,MSG) \
+    do { \
+      CSL_DEBUGF(L"Exception(%ls:%d): [%ls] [%ls] [%ls]\n", \
+                 L""__FILE__,__LINE__, \
+                 get_class_name(), \
+                 exc::reason_string(REASON), \
+                 MSG ); \
+      if( use_exc() ) \
+            throw exc(REASON,get_class_name(),MSG,L""__FILE__,__LINE__); \
+    } while(false);
+#endif /*THRSNORET*/
 
 #ifndef THRC
 #define THRC(REASON,RET) \
