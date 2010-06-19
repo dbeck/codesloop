@@ -74,9 +74,9 @@ namespace csl
         static const uint32_t peer_exception_         = (1UL<<28);
         static const uint32_t empty_buffer_           = (1UL<<29);
         static const uint32_t partially_allocated_    = (1UL<<30);
-                
+
         stream_flags() : flags_(ok_) {}
-        
+
         uint32_t flags() const;
         bool has_flags(uint32_t flags) const;
 
@@ -84,7 +84,9 @@ namespace csl
         void set_flags(uint32_t f);
         void clear_flags(uint32_t f);
         void add_flags(uint32_t f);
-        
+
+        bool is_ok() const;
+        bool operator==(bool tester) const;
         bool operator==(uint32_t other) const;
         bool operator==(const stream_flags & other) const;
         bool operator!=(uint32_t other) const;
@@ -96,10 +98,10 @@ namespace csl
         stream_flags & operator<<(const stream_flags & other);
         stream_flags & operator=(uint32_t other);
         stream_flags & operator=(const stream_flags & other);
-        
+
         static void to_str(uint32_t f, str & s);
         void to_str(str & s);
-        
+
       private:
         uint32_t flags_;
         CSL_OBJ(csl::common, stream_flags);

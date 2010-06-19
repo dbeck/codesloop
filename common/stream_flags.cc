@@ -82,7 +82,7 @@ namespace csl
       }
       s += L" ]";
     }
-  
+
     uint32_t stream_flags::flags() const
     {
       ENTER_FUNCTION();
@@ -93,7 +93,7 @@ namespace csl
 #endif /*DEBUG*/
       RETURN_FUNCTION(flags_);
     }
-    
+
     bool stream_flags::has_flags(uint32_t fl) const
     {
       ENTER_FUNCTION();
@@ -124,7 +124,7 @@ namespace csl
       flags_ = fl;
       LEAVE_FUNCTION();
     }
-    
+
     void stream_flags::reset()
     {
       ENTER_FUNCTION();
@@ -137,7 +137,7 @@ namespace csl
       flags_ = ok_;
       LEAVE_FUNCTION();
     }
-    
+
     void stream_flags::clear_flags(uint32_t fl)
     {
       ENTER_FUNCTION();
@@ -155,7 +155,7 @@ namespace csl
       flags_ = new_flags;
       LEAVE_FUNCTION();
     }
-    
+
     void stream_flags::add_flags(uint32_t fl)
     {
       ENTER_FUNCTION();
@@ -170,7 +170,25 @@ namespace csl
       flags_ |= fl;
       LEAVE_FUNCTION();
     }
-    
+
+    bool stream_flags::is_ok() const
+    {
+      ENTER_FUNCTION();
+      bool ret = (flags_ == ok_);
+      CSL_DEBUGF(L"is_ok() => %ls",(ret==true?L"TRUE":L"FALSE"));
+      RETURN_FUNCTION(ret);
+    }
+
+    bool stream_flags::operator==(bool tester) const
+    {
+      ENTER_FUNCTION();
+      bool ret = (is_ok() == tester);
+      CSL_DEBUGF(L"operator==(%ls) => %ls",
+        (tester==true?L"TRUE":L"FALSE")
+        (ret==true?L"TRUE":L"FALSE"));
+      RETURN_FUNCTION(ret);
+    }
+
     bool stream_flags::operator==(uint32_t other) const
     {
       ENTER_FUNCTION();
@@ -183,10 +201,10 @@ namespace csl
         other,other_str.c_str(),
         flags_,flags_str.c_str(),
         (ret?L"TRUE":L"FALSE"));
-#endif /*DEBUG*/      
+#endif /*DEBUG*/
       RETURN_FUNCTION(ret);
     }
-    
+
     bool stream_flags::operator==(const stream_flags & other) const
     {
       ENTER_FUNCTION();
@@ -199,17 +217,17 @@ namespace csl
         other.flags_,other_str.c_str(),
         flags_,flags_str.c_str(),
         (ret?L"TRUE":L"FALSE"));
-#endif /*DEBUG*/      
+#endif /*DEBUG*/
       RETURN_FUNCTION(ret);
     }
-    
+
     bool stream_flags::operator&(uint32_t other) const
     {
       ENTER_FUNCTION();
       bool ret = has_flags(other);
       RETURN_FUNCTION(ret);
     }
-    
+
     bool stream_flags::operator&(const stream_flags & other) const
     {
       ENTER_FUNCTION();
@@ -223,7 +241,7 @@ namespace csl
       bool ret = (operator==(other) == false);
       RETURN_FUNCTION(ret);
     }
-    
+
     bool stream_flags::operator!=(const stream_flags & other) const
     {
       ENTER_FUNCTION();
@@ -237,14 +255,14 @@ namespace csl
       add_flags(other);
       RETURN_FUNCTION(*this);
     }
-    
+
     stream_flags & stream_flags::operator<<(const stream_flags & other)
     {
       ENTER_FUNCTION();
       add_flags(other.flags_);
       RETURN_FUNCTION(*this);
     }
-    
+
     stream_flags & stream_flags::operator=(uint32_t other)
     {
       ENTER_FUNCTION();
@@ -263,4 +281,3 @@ namespace csl
 } /* end of ns:csl */
 
 // EOF
-

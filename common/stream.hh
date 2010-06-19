@@ -45,6 +45,7 @@ namespace csl
     class stream_base
     {
     public:
+      typedef T              item_t;
       typedef stream_part<T> part_t;
 
       /* packet frame */

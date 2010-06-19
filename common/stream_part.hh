@@ -36,27 +36,29 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace csl
 {
   namespace common
-  {  
+  {
     template <typename T> class stream_part
-    {        
-      public:
-        stream_part();
-        void reset();
+    {
+    public:
+      static const size_t item_size = sizeof(T);
 
-        T * data() const;
-        size_t items() const;
+      stream_part();
+      void reset();
 
-        void data(T * d);
-        void items(size_t b);
-        
-        stream_flags & flags();
+      T * data() const;
+      size_t items() const;
 
-      private:
-        T *            data_;
-        size_t         items_;
-        stream_flags   flags_;
+      void data(T * d);
+      void items(size_t b);
 
-        CSL_OBJ(csl::common, stream_part);
+      stream_flags & flags();
+
+    private:
+      T *            data_;
+      size_t         items_;
+      stream_flags   flags_;
+
+      CSL_OBJ(csl::common, stream_part);
     };
   } /* end of ns:csl:common */
 }
