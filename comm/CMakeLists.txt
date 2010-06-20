@@ -66,6 +66,10 @@ ADD_LIBRARY( csl_comm STATIC
              )
 
 ADD_DEPENDENCIES( csl_comm ../common/libev/config.h )
+IF(CMAKE_BUILD_TYPE MATCHES "debug")
+  ADD_DEFINITIONS( -DENABLE_LOGGER -DDEBUG -DDEBUG_ENABLE_INDENT )
+ENDIF(CMAKE_BUILD_TYPE MATCHES "debug")
+
 
 FILE(GLOB includes "${CMAKE_CURRENT_SOURCE_DIR}/*.h*")
 INSTALL( FILES ${includes} DESTINATION include/codesloop/comm )

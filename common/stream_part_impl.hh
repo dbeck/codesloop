@@ -58,8 +58,8 @@ namespace csl
     template<typename T>
     T * stream_part<T>::data() const
     {
-      ENTER_FUNCTION();
-      RETURN_FUNCTION( data_ );
+      ENTER_FUNCTION_X();
+      RETURN_FUNCTION_X( data_ );
     }
 
     template<typename T>
@@ -74,8 +74,8 @@ namespace csl
     template<typename T>
     size_t stream_part<T>::items() const
     {
-      ENTER_FUNCTION();
-      RETURN_FUNCTION( items_ );
+      ENTER_FUNCTION_X();
+      RETURN_FUNCTION_X( items_ );
     }
 
     template<typename T>

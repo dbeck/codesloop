@@ -58,16 +58,24 @@ ADD_LIBRARY( csl_common STATIC
              # -- replacements for rdbuf, read_res, tbuf
              stream_buffer.hh stream_buffer_impl.hh
 	     stream_nop_target.hh
-             basic_streams.cc stream.hh stream_impl.hh
+             stream.cc stream.hh stream_impl.hh
 	     stream_part.hh stream_part_impl.hh
 	     stream_flags.cc stream_flags.hh
              preallocated_array.hh preallocated_array_impl.hh )
 
 # ADD_DEFINITIONS( -DENABLE_LOGGER )
+# ADD_DEFINITIONS( -DENABLE_LOGGER -DDEBUG -DDEBUG_ENABLE_INDENT )
+
 SET_SOURCE_FILES_PROPERTIES( logger.cc PROPERTIES 
                              COMPILE_FLAGS -DENABLE_LOGGER )
 # SET_SOURCE_FILES_PROPERTIES( stream_flags.cc PROPERTIES 
-#                              COMPILE_FLAGS "-DDEBUG -DDEBUG_ENABLE_INDENT" )
+#                              COMPILE_FLAGS "-DENABLE_LOGGER -DDEBUG -DDEBUG_ENABLE_INDENT" )
+IF(CMAKE_BUILD_TYPE MATCHES "debug")
+  SET_SOURCE_FILES_PROPERTIES( ydr_util.cc PROPERTIES 
+                               COMPILE_FLAGS "-DENABLE_LOGGER -DDEBUG -DDEBUG_ENABLE_INDENT" )
+  SET_SOURCE_FILES_PROPERTIES( stream.cc PROPERTIES 
+                               COMPILE_FLAGS "-DENABLE_LOGGER -DDEBUG -DDEBUG_ENABLE_INDENT" )
+ENDIF(CMAKE_BUILD_TYPE MATCHES "debug")
 
 ADD_DEPENDENCIES( csl_common libev/config.h )
 

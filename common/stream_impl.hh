@@ -114,7 +114,7 @@ namespace csl
             flags_.to_str(flags_str___); \
             CSL_DEBUGF(fun L"(%lld,sp) => sp:[data:%p,bytes:%d] stream flags:[%x:%ls]", \
                       static_cast<uint64_t>(param), \
-                      sp.data(), sp.bytes(), \
+                      sp.data(), sp.items(), \
                       flags_.flags(),flags_str___.c_str() ); \
           } while(false)
 #else
@@ -236,14 +236,13 @@ namespace csl
       //   - if has items than don't touch timeout
       //      - otherwise simulate timeout, but do not touch the flags
       //
-      if( requested_items > has_n_items() )
-      {
-        available_items = has_n_items();
-      }
+
+      available_items = has_n_items();
       if( available_items == 0 )
       {
         timeout_ms = 0;
       }
+
       RETURN_FUNCTION(flags_);
     }
 
