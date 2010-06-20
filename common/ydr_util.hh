@@ -34,50 +34,50 @@ namespace csl
   namespace common
   {
     // u8_stream_base_t
-    u8_stream_base_t & operator<<(u8_stream_base_t & os, int32_t val);
-    u8_stream_base_t & operator<<(u8_stream_base_t & os, uint32_t val);
-    u8_stream_base_t & operator<<(u8_stream_base_t & os, int64_t val);
-    u8_stream_base_t & operator<<(u8_stream_base_t & os, uint64_t val);
-    u8_stream_base_t & operator<<(u8_stream_base_t & os, const char * val);
-    //u8_stream_base_t & operator<<(u8_stream_base_t & os, const common::serializable & val);
-    //u8_stream_base_t & operator<<(u8_stream_base_t & os, const common::var & val);
-    //u8_stream_base_t & operator<<(u8_stream_base_t & os, const common::str & val);
-    //u8_stream_base_t & operator<<(u8_stream_base_t & os, const common::ustr & val);
-    //u8_stream_base_t & operator<<(u8_stream_base_t & os, const bindata_t & val);
-    //u8_stream_base_t & operator<<(u8_stream_base_t & os, const pbuf & val);
+    u8_stream_base_t & ydr_push(u8_stream_base_t & os, int32_t val);
+    u8_stream_base_t & ydr_push(u8_stream_base_t & os, uint32_t val);
+    u8_stream_base_t & ydr_push(u8_stream_base_t & os, int64_t val);
+    u8_stream_base_t & ydr_push(u8_stream_base_t & os, uint64_t val);
+    u8_stream_base_t & ydr_push(u8_stream_base_t & os, const char * val);
+    //u8_stream_base_t & ydr_push(u8_stream_base_t & os, const common::serializable & val);
+    //u8_stream_base_t & ydr_push(u8_stream_base_t & os, const common::var & val);
+    //u8_stream_base_t & ydr_push(u8_stream_base_t & os, const common::str & val);
+    //u8_stream_base_t & ydr_push(u8_stream_base_t & os, const common::ustr & val);
+    //u8_stream_base_t & ydr_push(u8_stream_base_t & os, const bindata_t & val);
+    //u8_stream_base_t & ydr_push(u8_stream_base_t & os, const pbuf & val);
 
-    u8_stream_base_t & operator>>(u8_stream_base_t & is, int32_t & val);
-    u8_stream_base_t & operator>>(u8_stream_base_t & is, uint32_t & val);
-    u8_stream_base_t & operator>>(u8_stream_base_t & is, int64_t & val);
-    u8_stream_base_t & operator>>(u8_stream_base_t & is, uint64_t & val);
-    //u8_stream_base_t & operator>>(u8_stream_base_t & is, common::serializable & val);
-    //u8_stream_base_t & operator>>(u8_stream_base_t & is, common::var & val);
-    //u8_stream_base_t & operator>>(u8_stream_base_t & is, common::str & val);
-    //u8_stream_base_t & operator>>(u8_stream_base_t & is, common::ustr & val);
-    //u8_stream_base_t & operator>>(u8_stream_base_t & is, pbuf & val);
+    u8_stream_base_t & ydr_pop(u8_stream_base_t & is, int32_t & val, uint32_t & timeout_ms);
+    u8_stream_base_t & ydr_pop(u8_stream_base_t & is, uint32_t & val, uint32_t & timeout_ms);
+    u8_stream_base_t & ydr_pop(u8_stream_base_t & is, int64_t & val, uint32_t & timeout_ms);
+    u8_stream_base_t & ydr_pop(u8_stream_base_t & is, uint64_t & val, uint32_t & timeout_ms);
+    //u8_stream_base_t & ydr_pop(u8_stream_base_t & is, common::serializable & val, uint32_t & timeout_ms);
+    //u8_stream_base_t & ydr_pop(u8_stream_base_t & is, common::var & val, uint32_t & timeout_ms);
+    //u8_stream_base_t & ydr_pop(u8_stream_base_t & is, common::str & val, uint32_t & timeout_ms);
+    //u8_stream_base_t & ydr_pop(u8_stream_base_t & is, common::ustr & val, uint32_t & timeout_ms);
+    //u8_stream_base_t & ydr_pop(u8_stream_base_t & is, pbuf & val, uint32_t & timeout_ms);
 
     // i32_stream_base_t
-    i32_stream_base_t & operator<<(i32_stream_base_t & os, int32_t val);
-    i32_stream_base_t & operator<<(i32_stream_base_t & os, uint32_t val);
-    i32_stream_base_t & operator<<(i32_stream_base_t & os, int64_t val);
-    i32_stream_base_t & operator<<(i32_stream_base_t & os, uint64_t val);
-    i32_stream_base_t & operator<<(i32_stream_base_t & os, const char * val);
-    //i32_stream_base_t & operator<<(i32_stream_base_t & os, const common::serializable & val);
-    //i32_stream_base_t & operator<<(i32_stream_base_t & os, const common::var & val);
-    //i32_stream_base_t & operator<<(i32_stream_base_t & os, const common::str & val);
-    //i32_stream_base_t & operator<<(i32_stream_base_t & os, const common::ustr & val);
-    //i32_stream_base_t & operator<<(i32_stream_base_t & os, const bindata_t & val);
-    //i32_stream_base_t & operator<<(i32_stream_base_t & os, const pbuf & val);
+    i32_stream_base_t & ydr_push(i32_stream_base_t & os, int32_t val);
+    i32_stream_base_t & ydr_push(i32_stream_base_t & os, uint32_t val);
+    i32_stream_base_t & ydr_push(i32_stream_base_t & os, int64_t val);
+    i32_stream_base_t & ydr_push(i32_stream_base_t & os, uint64_t val);
+    i32_stream_base_t & ydr_push(i32_stream_base_t & os, const char * val);
+    //i32_stream_base_t & ydr_push(i32_stream_base_t & os, const common::serializable & val);
+    //i32_stream_base_t & ydr_push(i32_stream_base_t & os, const common::var & val);
+    //i32_stream_base_t & ydr_push(i32_stream_base_t & os, const common::str & val);
+    //i32_stream_base_t & ydr_push(i32_stream_base_t & os, const common::ustr & val);
+    //i32_stream_base_t & ydr_push(i32_stream_base_t & os, const bindata_t & val);
+    //i32_stream_base_t & ydr_push(i32_stream_base_t & os, const pbuf & val);
 
-    i32_stream_base_t & operator>>(i32_stream_base_t & is, int32_t & val);
-    i32_stream_base_t & operator>>(i32_stream_base_t & is, uint32_t & val);
-    i32_stream_base_t & operator>>(i32_stream_base_t & is, int64_t & val);
-    i32_stream_base_t & operator>>(i32_stream_base_t & is, uint64_t & val);
-    //i32_stream_base_t & operator>>(i32_stream_base_t & is, common::serializable & val);
-    //i32_stream_base_t & operator>>(i32_stream_base_t & is, common::var & val);
-    //i32_stream_base_t & operator>>(i32_stream_base_t & is, common::str & val);
-    //i32_stream_base_t & operator>>(i32_stream_base_t & is, common::ustr & val);
-    //i32_stream_base_t & operator>>(i32_stream_base_t & is, pbuf & val);
+    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, int32_t & val, uint32_t & timeout_ms);
+    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, uint32_t & val, uint32_t & timeout_ms);
+    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, int64_t & val, uint32_t & timeout_ms);
+    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, uint64_t & val, uint32_t & timeout_ms);
+    //i32_stream_base_t & ydr_pop(i32_stream_base_t & is, common::serializable & val, uint32_t & timeout_ms);
+    //i32_stream_base_t & ydr_pop(i32_stream_base_t & is, common::var & val, uint32_t & timeout_ms);
+    //i32_stream_base_t & ydr_pop(i32_stream_base_t & is, common::str & val, uint32_t & timeout_ms);
+    //i32_stream_base_t & ydr_pop(i32_stream_base_t & is, common::ustr & val, uint32_t & timeout_ms);
+    //i32_stream_base_t & ydr_pop(i32_stream_base_t & is, pbuf & val, uint32_t & timeout_ms);
   }
 }
 

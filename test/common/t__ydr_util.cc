@@ -23,6 +23,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+//#if 0
+#ifndef DEBUG
+#define DEBUG
+#define DEBUG_ENABLE_INDENT
+#endif /* DEBUG */
+//#endif
+
 #include "codesloop/common/stream_buffer.hh"
 #include "codesloop/common/stream.hh"
 #include "codesloop/common/ydr_util.hh"
@@ -70,8 +77,9 @@ namespace test_ydr_util
     stream_buffer<ST> buf;
     buffered_stream<ST> bs(buf);
     TESTED x;
-    bs << v;
-    bs >> x;
+    uint32_t timeout_ms = 0;
+    ydr_push(bs,v);
+    ydr_pop(bs,x,timeout_ms);
     return (v == x);
   }
 
@@ -97,7 +105,7 @@ int main()
   csl_common_print_results( "baseline_i32stream ", csl_common_test_timer_v0(baseline_i32stream),"" );
 
   csl_common_print_results( "u8_int             ", csl_common_test_timer_v0(test_u8_int),"" );
-  csl_common_print_results( "i32_int            ", csl_common_test_timer_v0(test_i32_int),"" );
+  //csl_common_print_results( "i32_int            ", csl_common_test_timer_v0(test_i32_int),"" );
   return 0;
 }
 
