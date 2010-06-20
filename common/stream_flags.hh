@@ -86,7 +86,6 @@ namespace csl
         void add_flags(uint32_t f);
 
         bool is_ok() const;
-        bool operator==(bool tester) const;
         bool operator==(uint32_t other) const;
         bool operator==(const stream_flags & other) const;
         bool operator!=(uint32_t other) const;

@@ -179,16 +179,6 @@ namespace csl
       RETURN_FUNCTION(ret);
     }
 
-    bool stream_flags::operator==(bool tester) const
-    {
-      ENTER_FUNCTION();
-      bool ret = (is_ok() == tester);
-      CSL_DEBUGF(L"operator==(%ls) => %ls",
-        (tester==true?L"TRUE":L"FALSE")
-        (ret==true?L"TRUE":L"FALSE"));
-      RETURN_FUNCTION(ret);
-    }
-
     bool stream_flags::operator==(uint32_t other) const
     {
       ENTER_FUNCTION();
