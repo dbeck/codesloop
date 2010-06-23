@@ -321,9 +321,9 @@ namespace csl
                                 buffered_stream<T,Buffer,Preallocated,MaxSize>::buffer_t & b)
             : buffer_(&b)
     {
-      ENTER_FUNCTION();
-      CSL_DEBUGF(L"buffered_stream::buffered_stream(buffer:%p)",&b);
-      LEAVE_FUNCTION();
+      ENTER_FUNCTION_X();
+      CSL_DEBUGF_X(L"buffered_stream::buffered_stream(buffer:%p)",&b);
+      LEAVE_FUNCTION_X();
     }
 
 

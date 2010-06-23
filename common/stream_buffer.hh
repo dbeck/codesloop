@@ -67,6 +67,8 @@ namespace csl
 
         const T * data() const { return buf_.data()+start_; }
 
+        void reset() { buf_.reset(); start_=0; len_=0; }
+
         stream_buffer() : start_(0), len_(0) {}
 
       private:

@@ -48,9 +48,9 @@ namespace csl
         explicit preallocated_array(const T & c);
         preallocated_array(const preallocated_array & other);
         explicit preallocated_array(const T * other);
-       
+
         bool operator==(const preallocated_array & other) const;
-        
+
         preallocated_array & operator=(const char * other);
         preallocated_array & operator=(const pbuf & other);
         preallocated_array & operator=(const preallocated_array & other);

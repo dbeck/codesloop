@@ -86,19 +86,19 @@ namespace csl
       }
       size_ = 0;
     }
-    
+
     template <typename T, size_t SZ>
     preallocated_array<T,SZ>::~preallocated_array()
     {
       reset();
     }
-    
+
     template <typename T, size_t SZ>
     preallocated_array<T,SZ>::preallocated_array()
         : data_(preallocated_), size_(0)
     {
     }
-    
+
     template <typename T, size_t SZ>
     preallocated_array<T,SZ>::preallocated_array(const T & c)
         : data_(preallocated_), size_(1)
@@ -140,7 +140,7 @@ namespace csl
         return false;
       }
     }
-    
+
     template <typename T, size_t SZ>
     T * preallocated_array<T,SZ>::allocate_nocopy(size_t sz)
     {
@@ -177,7 +177,7 @@ namespace csl
         return data_;
       }
     }
-    
+
     template <typename T, size_t SZ>
     preallocated_array<T,SZ> &
     preallocated_array<T,SZ>::operator=(const char * other)
@@ -185,7 +185,7 @@ namespace csl
       if( other ) set( other, (::strlen(other)+1) );
       return *this;
     }
-    
+
     template <typename T, size_t SZ>
     preallocated_array<T,SZ> &
     preallocated_array<T,SZ>::operator=(const preallocated_array & other)
@@ -207,7 +207,7 @@ namespace csl
       }
       return *this;
     }
-    
+
     template <typename T, size_t SZ>
     bool preallocated_array<T,SZ>::operator==(const preallocated_array & other) const
     {
@@ -241,7 +241,7 @@ namespace csl
       ::memcpy( dta,data_,size_*item_size_ );
       return true;
     }
-    
+
     template <typename T, size_t SZ>
     void preallocated_array<T,SZ>::append(const T & c)
     {
@@ -282,8 +282,6 @@ namespace csl
       if( pos >= size_ ) t = allocate( pos+1 );
       t[pos] = c;
     }
-
-
   }
 }
 

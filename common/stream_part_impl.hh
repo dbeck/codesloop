@@ -48,11 +48,11 @@ namespace csl
     template<typename T>
     void stream_part<T>::reset()
     {
-      ENTER_FUNCTION();
+      ENTER_FUNCTION_X();
       data_       = 0;
       items_      = 0;
       flags_.set_flags(stream_flags::ok_);
-      LEAVE_FUNCTION();
+      LEAVE_FUNCTION_X();
     }
 
     template<typename T>
@@ -90,14 +90,14 @@ namespace csl
     template<typename T>
     stream_flags & stream_part<T>::flags() 
     {
-      ENTER_FUNCTION();
-#ifdef DEBUG
+      ENTER_FUNCTION_X();
+#ifdef DEBUG_VERBOSE
       str flags_str;
       flags_.to_str(flags_str);
-      CSL_DEBUGF(L"flags() => [%x:%ls]",
+      CSL_DEBUGF_X(L"flags() => [%x:%ls]",
         flags_.flags(),flags_str.c_str());
 #endif /*DEBUG*/
-      RETURN_FUNCTION( flags_ );
+      RETURN_FUNCTION_X( flags_ );
     }
 
   } /* end of ns: csl::common */
