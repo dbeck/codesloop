@@ -24,10 +24,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 //#if 0
+#ifdef DEBUG_BUILD
 #ifndef DEBUG
 #define DEBUG
 #define DEBUG_ENABLE_INDENT
 #endif /* DEBUG */
+#endif /* DEBUG_BUILD */
 //#endif
 
 #include "codesloop/common/stream_buffer.hh"
@@ -52,23 +54,35 @@ namespace test_ydr_util
   void baseline_u8buf()
   {
     stream_buffer<uint8_t> buf;
+    buf.reset();
   }
 
   void baseline_i32buf()
   {
     stream_buffer<int32_t> buf;
+    buf.reset();
   }
 
   void baseline_u8stream()
   {
     stream_buffer<uint8_t> buf;
     buffered_stream<uint8_t> bs(buf);
+    buf.reset();
   }
 
   void baseline_i32stream()
   {
     stream_buffer<int32_t> buf;
     buffered_stream<int32_t> bs(buf);
+    buf.reset();
+  }
+
+  void baseline_i32push()
+  {
+    stream_buffer<int32_t> buf;
+    buffered_stream<int32_t> bs(buf);
+    int32_t v = -123;
+    ydr_push(bs,v);
   }
 
   template <typename ST,typename TESTED>
@@ -86,11 +100,15 @@ namespace test_ydr_util
   void test_u8_int()
   {
     assert( (test_type<uint8_t,int>(123456) == true) );
+    assert( (test_type<uint8_t,int>(-125) == true) );
+    assert( (test_type<uint8_t,int>(1<<31) == true) );
   }
 
   void test_i32_int()
   {
     assert( (test_type<int32_t,int>(123456) == true) );
+    assert( (test_type<int32_t,int>(-125) == true) );
+    assert( (test_type<int32_t,int>(1<<31) == true) );
   }
 
 } /* end of test_ydr_util */
@@ -103,9 +121,10 @@ int main()
   csl_common_print_results( "baseline_i32buf    ", csl_common_test_timer_v0(baseline_i32buf),"" );
   csl_common_print_results( "baseline_u8stream  ", csl_common_test_timer_v0(baseline_u8stream),"" );
   csl_common_print_results( "baseline_i32stream ", csl_common_test_timer_v0(baseline_i32stream),"" );
+  csl_common_print_results( "baseline_i32push   ", csl_common_test_timer_v0(baseline_i32push),"" );
 
   csl_common_print_results( "u8_int             ", csl_common_test_timer_v0(test_u8_int),"" );
-  //csl_common_print_results( "i32_int            ", csl_common_test_timer_v0(test_i32_int),"" );
+  csl_common_print_results( "i32_int            ", csl_common_test_timer_v0(test_i32_int),"" );
   return 0;
 }
 

@@ -69,85 +69,219 @@ namespace csl
       {
         CSL_OBJ(csl::common::anonymous,ydr_convert);
         static bool use_exc() { return true; }
-
         typedef u8_stream_base_t::part_t stream_part_t;
 
-        template <typename ITEM>
-        static size_t item_count(size_t count)
+        u8_stream_base_t &    stream_;
+        uint32_t              timeout_ms_default_;
+        uint32_t &            timeout_ms_;
+        stream_part_t         part_;
+
+        ydr_convert(u8_stream_base_t & s, uint32_t & t) : stream_(s), timeout_ms_(t) {}
+        ydr_convert(u8_stream_base_t & s)
+          : stream_(s),
+            timeout_ms_default_(0),
+            timeout_ms_(timeout_ms_default_) {}
+
+
+        uint8_t * reserve(size_t count)
         {
-          return round_to_4(count*sizeof(ITEM));
+          ENTER_FUNCTION();
+          stream_part_t & pf(stream_.reserve(count, part_));
+          if( pf.flags().is_ok() == false ) { THROW_PUSH_EXCEPTION(pf.data(), pf.flags()); }
+          RETURN_FUNCTION(pf.data());
         }
 
-        static u8_stream_base_t & push(u8_stream_base_t & os, int32_t v)
+        bool confirm(size_t count)
         {
-          stream_part_t part;
-          stream_part_t & pf(os.reserve(4, part));
-          if( pf.flags().is_ok() == false ) { THROW_PUSH_EXCEPTION(os, pf.flags());}
-          int32_t network_order_i32 = htonl(v);
-          ::memcpy(pf.data(), &network_order_i32, 4);
-          pf = os.confirm(4,part);
-          if( pf.flags().is_ok() == false ) { THROW_PUSH_EXCEPTION(os, pf.flags()); }
-          return os;
+          ENTER_FUNCTION();
+          stream_part_t & pf(stream_.confirm(count,part_));
+          if( pf.flags().is_ok() == false ) { THROW_PUSH_EXCEPTION(false, pf.flags()); }
+          RETURN_FUNCTION(true);
         }
 
-        template <typename ITEM>
-        static u8_stream_base_t & push(u8_stream_base_t & os, ITEM & i)
+        uint8_t * get(size_t count)
         {
-          size_t n_items = item_count<ITEM>(1);
-          stream_part_t part;
-          stream_part_t & pf(os.reserve(n_items, part));
-          // XXX TODO
-          return os;
-        }
-
-        static u8_stream_base_t & pop(u8_stream_base_t & is, int32_t & v, uint32_t & timeout_ms)
-        {
-          stream_part_t part;
+          ENTER_FUNCTION();
           size_t available_items = 0;
-          const stream_flags & fl(is.poll(4, available_items, timeout_ms));
-          if( available_items < 4 ) { THROW_POP_EXCEPTION(is, fl); }
-          stream_part_t & pf(is.get(4, part));
-          if( pf.flags().is_ok() == false ) { THROW_POP_EXCEPTION(is, pf.flags()); }
-          int32_t network_order_i32 = 0;
-          ::memcpy(&network_order_i32,pf.data(),4);
-          v = ntohl(network_order_i32);
-          return is;
+          const stream_flags & fl(stream_.poll(count, available_items, timeout_ms_));
+          if( available_items < count ) { THROW_POP_EXCEPTION(part_.data(), fl); }
+          stream_part_t & pf(stream_.get(count, part_));
+          if( pf.flags().is_ok() == false ) { THROW_POP_EXCEPTION(pf.data(), pf.flags()); }
+          RETURN_FUNCTION(pf.data());
         }
 
         template <typename ITEM>
-        static u8_stream_base_t & pop(u8_stream_base_t & is, ITEM & i, uint32_t & timeout_ms)
+        static size_t item_count(size_t count) { return round_to_4(count*sizeof(ITEM)); }
+
+        u8_stream_base_t & push(int32_t v)
         {
-          size_t n_items = item_count<ITEM>(1);
-          stream_part_t part;
-          stream_part_t & pf(is.reserve(n_items, part));
-          // XXX TODO
-          return is;
+          ENTER_FUNCTION();
+          uint8_t * p = reserve(4);
+          int32_t network_order_i32 = htonl(v);
+          ::memcpy(p, &network_order_i32, 4);
+          confirm(4);
+          RETURN_FUNCTION(stream_);
         }
 
+        u8_stream_base_t & push(uint32_t v)
+        {
+          ENTER_FUNCTION();
+          uint8_t * p = reserve(4);
+          uint32_t network_order_u32 = htonl(v);
+          ::memcpy(p, &network_order_u32, 4);
+          confirm(4);
+          RETURN_FUNCTION(stream_);
+        }
+
+        template <typename ITEM>
+        u8_stream_base_t & push(ITEM & i) { return stream_; }
+
+        u8_stream_base_t & pop(int32_t & v)
+        {
+          ENTER_FUNCTION();
+          uint8_t * p = get(4);
+          int32_t network_order_i32 = 0;
+          ::memcpy(&network_order_i32,p,4);
+          v = ntohl(network_order_i32);
+          RETURN_FUNCTION(stream_);
+        }
+
+        u8_stream_base_t & pop(uint32_t & v)
+        {
+          ENTER_FUNCTION();
+          uint8_t * p = get(4);
+          uint32_t network_order_u32 = 0;
+          ::memcpy(&network_order_u32,p,4);
+          v = ntohl(network_order_u32);
+          RETURN_FUNCTION(stream_);
+        }
+
+        template <typename ITEM>
+        u8_stream_base_t & pop(ITEM & i) { return stream_; }
       };
 
       template <> struct ydr_convert<i32_stream_base_t>
       {
         CSL_OBJ(csl::common::anonymous,ydr_convert);
         static bool use_exc() { return true; }
+        typedef i32_stream_base_t::part_t stream_part_t;
+
+        i32_stream_base_t &   stream_;
+        uint32_t              timeout_ms_default_;
+        uint32_t &            timeout_ms_;
+        stream_part_t         part_;
+
+        ydr_convert(i32_stream_base_t & s, uint32_t & t)  : stream_(s), timeout_ms_(t) {}
+        ydr_convert(i32_stream_base_t & s)
+          : stream_(s),
+            timeout_ms_default_(0),
+            timeout_ms_(timeout_ms_default_) {}
+
+        int32_t * reserve(size_t count)
+        {
+          ENTER_FUNCTION();
+          stream_part_t & pf(stream_.reserve(count, part_));
+          if( pf.flags().is_ok() == false ) { THROW_PUSH_EXCEPTION(pf.data(), pf.flags()); }
+          RETURN_FUNCTION(pf.data());
+        }
+
+        bool confirm(size_t count)
+        {
+          ENTER_FUNCTION();
+          stream_part_t & pf(stream_.confirm(count,part_));
+          if( pf.flags().is_ok() == false ) { THROW_PUSH_EXCEPTION(false, pf.flags()); }
+          RETURN_FUNCTION(true);
+        }
+
+        int32_t * get(size_t count)
+        {
+          ENTER_FUNCTION();
+          size_t available_items = 0;
+          const stream_flags & fl(stream_.poll(count, available_items, timeout_ms_));
+          if( available_items < count ) { THROW_POP_EXCEPTION(part_.data(), fl); }
+          stream_part_t & pf(stream_.get(count, part_));
+          if( pf.flags().is_ok() == false ) { THROW_POP_EXCEPTION(pf.data(), pf.flags()); }
+          RETURN_FUNCTION(pf.data());
+        }
 
         template <typename ITEM>
-        static size_t item_count(size_t count)
-        {
+        static size_t item_count(size_t count) {
           return (round_to_4(count*sizeof(ITEM)))/sizeof(int32_t);
         }
+
+        i32_stream_base_t & push(int32_t v)
+        {
+          ENTER_FUNCTION();
+          int32_t * p = reserve(1);
+          p[0] = htonl(v);
+          confirm(1);
+          RETURN_FUNCTION(stream_);
+        }
+
+        i32_stream_base_t & push(uint32_t v)
+        {
+          ENTER_FUNCTION();
+          int32_t * p = reserve(1);
+          p[0] = htonl(v);
+          confirm(1);
+          RETURN_FUNCTION(stream_);
+        }
+
+        i32_stream_base_t & push(int64_t v)
+        {
+          ENTER_FUNCTION();
+          int32_t * p = reserve(2);
+          int64_t network_order_i64 = htonll(v);
+          ::memcpy(p,&network_order_i64,sizeof(network_order_i64));
+          confirm(2);
+          RETURN_FUNCTION(stream_);
+        }
+
+        i32_stream_base_t & push(uint64_t v)
+        {
+          ENTER_FUNCTION();
+          int32_t * p = reserve(2);
+          uint64_t network_order_u64 = htonll(v);
+          ::memcpy(p,&network_order_i64,sizeof(network_order_u64));
+          confirm(2);
+          RETURN_FUNCTION(stream_);
+        }
+
+        template <typename ITEM>
+        i32_stream_base_t & push(ITEM & i) { return stream_; }
+
+        i32_stream_base_t & pop(int32_t & v)
+        {
+          ENTER_FUNCTION();
+          int32_t * p = get(1);
+          v = ntohl(p[0]);
+          RETURN_FUNCTION(stream_);
+        }
+
+        i32_stream_base_t & pop(uint32_t & v)
+        {
+          ENTER_FUNCTION();
+          int32_t * p = get(1);
+          v = ntohl(p[0]);
+          RETURN_FUNCTION(stream_);
+        }
+
+        template <typename ITEM>
+        i32_stream_base_t & pop(ITEM & i) { return stream_; }
       };
 
       template <typename STREAM_T, typename ITEM>
       STREAM_T & push(STREAM_T & os, ITEM i)
       {
-        return ydr_convert<STREAM_T>::push(os, i);
+        ydr_convert<STREAM_T> converter(os);
+        return converter.push(i);
       }
 
       template <typename STREAM_T, typename ITEM>
-      STREAM_T & pop(STREAM_T & os, ITEM & i, uint32_t & timeout_ms)
+      STREAM_T & pop(STREAM_T & is, ITEM & i, uint32_t & timeout_ms)
       {
-        return ydr_convert<STREAM_T>::pop(os, i, timeout_ms);
+        ydr_convert<STREAM_T> converter(is, timeout_ms);
+        return converter.pop(i);
       }
 
 #undef THROW_PUSH_EXCEPTION
@@ -178,11 +312,11 @@ namespace csl
     //u8_stream_base_t & ydr_pop(u8_stream_base_t & is, pbuf & val, uint32_t & timeout_ms);
 
     // i32_stream_base_t
-    i32_stream_base_t & ydr_push(i32_stream_base_t & os, int32_t val)      { return os; }
-    i32_stream_base_t & ydr_push(i32_stream_base_t & os, uint32_t val)     { return os; }
-    i32_stream_base_t & ydr_push(i32_stream_base_t & os, int64_t val)      { return os; }
-    i32_stream_base_t & ydr_push(i32_stream_base_t & os, uint64_t val)     { return os; }
-    i32_stream_base_t & ydr_push(i32_stream_base_t & os, const char * val) { return os; }
+    i32_stream_base_t & ydr_push(i32_stream_base_t & os, int32_t val)      { return push(os, val); }
+    i32_stream_base_t & ydr_push(i32_stream_base_t & os, uint32_t val)     { return push(os, val); }
+    i32_stream_base_t & ydr_push(i32_stream_base_t & os, int64_t val)      { return push(os, val); }
+    i32_stream_base_t & ydr_push(i32_stream_base_t & os, uint64_t val)     { return push(os, val); }
+    i32_stream_base_t & ydr_push(i32_stream_base_t & os, const char * val) { return push(os, val); }
     //i32_stream_base_t & ydr_push(i32_stream_base_t & os, const common::serializable & val);
     //i32_stream_base_t & ydr_push(i32_stream_base_t & os, const common::var & val);
     //i32_stream_base_t & ydr_push(i32_stream_base_t & os, const common::str & val);
@@ -190,10 +324,10 @@ namespace csl
     //i32_stream_base_t & ydr_push(i32_stream_base_t & os, const bindata_t & val);
     //i32_stream_base_t & ydr_push(i32_stream_base_t & os, const pbuf & val);
 
-    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, int32_t & val, uint32_t & timeout_ms)  { return is; }
-    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, uint32_t & val, uint32_t & timeout_ms) { return is; }
-    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, int64_t & val, uint32_t & timeout_ms)  { return is; }
-    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, uint64_t & val, uint32_t & timeout_ms) { return is; }
+    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, int32_t & val, uint32_t & timeout_ms)  { return pop(is, val, timeout_ms); }
+    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, uint32_t & val, uint32_t & timeout_ms) { return pop(is, val, timeout_ms); }
+    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, int64_t & val, uint32_t & timeout_ms)  { return pop(is, val, timeout_ms); }
+    i32_stream_base_t & ydr_pop(i32_stream_base_t & is, uint64_t & val, uint32_t & timeout_ms) { return pop(is, val, timeout_ms); }
     //i32_stream_base_t & ydr_pop(i32_stream_base_t & is, common::serializable & val, uint32_t & timeout_ms);
     //i32_stream_base_t & ydr_pop(i32_stream_base_t & is, common::var & val, uint32_t & timeout_ms);
     //i32_stream_base_t & ydr_pop(i32_stream_base_t & is, common::str & val, uint32_t & timeout_ms);
