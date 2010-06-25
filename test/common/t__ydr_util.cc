@@ -117,6 +117,20 @@ using namespace test_ydr_util;
 
 int main()
 {
+  uint64_t a = 0x0102030405060708ULL;
+  unsigned char b[] = { 1,2,3,4,5,6,7,8 };
+  uint64_t c = htonll(a);
+  unsigned char * d = reinterpret_cast<unsigned char *>(&c);
+
+  for( int i=0;i<8;++i )
+  {
+    if( d[i] != b[i] )
+    {
+      printf("Conversion error at:%d (%d != %d)\n",i,d[i],b[i]);
+    }
+  }
+  assert( memcmp(b,&c,8) == 0 );
+
   csl_common_print_results( "baseline_u8buf     ", csl_common_test_timer_v0(baseline_u8buf),"" );
   csl_common_print_results( "baseline_i32buf    ", csl_common_test_timer_v0(baseline_i32buf),"" );
   csl_common_print_results( "baseline_u8stream  ", csl_common_test_timer_v0(baseline_u8stream),"" );

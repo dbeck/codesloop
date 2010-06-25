@@ -29,7 +29,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/obj.hh"
 #include "codesloop/common/exc.hh"
 #include "codesloop/common/str.hh"
-#include <arpa/inet.h>
+#include "codesloop/common/common.h"
 
 namespace csl
 {
@@ -231,7 +231,7 @@ namespace csl
         {
           ENTER_FUNCTION();
           int32_t * p = reserve(2);
-          int64_t network_order_i64 = htonll(v);
+          int64_t network_order_i64 = htonll(v); 
           ::memcpy(p,&network_order_i64,sizeof(network_order_i64));
           confirm(2);
           RETURN_FUNCTION(stream_);
@@ -242,7 +242,7 @@ namespace csl
           ENTER_FUNCTION();
           int32_t * p = reserve(2);
           uint64_t network_order_u64 = htonll(v);
-          ::memcpy(p,&network_order_i64,sizeof(network_order_u64));
+          ::memcpy(p,&network_order_u64,sizeof(network_order_u64));
           confirm(2);
           RETURN_FUNCTION(stream_);
         }
