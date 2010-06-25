@@ -240,13 +240,25 @@ void gettimeofday(struct timeval * tv, void * p)
 # endif /*STRDUP*/
 #endif
 
+#ifndef cast32
+#ifdef __cplusplus
+#define cast32(x) (static_cast<uint32_t>(x))
+#define cast64(x) (static_cast<uint64_t>(x))
+#else
+#define cast32(x) ((uint32_t)(x))
+#define cast64(x) ((uint64_t)(x))
+#endif /*__cplusplus*/
+#endif /*cast32 */
+
 #ifndef htonll
 #ifdef _BIG_ENDIAN
 #define htonll(x)   (x)
 #define ntohll(x)   (x)
 #else
-#define htonll(x)   ((((uint64_t)htonl(x)) << 32) + htonl(x >> 32))
-#define ntohll(x)   ((((uint64_t)ntohl(x)) << 32) + ntohl(x >> 32))
+#define htonll_low32(x)  htonl(cast32((cast64(x)&0xFFFFFFFFULL)))
+#define htonll_high32(x) htonl(cast32((cast64(x)>>32)))
+#define htonll(x) (cast64(htonll_low32(x))<<32 | cast64(htonll_high32(x)))
+#define ntohll(x) htonll(x)
 #endif
 #endif
 
