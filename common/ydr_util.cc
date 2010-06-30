@@ -31,6 +31,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/str.hh"
 #include "codesloop/common/common.h"
 
+#ifdef LINUX
+#include <endian.h>
+#endif
+
+#ifdef FREEBSD
+#include <sys/endian.h>
+#endif
+
 namespace csl
 {
   namespace common
@@ -60,6 +68,7 @@ namespace csl
          RETVAL);                            \
   } while(0)
 #endif
+
 
       static size_t round_to_4(size_t sz) { return ((((sz) + 3) & (~3))); }
 
@@ -117,8 +126,8 @@ namespace csl
         {
           ENTER_FUNCTION();
           uint8_t * p = reserve(4);
-          int32_t network_order_i32 = htonl(v);
-          ::memcpy(p, &network_order_i32, 4);
+          int32_t le_i32 = htole32(v);
+          ::memcpy(p, &le_i32, 4);
           confirm(4);
           RETURN_FUNCTION(stream_);
         }
@@ -127,8 +136,8 @@ namespace csl
         {
           ENTER_FUNCTION();
           uint8_t * p = reserve(4);
-          uint32_t network_order_u32 = htonl(v);
-          ::memcpy(p, &network_order_u32, 4);
+          uint32_t le_u32 = htole32(v);
+          ::memcpy(p, &le_u32, 4);
           confirm(4);
           RETURN_FUNCTION(stream_);
         }
@@ -140,9 +149,9 @@ namespace csl
         {
           ENTER_FUNCTION();
           uint8_t * p = get(4);
-          int32_t network_order_i32 = 0;
-          ::memcpy(&network_order_i32,p,4);
-          v = ntohl(network_order_i32);
+          int32_t le_i32 = 0;
+          ::memcpy(&le_i32,p,4);
+          v = le32toh(le_i32);
           RETURN_FUNCTION(stream_);
         }
 
@@ -150,9 +159,9 @@ namespace csl
         {
           ENTER_FUNCTION();
           uint8_t * p = get(4);
-          uint32_t network_order_u32 = 0;
-          ::memcpy(&network_order_u32,p,4);
-          v = ntohl(network_order_u32);
+          uint32_t le_u32 = 0;
+          ::memcpy(&le_u32,p,4);
+          v = le32toh(le_u32);
           RETURN_FUNCTION(stream_);
         }
 
@@ -213,7 +222,7 @@ namespace csl
         {
           ENTER_FUNCTION();
           int32_t * p = reserve(1);
-          p[0] = htonl(v);
+          p[0] = htole32(v);
           confirm(1);
           RETURN_FUNCTION(stream_);
         }
@@ -222,7 +231,7 @@ namespace csl
         {
           ENTER_FUNCTION();
           int32_t * p = reserve(1);
-          p[0] = htonl(v);
+          p[0] = htole32(v);
           confirm(1);
           RETURN_FUNCTION(stream_);
         }
@@ -231,8 +240,8 @@ namespace csl
         {
           ENTER_FUNCTION();
           int32_t * p = reserve(2);
-          int64_t network_order_i64 = htonll(v); 
-          ::memcpy(p,&network_order_i64,sizeof(network_order_i64));
+          int64_t le_i64 = htole64(v);
+          ::memcpy(p,&le_i64,sizeof(le_i64));
           confirm(2);
           RETURN_FUNCTION(stream_);
         }
@@ -241,8 +250,8 @@ namespace csl
         {
           ENTER_FUNCTION();
           int32_t * p = reserve(2);
-          uint64_t network_order_u64 = htonll(v);
-          ::memcpy(p,&network_order_u64,sizeof(network_order_u64));
+          uint64_t le_u64 = htole64(v);
+          ::memcpy(p,&le_u64,sizeof(le_u64));
           confirm(2);
           RETURN_FUNCTION(stream_);
         }
@@ -254,7 +263,7 @@ namespace csl
         {
           ENTER_FUNCTION();
           int32_t * p = get(1);
-          v = ntohl(p[0]);
+          v = le32toh(p[0]);
           RETURN_FUNCTION(stream_);
         }
 
@@ -262,7 +271,7 @@ namespace csl
         {
           ENTER_FUNCTION();
           int32_t * p = get(1);
-          v = ntohl(p[0]);
+          v = le32toh(p[0]);
           RETURN_FUNCTION(stream_);
         }
 
