@@ -125,20 +125,40 @@ namespace csl
         u8_stream_base_t & push(int32_t v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = reserve(4);
+          uint8_t * p = reserve(sizeof(int32_t));
           int32_t le_i32 = htole32(v);
-          ::memcpy(p, &le_i32, 4);
-          confirm(4);
+          ::memcpy(p, &le_i32, sizeof(int32_t));
+          confirm(sizeof(int32_t));
           RETURN_FUNCTION(stream_);
         }
 
         u8_stream_base_t & push(uint32_t v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = reserve(4);
+          uint8_t * p = reserve(sizeof(uint32_t));
           uint32_t le_u32 = htole32(v);
-          ::memcpy(p, &le_u32, 4);
-          confirm(4);
+          ::memcpy(p, &le_u32, sizeof(uint32_t));
+          confirm(sizeof(uint32_t));
+          RETURN_FUNCTION(stream_);
+        }
+
+        u8_stream_base_t & push(int64_t v)
+        {
+          ENTER_FUNCTION();
+          uint8_t * p = reserve(sizeof(int64_t));
+          int64_t le_i64 = htole64(v);
+          ::memcpy(p, &le_i64, sizeof(int64_t));
+          confirm(sizeof(int64_t));
+          RETURN_FUNCTION(stream_);
+        }
+
+        u8_stream_base_t & push(uint64_t v)
+        {
+          ENTER_FUNCTION();
+          uint8_t * p = reserve(sizeof(uint64_t));
+          uint64_t le_u64 = htole64(v);
+          ::memcpy(p, &le_u64, sizeof(uint64_t));
+          confirm(sizeof(uint64_t));
           RETURN_FUNCTION(stream_);
         }
 
@@ -148,9 +168,9 @@ namespace csl
         u8_stream_base_t & pop(int32_t & v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = get(4);
+          uint8_t * p = get(sizeof(int32_t));
           int32_t le_i32 = 0;
-          ::memcpy(&le_i32,p,4);
+          ::memcpy(&le_i32,p,sizeof(int32_t));
           v = le32toh(le_i32);
           RETURN_FUNCTION(stream_);
         }
@@ -158,10 +178,30 @@ namespace csl
         u8_stream_base_t & pop(uint32_t & v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = get(4);
+          uint8_t * p = get(sizeof(uint32_t));
           uint32_t le_u32 = 0;
-          ::memcpy(&le_u32,p,4);
+          ::memcpy(&le_u32,p,sizeof(uint32_t));
           v = le32toh(le_u32);
+          RETURN_FUNCTION(stream_);
+        }
+
+        u8_stream_base_t & pop(int64_t & v)
+        {
+          ENTER_FUNCTION();
+          uint8_t * p = get(sizeof(int64_t));
+          int64_t le_i64 = 0;
+          ::memcpy(&le_i64,p,sizeof(int64_t));
+          v = le64toh(le_i64);
+          RETURN_FUNCTION(stream_);
+        }
+
+        u8_stream_base_t & pop(uint64_t & v)
+        {
+          ENTER_FUNCTION();
+          uint8_t * p = get(sizeof(uint64_t));
+          uint64_t le_u64 = 0;
+          ::memcpy(&le_u64,p,sizeof(uint64_t));
+          v = le64toh(le_u64);
           RETURN_FUNCTION(stream_);
         }
 
@@ -221,38 +261,38 @@ namespace csl
         i32_stream_base_t & push(int32_t v)
         {
           ENTER_FUNCTION();
-          int32_t * p = reserve(1);
+          int32_t * p = reserve(sizeof(int32_t)/sizeof(int32_t));
           p[0] = htole32(v);
-          confirm(1);
+          confirm(sizeof(int32_t)/sizeof(int32_t));
           RETURN_FUNCTION(stream_);
         }
 
         i32_stream_base_t & push(uint32_t v)
         {
           ENTER_FUNCTION();
-          int32_t * p = reserve(1);
+          int32_t * p = reserve(sizeof(uint32_t)/sizeof(int32_t));
           p[0] = htole32(v);
-          confirm(1);
+          confirm(sizeof(uint32_t)/sizeof(int32_t));
           RETURN_FUNCTION(stream_);
         }
 
         i32_stream_base_t & push(int64_t v)
         {
           ENTER_FUNCTION();
-          int32_t * p = reserve(2);
+          int32_t * p = reserve(sizeof(int64_t)/sizeof(int32_t));
           int64_t le_i64 = htole64(v);
           ::memcpy(p,&le_i64,sizeof(le_i64));
-          confirm(2);
+          confirm(sizeof(int64_t)/sizeof(int32_t));
           RETURN_FUNCTION(stream_);
         }
 
         i32_stream_base_t & push(uint64_t v)
         {
           ENTER_FUNCTION();
-          int32_t * p = reserve(2);
+          int32_t * p = reserve(sizeof(uint64_t)/sizeof(int32_t));
           uint64_t le_u64 = htole64(v);
           ::memcpy(p,&le_u64,sizeof(le_u64));
-          confirm(2);
+          confirm(sizeof(uint64_t)/sizeof(int32_t));
           RETURN_FUNCTION(stream_);
         }
 
@@ -262,7 +302,7 @@ namespace csl
         i32_stream_base_t & pop(int32_t & v)
         {
           ENTER_FUNCTION();
-          int32_t * p = get(1);
+          int32_t * p = get(sizeof(int32_t)/sizeof(int32_t));
           v = le32toh(p[0]);
           RETURN_FUNCTION(stream_);
         }
@@ -270,8 +310,28 @@ namespace csl
         i32_stream_base_t & pop(uint32_t & v)
         {
           ENTER_FUNCTION();
-          int32_t * p = get(1);
+          int32_t * p = get(sizeof(uint32_t)/sizeof(int32_t));
           v = le32toh(p[0]);
+          RETURN_FUNCTION(stream_);
+        }
+
+        i32_stream_base_t & pop(int64_t & v)
+        {
+          ENTER_FUNCTION();
+          int32_t * p = get(sizeof(int64_t)/sizeof(int32_t));
+          int64_t le_i64 = 0;
+          ::memcpy(&le_i64,p,sizeof(le_i64));
+          v = le64toh(le_i64);
+          RETURN_FUNCTION(stream_);
+        }
+
+        i32_stream_base_t & pop(uint64_t & v)
+        {
+          ENTER_FUNCTION();
+          int32_t * p = get(sizeof(uint64_t)/sizeof(int32_t));
+          uint64_t le_u64 = 0;
+          ::memcpy(&le_u64,p,sizeof(le_u64));
+          v = le64toh(le_u64);
           RETURN_FUNCTION(stream_);
         }
 
@@ -294,6 +354,7 @@ namespace csl
       }
 
 #undef THROW_PUSH_EXCEPTION
+#undef THROW_POP_EXCEPTION
     }
 
     // u8_stream_base_t

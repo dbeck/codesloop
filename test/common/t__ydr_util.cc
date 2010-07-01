@@ -111,6 +111,20 @@ namespace test_ydr_util
     assert( (test_type<int32_t,int>(1<<31) == true) );
   }
 
+  void test_u8_int64()
+  {
+    assert( (test_type<uint8_t,int64_t>(123456) == true) );
+    assert( (test_type<uint8_t,int64_t>(-125) == true) );
+    assert( (test_type<uint8_t,int64_t>(1LL<<63) == true) );
+  }
+
+  void test_i32_int64()
+  {
+    assert( (test_type<int32_t,int64_t>(123456) == true) );
+    assert( (test_type<int32_t,int64_t>(-125) == true) );
+    assert( (test_type<int32_t,int64_t>(1LL<<63) == true) );
+  }
+
 } /* end of test_ydr_util */
 
 using namespace test_ydr_util;
@@ -139,6 +153,9 @@ int main()
 
   csl_common_print_results( "u8_int             ", csl_common_test_timer_v0(test_u8_int),"" );
   csl_common_print_results( "i32_int            ", csl_common_test_timer_v0(test_i32_int),"" );
+  csl_common_print_results( "u8_int64           ", csl_common_test_timer_v0(test_u8_int64),"" );
+  csl_common_print_results( "i32_int64          ", csl_common_test_timer_v0(test_i32_int64),"" );
+
   return 0;
 }
 
