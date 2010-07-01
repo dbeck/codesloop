@@ -251,10 +251,13 @@ void gettimeofday(struct timeval * tv, void * p)
 #endif /*cast32 */
 
 #ifndef htonll
-#ifdef _BIG_ENDIAN
+#ifdef CSL_BIG_ENDIAN
 #define htonll(x)   (x)
 #define ntohll(x)   (x)
 #else
+#ifndef CSL_LITTLE_ENDIAN
+#warning "Endian macros not set!!! Fix cmake environment!!!"
+#endif
 #define htonll_low32(x)  htonl(cast32((cast64(x)&0xFFFFFFFFULL)))
 #define htonll_high32(x) htonl(cast32((cast64(x)>>32)))
 #define htonll(x) (cast64(htonll_low32(x))<<32 | cast64(htonll_high32(x)))

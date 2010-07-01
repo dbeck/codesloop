@@ -471,6 +471,25 @@ namespace test_xdrbuf
     assert( exc_caught == csl::common::exc::rs_xdr_invalid );
   }
 
+  template <typename ST,typename TESTED>
+  bool test_type(TESTED v)
+  {
+    pbuf pb;
+    xdrbuf xb(pb);
+    TESTED x;
+    xb << v;
+    xb.rewind();
+    xb >> x;
+    return (v == x);
+  }
+
+  void u8_int()
+  {
+    assert( (test_type<uint8_t,int>(123456) == true) );
+    assert( (test_type<uint8_t,int>(-125) == true) );
+    assert( (test_type<uint8_t,int>(1<<31) == true) );
+  }
+
 } // end of test_xdrbuf
 
 using namespace test_xdrbuf;
@@ -478,6 +497,7 @@ using namespace test_xdrbuf;
 int main()
 {
   csl_common_print_results( "baseline             ", csl_common_test_timer_v0(baseline),"" );
+  csl_common_print_results( "u8_int               ", csl_common_test_timer_v0(u8_int),"" );
   csl_common_print_results( "test_copy            ", csl_common_test_timer_v0(test_copy),"" );
   csl_common_print_results( "test_int             ", csl_common_test_timer_v0(test_int),"" );
   csl_common_print_results( "test_longlong        ", csl_common_test_timer_v0(test_longlong),"" );
