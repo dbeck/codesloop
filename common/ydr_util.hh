@@ -33,6 +33,53 @@ namespace csl
 {
   namespace common
   {
+    namespace ydr_util
+    {
+      inline size_t round_to_4_bytes(size_t sz) { return ((((sz) + 3) & (~3))); }
+
+      // common case for some builtin types
+      template <typename T> struct item_size
+      {
+        static inline const size_t calc_bytes(size_t item_count)
+        {
+          return round_to_4_bytes(item_count * sizeof(T));
+        }
+      };
+
+      template <> struct item_size<const char *>
+      {
+        static inline const size_t 
+	  calc_bytes(size_t item_count) { return (sizeof(uint64_t))+round_to_4_bytes(item_count); }
+      };
+
+      template <> struct item_size<int32_t>
+      {
+        static inline const size_t 
+	  calc_bytes(size_t item_count) { return (4*item_count); }
+      };
+
+      template <> struct item_size<uint32_t>
+      {
+        static inline const size_t 
+	  calc_bytes(size_t item_count) { return (4*item_count); }
+      };
+
+      template <> struct item_size<int64_t>
+      {
+        static inline const size_t 
+	  calc_bytes(size_t item_count) { return (8*item_count); }
+      };
+
+      template <> struct item_size<uint64_t>
+      {
+        static inline const size_t 
+	  calc_bytes(size_t item_count) { return (8*item_count); }
+      };
+
+      
+
+    };
+
     // u8_stream_base_t
     u8_stream_base_t & ydr_push(u8_stream_base_t & os, int32_t val);
     u8_stream_base_t & ydr_push(u8_stream_base_t & os, uint32_t val);

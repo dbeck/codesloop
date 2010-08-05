@@ -125,6 +125,10 @@ namespace test_ydr_util
     assert( (test_type<int32_t,int64_t>(1LL<<63) == true) );
   }
 
+  void test_item_sizes()
+  {
+  }
+
 } /* end of test_ydr_util */
 
 using namespace test_ydr_util;
@@ -143,7 +147,8 @@ int main()
       printf("Conversion error at:%d (%d != %d)\n",i,d[i],b[i]);
     }
   }
-  assert( memcmp(b,&c,8) == 0 );
+  assert( memcmp(b,d,8) == 0 );
+  test_item_sizes();
 
   csl_common_print_results( "baseline_u8buf     ", csl_common_test_timer_v0(baseline_u8buf),"" );
   csl_common_print_results( "baseline_i32buf    ", csl_common_test_timer_v0(baseline_i32buf),"" );

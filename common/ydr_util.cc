@@ -125,52 +125,73 @@ namespace csl
         u8_stream_base_t & push(int32_t v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = reserve(sizeof(int32_t));
+          size_t count = item_count<int32_t>(1);
+          uint8_t * p = reserve(count);
           int32_t le_i32 = htole32(v);
-          ::memcpy(p, &le_i32, sizeof(int32_t));
-          confirm(sizeof(int32_t));
+          ::memcpy(p, &le_i32, sizeof(le_i32));
+          confirm(count);
           RETURN_FUNCTION(stream_);
         }
 
         u8_stream_base_t & push(uint32_t v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = reserve(sizeof(uint32_t));
+          size_t count = item_count<uint32_t>(1);
+          uint8_t * p = reserve(count);
           uint32_t le_u32 = htole32(v);
-          ::memcpy(p, &le_u32, sizeof(uint32_t));
-          confirm(sizeof(uint32_t));
+          ::memcpy(p, &le_u32, sizeof(le_u32));
+          confirm(count);
           RETURN_FUNCTION(stream_);
         }
 
         u8_stream_base_t & push(int64_t v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = reserve(sizeof(int64_t));
+          size_t count = item_count<int64_t>(1);
+          uint8_t * p = reserve(count);
           int64_t le_i64 = htole64(v);
-          ::memcpy(p, &le_i64, sizeof(int64_t));
-          confirm(sizeof(int64_t));
+          ::memcpy(p, &le_i64, sizeof(le_i64));
+          confirm(count);
           RETURN_FUNCTION(stream_);
         }
 
         u8_stream_base_t & push(uint64_t v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = reserve(sizeof(uint64_t));
+          size_t count = item_count<uint64_t>(1);
+          uint8_t * p = reserve(count);
           uint64_t le_u64 = htole64(v);
-          ::memcpy(p, &le_u64, sizeof(uint64_t));
-          confirm(sizeof(uint64_t));
+          ::memcpy(p, &le_u64, sizeof(le_u64));
+          confirm(count);
           RETURN_FUNCTION(stream_);
         }
 
-        template <typename ITEM>
-        u8_stream_base_t & push(ITEM & i) { return stream_; }
+        u8_stream_base_t & push(const char * v)
+        {
+          ENTER_FUNCTION();
+          // add 64bit length first
+          size_t str_size = 0;
+          if( v != NULL ) str_size = ::strlen(v);
+          this->push(str_size);
+          if( str_size == 0 ) { RETURN_FUNCTION(stream_); }
+          // calculate stored str length
+          size_t count = item_count<char>(str_size);
+          uint8_t * p = reserve(count);
+          ::memcpy(p,v,str_size);
+          confirm(count);
+          RETURN_FUNCTION(stream_);
+        }
+
+        //template <typename ITEM>
+        //u8_stream_base_t & push(ITEM & i) { return stream_; }
 
         u8_stream_base_t & pop(int32_t & v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = get(sizeof(int32_t));
+          size_t count = item_count<int32_t>(1);
+          uint8_t * p = get(count);
           int32_t le_i32 = 0;
-          ::memcpy(&le_i32,p,sizeof(int32_t));
+          ::memcpy(&le_i32,p,sizeof(le_i32));
           v = le32toh(le_i32);
           RETURN_FUNCTION(stream_);
         }
@@ -178,9 +199,10 @@ namespace csl
         u8_stream_base_t & pop(uint32_t & v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = get(sizeof(uint32_t));
+          size_t count = item_count<uint32_t>(1);
+          uint8_t * p = get(count);
           uint32_t le_u32 = 0;
-          ::memcpy(&le_u32,p,sizeof(uint32_t));
+          ::memcpy(&le_u32,p,sizeof(le_u32));
           v = le32toh(le_u32);
           RETURN_FUNCTION(stream_);
         }
@@ -188,9 +210,10 @@ namespace csl
         u8_stream_base_t & pop(int64_t & v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = get(sizeof(int64_t));
+          size_t count = item_count<int64_t>(1);
+          uint8_t * p = get(count);
           int64_t le_i64 = 0;
-          ::memcpy(&le_i64,p,sizeof(int64_t));
+          ::memcpy(&le_i64,p,sizeof(le_i64));
           v = le64toh(le_i64);
           RETURN_FUNCTION(stream_);
         }
@@ -198,15 +221,16 @@ namespace csl
         u8_stream_base_t & pop(uint64_t & v)
         {
           ENTER_FUNCTION();
-          uint8_t * p = get(sizeof(uint64_t));
+          size_t count = item_count<uint64_t>(1);
+          uint8_t * p = get(count);
           uint64_t le_u64 = 0;
-          ::memcpy(&le_u64,p,sizeof(uint64_t));
+          ::memcpy(&le_u64,p,sizeof(le_u64));
           v = le64toh(le_u64);
           RETURN_FUNCTION(stream_);
         }
 
-        template <typename ITEM>
-        u8_stream_base_t & pop(ITEM & i) { return stream_; }
+        //template <typename ITEM>
+        //u8_stream_base_t & pop(ITEM & i) { return stream_; }
       };
 
       template <> struct ydr_convert<i32_stream_base_t>
@@ -261,43 +285,63 @@ namespace csl
         i32_stream_base_t & push(int32_t v)
         {
           ENTER_FUNCTION();
-          int32_t * p = reserve(sizeof(int32_t)/sizeof(int32_t));
+          size_t count = item_count<int32_t>(1);
+          int32_t * p = reserve(count);
           p[0] = htole32(v);
-          confirm(sizeof(int32_t)/sizeof(int32_t));
+          confirm(count);
           RETURN_FUNCTION(stream_);
         }
 
         i32_stream_base_t & push(uint32_t v)
         {
           ENTER_FUNCTION();
-          int32_t * p = reserve(sizeof(uint32_t)/sizeof(int32_t));
+          size_t count = item_count<uint32_t>(1);
+          int32_t * p = reserve(count);
           p[0] = htole32(v);
-          confirm(sizeof(uint32_t)/sizeof(int32_t));
+          confirm(count);
           RETURN_FUNCTION(stream_);
         }
 
         i32_stream_base_t & push(int64_t v)
         {
           ENTER_FUNCTION();
-          int32_t * p = reserve(sizeof(int64_t)/sizeof(int32_t));
+          size_t count = item_count<int64_t>(1);
+          int32_t * p = reserve(count);
           int64_t le_i64 = htole64(v);
           ::memcpy(p,&le_i64,sizeof(le_i64));
-          confirm(sizeof(int64_t)/sizeof(int32_t));
+          confirm(count);
           RETURN_FUNCTION(stream_);
         }
 
         i32_stream_base_t & push(uint64_t v)
         {
           ENTER_FUNCTION();
-          int32_t * p = reserve(sizeof(uint64_t)/sizeof(int32_t));
+          size_t count = item_count<uint64_t>(1);
+          int32_t * p = reserve(count);
           uint64_t le_u64 = htole64(v);
           ::memcpy(p,&le_u64,sizeof(le_u64));
-          confirm(sizeof(uint64_t)/sizeof(int32_t));
+          confirm(count);
           RETURN_FUNCTION(stream_);
         }
 
-        template <typename ITEM>
-        i32_stream_base_t & push(ITEM & i) { return stream_; }
+        i32_stream_base_t & push(const char * v)
+        {
+          ENTER_FUNCTION();
+          // add 64bit length first
+          size_t str_size = 0;
+          if( v != NULL ) str_size = ::strlen(v);
+          this->push(str_size);
+          if( str_size == 0 ) { RETURN_FUNCTION(stream_); }
+          // calculate stored str length
+          size_t count = item_count<char>(str_size);
+          int32_t * p = reserve(count);
+          ::memcpy(p,v,str_size);
+          confirm(count);
+          RETURN_FUNCTION(stream_);
+        }
+
+        //template <typename ITEM>
+        //i32_stream_base_t & push(ITEM & i) { return stream_; }
 
         i32_stream_base_t & pop(int32_t & v)
         {
@@ -335,8 +379,8 @@ namespace csl
           RETURN_FUNCTION(stream_);
         }
 
-        template <typename ITEM>
-        i32_stream_base_t & pop(ITEM & i) { return stream_; }
+        //template <typename ITEM>
+        //i32_stream_base_t & pop(ITEM & i) { return stream_; }
       };
 
       template <typename STREAM_T, typename ITEM>
