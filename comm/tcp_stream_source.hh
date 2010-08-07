@@ -37,35 +37,10 @@ namespace csl
     {
       class input_stream;
 
-      /* default dummy implementation */
-      template <typename T> class stream_source
+      class stream_source
       {
       public:
         typedef csl::common::input_stream<
-                        uint8_t,
-                        csl::comm::tcp::stream_source,
-                        csl::common::stream_buffer,
-                        1024,
-                        256*1024> stream_t;
-
-        typedef csl::common::stream_flags flags_t;
-
-        /* interface functions */
-        const flags_t & start(stream_t &)        { return flags_; }
-        const flags_t & end(stream_t &)          { return flags_; }
-        const flags_t & flush(stream_t &)        { return flags_; }
-        const flags_t & poll(size_t,uint32_t &)  { return flags_; }
-
-      private:
-        flags_t flags_;
-      };
-
-      /* most common implementation */
-      template <> class stream_source<uint8_t>
-      {
-      public:
-        typedef csl::common::input_stream<
-                        uint8_t,
                         csl::comm::tcp::stream_source,
                         csl::common::stream_buffer,
                         1024,

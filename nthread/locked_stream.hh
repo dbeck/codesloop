@@ -35,8 +35,7 @@ namespace csl
   {
     class mutex;
 
-    template <typename T>
-    class locked_stream : virtual public csl::common::stream_base<T>
+    class locked_stream : virtual public csl::common::stream_base
     {
     public:
       virtual mutex & get_lock() { return mtx_; }

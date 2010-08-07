@@ -34,46 +34,36 @@ namespace csl
 
     namespace
     {
-      typedef output_stream<int32_t> basic_i32_output_stream;
-      typedef output_stream<uint8_t> basic_u8_output_stream;
+      typedef output_stream<> basic_output_stream;
 
-      class i32_output_stream : public basic_i32_output_stream
+      class my_output_stream : public basic_output_stream
       {
       public:
-        i32_output_stream(stream_buffer<int32_t> & b) : basic_i32_output_stream(b) {}
+        my_output_stream(stream_buffer<uint8_t> & b) : basic_output_stream(b) {}
 
-        i32_output_stream( stream_nop_target<int32_t> & t,
-                           stream_buffer<int32_t> & b)
-          : basic_i32_output_stream(t,b) {}
+        my_output_stream( stream_nop_target & t,stream_buffer<uint8_t> & b)
+          : basic_output_stream(t,b) {}
       };
 
       void check_basic_output_streams()
       {
         {
-          stream_buffer<int32_t> b;
-          basic_i32_output_stream bi32os1(b);
-
-          stream_nop_target<int32_t> t;
-          basic_i32_output_stream bi32os2(t,b);
-
-          i32_output_stream i32s1(b);
-          i32_output_stream i32s2(t,b);
-        }
-
-        {
           stream_buffer<uint8_t> b;
-          basic_u8_output_stream bu8os1(b);
+          basic_output_stream bos1(b);
 
-          stream_nop_target<uint8_t> t;
-          basic_u8_output_stream bu8os2(t,b);
+          stream_nop_target t;
+          basic_output_stream bos2(t,b);
+
+          my_output_stream s1(b);
+          my_output_stream s2(t,b);
         }
       }
 
-      template <typename T> class source
+      class my_source
       {
       public:
         typedef stream_flags   flags_t;
-        typedef stream_base<T> stream_t;
+        typedef stream_base    stream_t;
 
         const flags_t & start(stream_t &)        { return flags_; }
         const flags_t & end(stream_t &)          { return flags_; }
@@ -84,30 +74,23 @@ namespace csl
         flags_t flags_;
       };
 
-      typedef input_stream<int32_t,source> basic_i32_input_stream;
-      typedef input_stream<uint8_t,source> basic_u8_input_stream;
+      typedef input_stream<my_source> basic_input_stream;
 
-      class i32_input_stream : public basic_i32_input_stream
+      class my_input_stream : public basic_input_stream
       {
       public:
-        i32_input_stream( source<int32_t> & s,
-                          stream_buffer<int32_t> & b)
-          : basic_i32_input_stream(s,b) {}
+        my_input_stream( my_source & s,
+                         stream_buffer<uint8_t> & b)
+          : basic_input_stream(s,b) {}
       };
 
       void check_basic_input_streams()
       {
         {
-          stream_buffer<int32_t> b;
-          source<int32_t> s;
-          basic_i32_input_stream bi32is2(s,b);
-          i32_input_stream       i32is1(s,b);
-        }
-
-        {
           stream_buffer<uint8_t> b;
-          source<uint8_t> s;
-          basic_u8_input_stream bu8is2(s,b);
+          my_source              s;
+          basic_input_stream     bis2(s,b);
+          my_input_stream        mis1(s,b);
         }
       }
     }

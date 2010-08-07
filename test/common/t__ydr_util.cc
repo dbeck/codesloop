@@ -57,39 +57,26 @@ namespace test_ydr_util
     buf.reset();
   }
 
-  void baseline_i32buf()
-  {
-    stream_buffer<int32_t> buf;
-    buf.reset();
-  }
-
   void baseline_u8stream()
   {
     stream_buffer<uint8_t> buf;
-    buffered_stream<uint8_t> bs(buf);
+    buffered_stream<> bs(buf);
     buf.reset();
   }
 
-  void baseline_i32stream()
+  void baseline_u8push()
   {
-    stream_buffer<int32_t> buf;
-    buffered_stream<int32_t> bs(buf);
-    buf.reset();
-  }
-
-  void baseline_i32push()
-  {
-    stream_buffer<int32_t> buf;
-    buffered_stream<int32_t> bs(buf);
+    stream_buffer<uint8_t> buf;
+    buffered_stream<> bs(buf);
     int32_t v = -123;
     ydr_push(bs,v);
   }
 
-  template <typename ST,typename TESTED>
+  template <typename TESTED>
   bool test_type(TESTED v)
   {
-    stream_buffer<ST> buf;
-    buffered_stream<ST> bs(buf);
+    stream_buffer<uint8_t> buf;
+    buffered_stream<> bs(buf);
     TESTED x;
     uint32_t timeout_ms = 0;
     ydr_push(bs,v);
@@ -99,30 +86,16 @@ namespace test_ydr_util
 
   void test_u8_int()
   {
-    assert( (test_type<uint8_t,int>(123456) == true) );
-    assert( (test_type<uint8_t,int>(-125) == true) );
-    assert( (test_type<uint8_t,int>(1<<31) == true) );
-  }
-
-  void test_i32_int()
-  {
-    assert( (test_type<int32_t,int>(123456) == true) );
-    assert( (test_type<int32_t,int>(-125) == true) );
-    assert( (test_type<int32_t,int>(1<<31) == true) );
+    assert( (test_type<int>(123456) == true) );
+    assert( (test_type<int>(-125) == true) );
+    assert( (test_type<int>(1<<31) == true) );
   }
 
   void test_u8_int64()
   {
-    assert( (test_type<uint8_t,int64_t>(123456) == true) );
-    assert( (test_type<uint8_t,int64_t>(-125) == true) );
-    assert( (test_type<uint8_t,int64_t>(1LL<<63) == true) );
-  }
-
-  void test_i32_int64()
-  {
-    assert( (test_type<int32_t,int64_t>(123456) == true) );
-    assert( (test_type<int32_t,int64_t>(-125) == true) );
-    assert( (test_type<int32_t,int64_t>(1LL<<63) == true) );
+    assert( (test_type<int64_t>(123456) == true) );
+    assert( (test_type<int64_t>(-125) == true) );
+    assert( (test_type<int64_t>(1LL<<63) == true) );
   }
 
   void test_item_sizes()
@@ -147,19 +120,16 @@ int main()
       printf("Conversion error at:%d (%d != %d)\n",i,d[i],b[i]);
     }
   }
+
   assert( memcmp(b,d,8) == 0 );
   test_item_sizes();
 
   csl_common_print_results( "baseline_u8buf     ", csl_common_test_timer_v0(baseline_u8buf),"" );
-  csl_common_print_results( "baseline_i32buf    ", csl_common_test_timer_v0(baseline_i32buf),"" );
   csl_common_print_results( "baseline_u8stream  ", csl_common_test_timer_v0(baseline_u8stream),"" );
-  csl_common_print_results( "baseline_i32stream ", csl_common_test_timer_v0(baseline_i32stream),"" );
-  csl_common_print_results( "baseline_i32push   ", csl_common_test_timer_v0(baseline_i32push),"" );
+  csl_common_print_results( "baseline_u8push    ", csl_common_test_timer_v0(baseline_u8push),"" );
 
   csl_common_print_results( "u8_int             ", csl_common_test_timer_v0(test_u8_int),"" );
-  csl_common_print_results( "i32_int            ", csl_common_test_timer_v0(test_i32_int),"" );
   csl_common_print_results( "u8_int64           ", csl_common_test_timer_v0(test_u8_int64),"" );
-  csl_common_print_results( "i32_int64          ", csl_common_test_timer_v0(test_i32_int64),"" );
 
   return 0;
 }

@@ -54,7 +54,7 @@ namespace test_tcp_input_stream {
   void baseline()
   {
     stream_buffer<uint8_t> buffer;
-    tcp::stream_source<uint8_t> source;
+    tcp::stream_source source;
     tcp::input_stream is(source, buffer);
   }
 

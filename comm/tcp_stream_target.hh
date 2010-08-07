@@ -35,12 +35,10 @@ namespace csl
   {
     namespace tcp
     {
-      template <typename T>
       class stream_target
       {
       public:
         typedef csl::common::output_stream<
-                        uint8_t,
                         csl::comm::tcp::stream_target,
                         csl::common::stream_buffer,
                         1024,

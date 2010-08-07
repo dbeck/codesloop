@@ -33,7 +33,7 @@ namespace csl
 {
   namespace comm
   {
-    class network_stream : virtual public csl::nthread::locked_stream<uint8_t>
+    class network_stream : virtual public csl::nthread::locked_stream
     {
     public:
       typedef uint8_t item_t;

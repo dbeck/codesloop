@@ -63,8 +63,8 @@ namespace csl
           typedef csl::comm::tcp::input_stream            in_stream_t;
           typedef out_stream_t::buffer_t                  out_buf_t;
           typedef in_stream_t::buffer_t                   in_buf_t;
-          typedef csl::comm::tcp::stream_target<uint8_t>  target_t;
-          typedef csl::comm::tcp::stream_target<uint8_t>  source_t;
+          typedef csl::comm::tcp::stream_target           target_t;
+          typedef csl::comm::tcp::stream_target           source_t;
 
           endpoint                own_addr_;
           endpoint                peer_addr_;

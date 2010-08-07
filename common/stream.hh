@@ -41,12 +41,11 @@ namespace csl
 {
   namespace common
   {
-    template <typename T>
     class stream_base
     {
     public:
-      typedef T              item_t;
-      typedef stream_part<T> part_t;
+      typedef uint8_t             item_t;
+      typedef stream_part<item_t> part_t;
 
       /* packet frame */
       virtual const stream_flags & start() = 0;
@@ -75,19 +74,13 @@ namespace csl
       virtual ~stream_base() {}
     };
 
-    typedef stream_base<uint8_t>  u8_stream_base_t;
-    typedef stream_base<int32_t>  i32_stream_base_t;
-
-    template <typename T,
-              template <typename,size_t,size_t> class Buffer = stream_buffer,
+    template <template <typename,size_t,size_t> class Buffer = stream_buffer,
               size_t Preallocated=1024,
               size_t MaxSize=(256*1024)>
-    class buffered_stream : public stream_base<T>
+    class buffered_stream : public stream_base
     {
     public:
-      typedef stream_base<T>                  base_t;
-      typedef stream_part<T>                  part_t;
-      typedef Buffer<T,Preallocated,MaxSize>  buffer_t;
+      typedef Buffer<item_t,Preallocated,MaxSize> buffer_t;
 
       /* packet frame */
       virtual const stream_flags & start();
@@ -136,17 +129,16 @@ namespace csl
       CSL_OBJ(csl::common,buffered_stream);
     };
 
-    template <typename T,
-              template <typename> class Target = stream_nop_target,
+    template <class Target = stream_nop_target,
               template <typename,size_t,size_t> class Buffer = stream_buffer,
               size_t Preallocated=1024,
               size_t MaxSize=(256*1024)>
-    class output_stream : public buffered_stream<T,Buffer,Preallocated,MaxSize>
+    class output_stream : public buffered_stream<Buffer,Preallocated,MaxSize>
     {
     public:
-      typedef Target<T>                                      target_t;
-      typedef buffered_stream<T,Buffer,Preallocated,MaxSize> buffered_stream_t;
-      typedef Buffer<T,Preallocated,MaxSize>                 buffer_t;
+      typedef Target                                            target_t;
+      typedef Buffer<stream_base::item_t,Preallocated,MaxSize>  buffer_t;
+      typedef buffered_stream<Buffer,Preallocated,MaxSize>      buffered_stream_t;
 
       /* packet frame */
       const stream_flags & start();
@@ -164,8 +156,7 @@ namespace csl
     private:
       // no default construction
       output_stream()
-        : buffered_stream<T,Buffer,Preallocated,MaxSize>(
-            *(new Buffer<T,Preallocated,MaxSize>())),
+        : buffered_stream<Buffer,Preallocated,MaxSize>(*(new buffer_t())),
           target_(0) { throw "not implemented"; }
 
       stream_flags  flags_;
@@ -174,17 +165,16 @@ namespace csl
       CSL_OBJ(csl::common,output_stream);
     };
 
-    template <typename T,
-              template <typename> class Source,
+    template <class Source,
               template <typename,size_t,size_t> class Buffer = stream_buffer,
               size_t Preallocated=1024,
               size_t MaxSize=(256*1024)>
-    class input_stream : public buffered_stream<T,Buffer,Preallocated,MaxSize>
+    class input_stream : public buffered_stream<Buffer,Preallocated,MaxSize>
     {
     public:
-      typedef Source<T>                                      source_t;
-      typedef buffered_stream<T,Buffer,Preallocated,MaxSize> buffered_stream_t;
-      typedef Buffer<T,Preallocated,MaxSize>                 buffer_t;
+      typedef Source                                           source_t;
+      typedef Buffer<stream_base::item_t,Preallocated,MaxSize> buffer_t;
+      typedef buffered_stream<Buffer,Preallocated,MaxSize>     buffered_stream_t;
 
       /* packet frame */
       const stream_flags & start();
@@ -205,8 +195,7 @@ namespace csl
     private:
       // no default construction
       input_stream()
-        : buffered_stream<T,Buffer,Preallocated,MaxSize>(
-            *(new Buffer<T,Preallocated,MaxSize>())),
+        : buffered_stream<Buffer,Preallocated,MaxSize>(*(new buffer_t())),
           source_(0) { throw "not implemented"; }
 
       stream_flags  flags_;

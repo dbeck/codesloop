@@ -37,24 +37,22 @@ namespace csl
     namespace tcp
     {
       typedef csl::common::output_stream<
-                      uint8_t,
                       csl::comm::tcp::stream_target,
                       csl::common::stream_buffer,
                       1024,
                       256*1024> tcp_output_stream_base;
 
       typedef csl::common::input_stream<
-                      uint8_t,
                       csl::comm::tcp::stream_source,
                       csl::common::stream_buffer,
                       1024,
                       256*1024> tcp_input_stream_base;
 
-      class output_stream : /*public network_stream,*/ public tcp_output_stream_base
+      class output_stream : public tcp_output_stream_base
       {
       public:
-        typedef csl::comm::tcp::stream_target<uint8_t> tcp_target_t;
-        typedef buffer_t                               tcp_buffer_t;
+        typedef csl::comm::tcp::stream_target tcp_target_t;
+        typedef buffer_t                      tcp_buffer_t;
 
         output_stream(target_t & t, buffer_t & b);
         virtual ~output_stream() {}
@@ -63,11 +61,11 @@ namespace csl
         output_stream();
       };
 
-      class input_stream : /*public network_stream,*/ public tcp_input_stream_base
+      class input_stream : public tcp_input_stream_base
       {
       public:
-        typedef csl::comm::tcp::stream_source<uint8_t> tcp_source_t;
-        typedef buffer_t                               tcp_buffer_t;
+        typedef csl::comm::tcp::stream_source tcp_source_t;
+        typedef buffer_t                      tcp_buffer_t;
 
         input_stream(source_t & s, buffer_t & b);
         virtual ~input_stream() {}

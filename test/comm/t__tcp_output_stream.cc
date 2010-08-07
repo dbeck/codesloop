@@ -55,7 +55,7 @@ namespace test_tcp_output_stream {
   void baseline()
   {
     stream_buffer<uint8_t> buffer;
-    tcp::stream_target<uint8_t> target;
+    tcp::stream_target target;
     tcp::output_stream os(target,buffer);
   }
 

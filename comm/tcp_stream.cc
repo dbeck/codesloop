@@ -43,7 +43,6 @@ namespace csl
     {
       output_stream::output_stream(target_t & t, buffer_t & b)
         : csl::common::output_stream<
-                      uint8_t,
                       csl::comm::tcp::stream_target,
                       csl::common::stream_buffer,
                       1024,
@@ -53,7 +52,6 @@ namespace csl
 
       input_stream::input_stream(source_t & s, buffer_t & b)
         : csl::common::input_stream<
-                      uint8_t,
                       csl::comm::tcp::stream_source,
                       csl::common::stream_buffer,
                       1024,

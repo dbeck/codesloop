@@ -41,26 +41,26 @@ namespace csl
   {
     namespace tcp
     {
-      const stream_source<uint8_t>::flags_t &
-      stream_source<uint8_t>::start(stream_t & s)
+      const stream_source::flags_t &
+      stream_source::start(stream_t & s)
       {
         return flags_;
       }
 
-      const stream_source<uint8_t>::flags_t &
-      stream_source<uint8_t>::end(stream_t & s)
+      const stream_source::flags_t &
+      stream_source::end(stream_t & s)
       {
         return flags_;
       }
 
-      const stream_source<uint8_t>::flags_t &
-      stream_source<uint8_t>::flush(stream_t & s)
+      const stream_source::flags_t &
+      stream_source::flush(stream_t & s)
       {
         return flags_;
       }
 
-      const stream_source<uint8_t>::flags_t &
-      stream_source<uint8_t>::poll(size_t requested_items, uint32_t & timeout_ms)
+      const stream_source::flags_t &
+      stream_source::poll(size_t requested_items, uint32_t & timeout_ms)
       {
         return flags_;
       }
