@@ -25,7 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_comm_channel_hh_included_
 #define _csl_comm_channel_hh_included_
-#include "codesloop/comm/network_stream.hh"
+#include "codesloop/common/stream.hh"
 #include "codesloop/common/common.h"
 #ifdef __cplusplus
 
@@ -36,7 +36,7 @@ namespace csl
     class channel
     {
     public:
-      typedef network_stream stream_t;
+      typedef csl::common::stream_base stream_t;
 
       virtual stream_t & in() const = 0;
       virtual stream_t & out() const = 0;

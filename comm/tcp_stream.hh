@@ -25,7 +25,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_comm_tcp_stream_hh_included_
 #define _csl_comm_tcp_stream_hh_included_
-#include "codesloop/comm/network_stream.hh"
 #include "codesloop/comm/tcp_stream_target.hh"
 #include "codesloop/comm/tcp_stream_source.hh"
 #ifdef __cplusplus
