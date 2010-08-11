@@ -101,6 +101,76 @@ namespace test_ydr_util
   void test_item_sizes()
   {
   }
+  
+  static char ydr_test_buffer[1024];
+
+  template <typename T>
+  inline bool test_ydr(const T & in)
+  {
+    T out;
+    ydr_util::ydr_copy_in(ydr_test_buffer,in);
+    ydr_util::ydr_copy_out(out,ydr_test_buffer);
+    return (in == out);
+  }
+      
+  void test_ydr_u8()
+  {
+    static uint8_t v = 100;
+    assert( test_ydr(v) == true );
+    ++v;
+  }
+  
+  void test_ydr_i8()
+  {
+    static int8_t v = -100;
+    assert( test_ydr(v) == true );
+    ++v;
+  }
+  
+  void test_ydr_u16()
+  {
+    static uint16_t v = 0xfff0;
+    assert( test_ydr(v) == true );
+    ++v;
+  }
+
+  void test_ydr_i16()
+  {
+    static int16_t v = -100;
+    assert( test_ydr(v) == true );
+    ++v;
+  }
+  
+  void test_ydr_u32()
+  {
+    static uint32_t v = 0xffffff00UL;
+    assert( test_ydr(v) == true );
+    ++v;
+  }
+  
+  void test_ydr_i32()
+  {
+    static int32_t v = -100;
+    assert( test_ydr(v) == true );
+    ++v;
+  }
+  
+  void test_ydr_u64()
+  {
+    static uint64_t v = 0xffffffffffffff00ULL;
+    assert( test_ydr(v) == true );
+    ++v;
+  }
+
+  void test_ydr_i64()
+  {
+    static int64_t v = -100;
+    assert( test_ydr(v) == true );
+    ++v;
+  }
+  
+  void test_ydr_float() {}
+  void test_ydr_double() {}
 
 } /* end of test_ydr_util */
 
@@ -130,6 +200,15 @@ int main()
 
   csl_common_print_results( "u8_int             ", csl_common_test_timer_v0(test_u8_int),"" );
   csl_common_print_results( "u8_int64           ", csl_common_test_timer_v0(test_u8_int64),"" );
+
+  csl_common_print_results( "ydr_u8             ", csl_common_test_timer_v0(test_ydr_u8),"" );
+  csl_common_print_results( "ydr_i8             ", csl_common_test_timer_v0(test_ydr_i8),"" );
+  csl_common_print_results( "ydr_u16            ", csl_common_test_timer_v0(test_ydr_u16),"" );
+  csl_common_print_results( "ydr_i16            ", csl_common_test_timer_v0(test_ydr_i16),"" );
+  csl_common_print_results( "ydr_u32            ", csl_common_test_timer_v0(test_ydr_u32),"" );
+  csl_common_print_results( "ydr_i32            ", csl_common_test_timer_v0(test_ydr_i32),"" );
+  csl_common_print_results( "ydr_u64            ", csl_common_test_timer_v0(test_ydr_u64),"" );
+  csl_common_print_results( "ydr_i64            ", csl_common_test_timer_v0(test_ydr_i64),"" );
 
   return 0;
 }

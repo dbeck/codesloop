@@ -43,6 +43,26 @@ namespace csl
 {
   namespace common
   {
+  
+    namespace ydr_util
+    {
+      void ydr_copy_in(void * dst, const float & val) { /*TODO*/ }
+      void ydr_copy_in(void * dst, const double & val) { /*TODO*/ }
+      void ydr_copy_in(void * dst, const char * str, size_t len) { /*TODO*/ }
+      void ydr_copy_in(void * dst, const str & val) { /*TODO*/ }
+      void ydr_copy_in(void * dst, const ustr & val) { /*TODO*/ }
+      void ydr_copy_in(void * dst, const dbl & val) { /*TODO*/ }
+      void ydr_copy_in(void * dst, const binry & val) { /*TODO*/ }
+      
+      void ydr_copy_out(float & val,  const void * src)  { /*TODO*/ }
+      void ydr_copy_out(double & val, const void * src) { /*TODO*/ }
+      void ydr_copy_out(str & val, const void * src) { /*TODO*/ }
+      void ydr_copy_out(ustr & val, const void * src) { /*TODO*/ }
+      void ydr_copy_out(dbl & val, const void * src) { /*TODO*/ }
+      void ydr_copy_out(binry & val, const void * src) { /*TODO*/ }
+    }
+    
+    
     namespace
     {
 #ifndef THROW_PUSH_EXCEPTION

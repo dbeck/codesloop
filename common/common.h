@@ -190,6 +190,14 @@ void gettimeofday(struct timeval * tv, void * p)
 #  define CSL_SYS_TIME_H_INCLUDED
 #  include <sys/time.h>
 # endif /*CSL_SYS_TIME_H_INCLUDED*/
+# ifndef CSL_ENDIAN_H_INCLUDED
+#  ifdef LINUX
+#   include <endian.h>
+#  endif
+#  ifdef FREEBSD
+#   include <sys/endian.h>
+#  endif
+# endif /*CSL_ENDIAN_H_INCLUDED*/
 # ifndef SleepSeconds
 #  define SleepSeconds(A) ::sleep(A)
 # endif /*SleepSeconds*/

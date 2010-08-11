@@ -56,7 +56,6 @@ ADD_LIBRARY( csl_comm STATIC
              channel.hh                channel_factory.hh
              listener.hh
              client.hh
-             network_stream.hh
              # -- New TCP layer --
              tcp_stream.cc             tcp_stream.hh
              tcp_stream_source.cc      tcp_stream_source.hh
