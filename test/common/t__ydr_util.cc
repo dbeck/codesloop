@@ -39,6 +39,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
 #include <assert.h>
+#include <iostream>
 
 using namespace csl::common;
 
@@ -169,8 +170,25 @@ namespace test_ydr_util
     ++v;
   }
   
-  void test_ydr_float() {}
-  void test_ydr_double() {}
+  void test_ydr_float()
+  {
+    static float v1 = -100000.0;
+    static float v2 = -2.0;
+    assert( test_ydr(v1) == true );
+    assert( test_ydr(v2) == true );
+    v1 /= -1.1f;
+    v2 *= -1.1f;
+  }
+  
+  void test_ydr_double()
+  {
+    static double v1 = -100000.0;
+    static double v2 = -2.0;
+    assert( test_ydr(v1) == true );
+    assert( test_ydr(v2) == true );
+    v1 /= -1.1;
+    v2 *= -1.1;
+  }
 
 } /* end of test_ydr_util */
 
@@ -209,6 +227,8 @@ int main()
   csl_common_print_results( "ydr_i32            ", csl_common_test_timer_v0(test_ydr_i32),"" );
   csl_common_print_results( "ydr_u64            ", csl_common_test_timer_v0(test_ydr_u64),"" );
   csl_common_print_results( "ydr_i64            ", csl_common_test_timer_v0(test_ydr_i64),"" );
+  csl_common_print_results( "ydr_float          ", csl_common_test_timer_v0(test_ydr_float),"" );
+  csl_common_print_results( "ydr_double         ", csl_common_test_timer_v0(test_ydr_double),"" );
 
   return 0;
 }

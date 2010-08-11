@@ -39,30 +39,117 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/endian.h>
 #endif
 
+#include <math.h>
+
 namespace csl
 {
   namespace common
   {
-  
     namespace ydr_util
     {
-      void ydr_copy_in(void * dst, const float & val) { /*TODO*/ }
-      void ydr_copy_in(void * dst, const double & val) { /*TODO*/ }
+      namespace
+      {
+        inline void double_conv(double in, int & out1, int64_t & out2)
+        {
+          if( in == -INFINITY )
+          {
+            out1 = 0xffffffff;
+            out2 = 0xffffffffffffffffULL;
+            return;
+          }
+          else if( in == INFINITY )
+          {
+            out1 = 0xffffffff;
+            out2 = 0xefffffffffffffffULL;
+            return;
+          }
+          else if( in == NAN )
+          {
+            out1 = 0xffffffff;
+            out2 = 0xdfffffffffffffffULL;
+            return;
+          }
+          double r = frexp(in, &out1);
+          r *= (1LL<<62);
+          out2 = static_cast<int64_t>(r);
+        }
+        
+        inline double double_vnoc(int in1, int64_t in2)
+        {
+          if( in1 == static_cast<int>(0xffffffff) )
+          {
+            if( in2 == static_cast<int64_t>(0xffffffffffffffffULL) )
+            {
+              return -INFINITY;
+            }
+            else if( in2 == static_cast<int64_t>(0xefffffffffffffffULL) )
+            {
+              return INFINITY;
+            }
+            else if( in2 == static_cast<int64_t>(0xdfffffffffffffffULL) )
+            {
+              return NAN;
+            }
+          }
+          double r = static_cast<double>(in2);
+          r /= (1LL<<62);
+          return (ldexp(r,in1));
+        }
+      }
+      
+      void ydr_copy_in(void * dst, const float & val)
+      {
+        unsigned char * p = static_cast<unsigned char *>(dst);
+        double v          = static_cast<double>(val);
+        int res1          = 0;
+        int64_t res2      = 0;
+        double_conv(v,res1,res2);
+        ydr_copy_in(p,res1);
+        ydr_copy_in(p+4,res2);
+      }
+
+      void ydr_copy_in(void * dst, const double & val)
+      {
+        unsigned char * p = static_cast<unsigned char *>(dst);
+        int res1          = 0;
+        int64_t res2      = 0;
+        double_conv(val,res1,res2);
+        ydr_copy_in(p,res1);
+        ydr_copy_in(p+4,res2);
+      }
+
       void ydr_copy_in(void * dst, const char * str, size_t len) { /*TODO*/ }
       void ydr_copy_in(void * dst, const str & val) { /*TODO*/ }
       void ydr_copy_in(void * dst, const ustr & val) { /*TODO*/ }
       void ydr_copy_in(void * dst, const dbl & val) { /*TODO*/ }
       void ydr_copy_in(void * dst, const binry & val) { /*TODO*/ }
       
-      void ydr_copy_out(float & val,  const void * src)  { /*TODO*/ }
-      void ydr_copy_out(double & val, const void * src) { /*TODO*/ }
+      void ydr_copy_out(float & val,  const void * src) 
+      {
+        const unsigned char * p = static_cast<const unsigned char *>(src);
+        int src1                = 0;
+        int64_t src2            = 0;
+        ydr_copy_out(src1,p);
+        ydr_copy_out(src2,p+4);
+        val = static_cast<float>(double_vnoc(src1,src2));
+      }
+
+      void ydr_copy_out(double & val, const void * src)
+      {
+        const unsigned char * p = static_cast<const unsigned char *>(src);
+        int src1                = 0;
+        int64_t src2            = 0;
+        ydr_copy_out(src1,p);
+        ydr_copy_out(src2,p+4);
+        val = double_vnoc(src1,src2);
+      }
+      
       void ydr_copy_out(str & val, const void * src) { /*TODO*/ }
       void ydr_copy_out(ustr & val, const void * src) { /*TODO*/ }
       void ydr_copy_out(dbl & val, const void * src) { /*TODO*/ }
       void ydr_copy_out(binry & val, const void * src) { /*TODO*/ }
     }
-    
-    
+        
     namespace
     {
 #ifndef THROW_PUSH_EXCEPTION
