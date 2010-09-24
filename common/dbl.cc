@@ -30,11 +30,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/binry.hh"
 #include "codesloop/common/xdrbuf.hh"
 
-/**
-  @file common/src/dbl.cc
-  @brief implementation of double precision floating point type
- */
-
 namespace csl
 {
   namespace common

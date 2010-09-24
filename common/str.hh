@@ -22,7 +22,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-Credits: some techniques and code pieces are stolen from Christian
+Credits: some techniques and code pieces are borrowed from Christian
          Stigen Larsen http://csl.sublevel3.org/programming/my_str/
 */
 
@@ -86,6 +86,9 @@ namespace csl
         str substr(const size_t start, const size_t length) const;
         str trim();
 
+        inline bool to_string(str & v) const { v.buf_ = buf_; return true; }
+        inline bool from_string(const str & v)   { buf_ = v.buf_; return true; }
+
         /* ------------------------------------------------------------------------ *
         **    ustr operations
         ** ------------------------------------------------------------------------ */
@@ -98,6 +101,8 @@ namespace csl
           str rhs(s);
           return (*this == rhs);
         }
+        bool to_string(ustr & v) const;
+        inline bool from_string(const ustr & v)  { *this = v; return true; }
 
         /* ------------------------------------------------------------------------ *
         **    char * operations
@@ -110,6 +115,7 @@ namespace csl
           str rhs(s);
           return (*this == rhs);
         }
+        bool from_string(const char * v);
 
         /* ------------------------------------------------------------------------ *
         **    wchar_t * operations
@@ -143,6 +149,7 @@ namespace csl
         str & assign(const wchar_t * start, const wchar_t * end);
         size_t find(const wchar_t * s) const;
         inline const wchar_t * data() const { return buf_.data(); }
+        bool from_string(const wchar_t * v);
 
         /* ------------------------------------------------------------------------ *
         **    std::string operations
@@ -152,6 +159,8 @@ namespace csl
         {
           return operator=(s.c_str());
         }
+        bool to_string(std::string & v) const;
+        bool from_string(const std::string & v);
 
         /* ------------------------------------------------------------------------ *
         **    char operations
@@ -171,9 +180,33 @@ namespace csl
         size_t rfind(wchar_t w) const;
 
         /* ------------------------------------------------------------------------ *
-        **    int64  operations
+        **    int64, int64_t  operations
         ** ------------------------------------------------------------------------ */
         int64 crc64() const;
+        inline bool to_integer(int64 & v) const { return v.from_string(data()); }
+        inline bool from_integer(const int64 & v ) { return v.to_string(*this); }
+        bool to_integer(int64_t & v) const;
+        bool from_integer(int64_t v);
+
+        /* ------------------------------------------------------------------------ *
+        **    dbl, double  operations
+        ** ------------------------------------------------------------------------ */
+
+        inline bool to_double(dbl & v) const { return v.from_string(data()); }
+        inline bool from_double(const dbl & v) { return v.to_string(*this); }
+        bool to_double(double & v) const;
+        bool from_double(double v);
+
+        /* ------------------------------------------------------------------------ *
+        **    binry, binary  operations
+        ** ------------------------------------------------------------------------ */
+
+        inline bool to_binary(binry & v) const { return v.from_binary(buf_.data(),nbytes()); }
+        bool to_binary(unsigned char * v, size_t & sz) const;
+        bool to_binary(void * v, size_t & sz) const;
+        inline bool from_binary(const binry & v) { return v.to_string(*this); }
+        bool from_binary(const unsigned char * v,size_t sz);
+        bool from_binary(const void * v,size_t sz);
 
         /* ------------------------------------------------------------------------ */
 
@@ -214,38 +247,18 @@ namespace csl
 
         void ensure_trailing_zero();
         const unsigned char * ucharp_data() const;
-        inline size_t var_size() const { return buf_.size(); }
+        inline size_t var_size() const { return nbytes(); }
 
         /* ------------------------------------------------------------------------ *
-        **    conversion operations
+        **    other conversion operations
         ** ------------------------------------------------------------------------ */
-
-        inline bool to_integer(int64 & v) const { return v.from_string(data()); }
-        bool to_integer(int64_t & v) const;
-        inline bool to_double(dbl & v) const { return v.from_string(data()); }
-        bool to_double(double & v) const;
-        inline bool to_string(str & v) const { v.buf_ = buf_; return true; }
-        bool to_string(ustr & v) const;
-        bool to_string(std::string & v) const;
-        inline bool to_binary(binry & v) const { return v.from_binary(buf_.data(),nbytes()); }
-        bool to_binary(unsigned char * v, size_t & sz) const;
-        bool to_binary(void * v, size_t & sz) const;
+                         
         bool to_xdr(xdrbuf & b) const;
-        inline bool to_var(var & v) const { return v.from_string(data()); }
-        inline bool from_integer(const int64 & v ) { return v.to_string(*this); }
-        bool from_integer(int64_t v);
-        inline bool from_double(const dbl & v) { return v.to_string(*this); }
-        bool from_double(double v);
-        inline bool from_string(const str & v)   { buf_ = v.buf_; return true; }
-        inline bool from_string(const ustr & v)  { *this = v; return true; }
-        bool from_string(const std::string & v);
-        bool from_string(const char * v);
-        bool from_string(const wchar_t * v);
-        inline bool from_binary(const binry & v) { return v.to_string(*this); }
-        bool from_binary(const unsigned char * v,size_t sz);
-        bool from_binary(const void * v,size_t sz);
         bool from_xdr(xdrbuf & v);
+
+        inline bool to_var(var & v) const { return v.from_string(data()); }
         inline bool from_var(const var & v) { return v.to_string(*this); }
+        
         virtual inline void serialize(arch & buf) { buf.serialize(*this); }
 
         inline str & operator+=(const var & other)

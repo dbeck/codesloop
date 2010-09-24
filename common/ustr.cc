@@ -29,11 +29,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/xdrbuf.hh"
 
-/**
-  @file common/src/ustr.cc
-  @brief implementation of simple UTF-8 string class
- */
-
 namespace csl
 {
   namespace common

@@ -30,7 +30,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/xdrbuf.hh"
 #include "codesloop/common/logger.hh"
 
-
 namespace csl
 {
   namespace common

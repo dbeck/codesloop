@@ -31,11 +31,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/exc.hh"
 #include "codesloop/common/xdrbuf.hh"
 
-/**
-  @file common/src/int64.cc
-  @brief implementation of 64 bit integer type
- */
-
 namespace csl
 {
   namespace common
