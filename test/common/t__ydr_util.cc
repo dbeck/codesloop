@@ -23,14 +23,14 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-//#if 0
+#if 0
 #ifdef DEBUG_BUILD
 #ifndef DEBUG
 #define DEBUG
 #define DEBUG_ENABLE_INDENT
 #endif /* DEBUG */
 #endif /* DEBUG_BUILD */
-//#endif
+#endif
 
 #include "codesloop/common/stream_buffer.hh"
 #include "codesloop/common/stream.hh"
@@ -113,7 +113,7 @@ namespace test_ydr_util
     ydr_util::ydr_copy_out(out,ydr_test_buffer);
     return (in == out);
   }
-      
+
   void test_ydr_u8()
   {
     static uint8_t v = 100;

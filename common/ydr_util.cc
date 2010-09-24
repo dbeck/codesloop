@@ -49,7 +49,7 @@ namespace csl
     {
       namespace
       {
-        inline void double_conv(double in, int & out1, int64_t & out2)
+        static inline void double_conv(double in, int & out1, int64_t & out2)
         {
           if( in == -INFINITY )
           {
@@ -74,7 +74,7 @@ namespace csl
           out2 = static_cast<int64_t>(r);
         }
         
-        inline double double_vnoc(int in1, int64_t in2)
+        static inline double double_vnoc(int in1, int64_t in2)
         {
           if( in1 == static_cast<int>(0xffffffff) )
           {
@@ -105,7 +105,7 @@ namespace csl
         int64_t res2      = 0;
         double_conv(v,res1,res2);
         ydr_copy_in(p,res1);
-        ydr_copy_in(p+4,res2);
+        ydr_copy_in(p+ydr_length(res1),res2);
       }
 
       void ydr_copy_in(void * dst, const double & val)
@@ -115,14 +115,36 @@ namespace csl
         int64_t res2      = 0;
         double_conv(val,res1,res2);
         ydr_copy_in(p,res1);
-        ydr_copy_in(p+4,res2);
+        ydr_copy_in(p+ydr_length(res1),res2);
       }
 
-      void ydr_copy_in(void * dst, const char * str, size_t len) { /*TODO*/ }
-      void ydr_copy_in(void * dst, const str & val) { /*TODO*/ }
-      void ydr_copy_in(void * dst, const ustr & val) { /*TODO*/ }
-      void ydr_copy_in(void * dst, const dbl & val) { /*TODO*/ }
-      void ydr_copy_in(void * dst, const binry & val) { /*TODO*/ }
+      void ydr_copy_in_ptr(void * dst, const void * buf, uint64_t sz)
+      {
+        unsigned char * p = static_cast<unsigned char *>(dst);
+        ydr_copy_in(p,sz);
+        p += ydr_length(sz);
+        ::memcpy(p,buf,static_cast<size_t>(sz));
+      }
+
+      void ydr_copy_in(void * dst, const char * str, size_t len)
+      {
+        ydr_copy_in_ptr(dst,str,len);
+      }
+
+      void ydr_copy_in(void * dst, const str & val)
+      {
+        ydr_copy_in_ptr(dst,val.ucharp_data(),val.var_size());
+      }
+
+      void ydr_copy_in(void * dst, const ustr & val)
+      {
+        ydr_copy_in_ptr(dst,val.ucharp_data(),val.var_size());
+      }
+
+      void ydr_copy_in(void * dst, const binry & val)
+      {
+        ydr_copy_in_ptr(dst,val.ucharp_data(),val.var_size());
+      }
       
       void ydr_copy_out(float & val,  const void * src) 
       {
@@ -144,10 +166,9 @@ namespace csl
         val = double_vnoc(src1,src2);
       }
       
-      void ydr_copy_out(str & val, const void * src) { /*TODO*/ }
-      void ydr_copy_out(ustr & val, const void * src) { /*TODO*/ }
-      void ydr_copy_out(dbl & val, const void * src) { /*TODO*/ }
-      void ydr_copy_out(binry & val, const void * src) { /*TODO*/ }
+      // void ydr_copy_out(str & val, const void * src) { /*TODO*/ }
+      // void ydr_copy_out(ustr & val, const void * src) { /*TODO*/ }
+      // void ydr_copy_out(binry & val, const void * src) { /*TODO*/ }
     }
         
     namespace

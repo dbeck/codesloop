@@ -29,6 +29,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/str.hh"
 #include "codesloop/common/ustr.hh"
+#include "codesloop/common/binry.hh"
+#include "codesloop/common/dbl.hh"
 #ifdef __cplusplus
 
 namespace csl
@@ -69,6 +71,13 @@ namespace csl
       {
         return (8+round_to_4_bytes(len));
       }
+      
+      inline size_t ydr_length(const str & val)   { return (8+round_to_4_bytes(val.var_size())); }
+      inline size_t ydr_length(const ustr & val)  { return (8+round_to_4_bytes(val.var_size())); }
+      inline size_t ydr_length(const binry & val) { return (8+round_to_4_bytes(val.var_size())); }
+      inline size_t ydr_length(const dbl & val)   { return ydr_length(val.value()); }
+      inline size_t ydr_length(const int64 & val) { return ydr_length(val.value()); }
+      inline size_t ydr_length(const char * val)  { return (8+round_to_4_bytes(val==0 ? 0 : ::strlen(val))); }
 
       // -----------------------------------------------------------------------
       // [3] copy-in
@@ -84,21 +93,24 @@ namespace csl
         ::memcpy(dst,&le_u64,sizeof(le_u64));
       }
                   
-      inline void ydr_copy_in(void * dst, const int8_t & val)   { ydr_copy_in_common32(dst,static_cast<int8_t>(val));   }
-      inline void ydr_copy_in(void * dst, const uint8_t & val)  { ydr_copy_in_common32(dst,static_cast<uint8_t>(val));  }
-      inline void ydr_copy_in(void * dst, const int16_t & val)  { ydr_copy_in_common32(dst,static_cast<int16_t>(val));  }
-      inline void ydr_copy_in(void * dst, const uint16_t & val) { ydr_copy_in_common32(dst,static_cast<uint16_t>(val)); }
-      inline void ydr_copy_in(void * dst, const int32_t & val)  { ydr_copy_in_common32(dst,static_cast<int32_t>(val));  }
+      inline void ydr_copy_in(void * dst, const int8_t & val)   { ydr_copy_in_common32(dst,static_cast<uint32_t>(val)); }
+      inline void ydr_copy_in(void * dst, const uint8_t & val)  { ydr_copy_in_common32(dst,static_cast<uint32_t>(val)); }
+      inline void ydr_copy_in(void * dst, const int16_t & val)  { ydr_copy_in_common32(dst,static_cast<uint32_t>(val)); }
+      inline void ydr_copy_in(void * dst, const uint16_t & val) { ydr_copy_in_common32(dst,static_cast<uint32_t>(val)); }
+      inline void ydr_copy_in(void * dst, const int32_t & val)  { ydr_copy_in_common32(dst,static_cast<uint32_t>(val)); }
       inline void ydr_copy_in(void * dst, const uint32_t & val) { ydr_copy_in_common32(dst,static_cast<uint32_t>(val)); }
-      inline void ydr_copy_in(void * dst, const int64_t & val)  { ydr_copy_in_common64(dst,static_cast<int64_t>(val));  }
+      inline void ydr_copy_in(void * dst, const int64_t & val)  { ydr_copy_in_common64(dst,static_cast<uint64_t>(val)); }
       inline void ydr_copy_in(void * dst, const uint64_t & val) { ydr_copy_in_common64(dst,static_cast<uint64_t>(val)); }
+
       void ydr_copy_in(void * dst, const float & val);
       void ydr_copy_in(void * dst, const double & val);
       void ydr_copy_in(void * dst, const char * str, size_t len);
       void ydr_copy_in(void * dst, const str & val);
       void ydr_copy_in(void * dst, const ustr & val);
-      void ydr_copy_in(void * dst, const dbl & val);
       void ydr_copy_in(void * dst, const binry & val);
+
+      inline void ydr_copy_in(void * dst, const dbl & val)   { ydr_copy_in(dst,val.value()); }
+      inline void ydr_copy_in(void * dst, const int64 & val) { ydr_copy_in(dst,val.value()); }
 
       // -----------------------------------------------------------------------
       // [7] copy-out
@@ -127,21 +139,129 @@ namespace csl
       inline void ydr_copy_out(uint32_t & val, const void * src) { val = static_cast<uint32_t>(ydr_copy_out_common32(src)); }
       inline void ydr_copy_out(int64_t & val,  const void * src) { val = static_cast<int64_t>(ydr_copy_out_common64(src));  }
       inline void ydr_copy_out(uint64_t & val, const void * src) { val = static_cast<uint64_t>(ydr_copy_out_common64(src)); }
+
       void ydr_copy_out(float & val,  const void * src);
       void ydr_copy_out(double & val, const void * src);
-      void ydr_copy_out(str & val, const void * src);
-      void ydr_copy_out(ustr & val, const void * src);
-      void ydr_copy_out(dbl & val, const void * src);
-      void ydr_copy_out(binry & val, const void * src);
 
-    };
+      inline void ydr_copy_out(dbl & val, const void * src)   { dbl::value_t v; ydr_copy_out(v,src); val.from_double(v); }
+      inline void ydr_copy_out(int64 & val, const void * src) { int64::value_t v; ydr_copy_out(v,src); val.from_integer(v); }
+
+    }; // end of: ns:ydr_util
+
+#ifndef THROW_YDR_CONVERT_EXCEPTION
+#define THROW_YDR_CONVERT_EXCEPTION(RETVAL,TYPE,FLAGS) \
+  do {                                       \
+    str flags__;                             \
+    stream_flags tmp_flags__(FLAGS);         \
+    tmp_flags__.to_str(flags__);             \
+    throw csl::common::exc(                  \
+      csl::common::exc::TYPE,                \
+      L"ydr_util",                           \
+      flags__.c_str(),                       \
+      L""__FILE__,                           \
+      __LINE__ );                            \
+  } while(0)
+#endif /*THROW_YDR_CONVERT_EXCEPTION*/
+
+    template <typename T>
+    stream_base & ydr_push(stream_base & os, const T & val)
+    {
+      // calculate the space to be allocated
+      size_t sz = ydr_util::ydr_length(val);
+      
+      stream_base::part_t p;
+      
+      // alocate from the stream buffer
+      stream_base::part_t & pp(os.reserve(sz,p));
+      
+      if( pp.flags().is_ok() )
+      {
+        // simple case : we have the required size
+        //               so put the data into the buffer
+        ydr_util::ydr_copy_in(pp.data(),val);
+
+        // tell the stream how many bytes we used
+        pp = os.confirm(sz,p);
+        
+        if( pp.flags().is_ok() )
+        {
+          // everything went smoothly
+        }
+        else
+        {
+          // cannot commit ???
+          THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_push,pp);
+        }
+      }
+      else
+      {
+        if( pp.flags().has_flags(stream_flags::partially_allocated_) )
+        {
+          // not enough space for the YDR data
+        }
+        else if( pp.flags().has_flags(stream_flags::buffer_full_) )
+        {
+          // no space in the buffer
+        }
+        
+        // give back the allocated space if any
+        os.confirm(0,p);
+        
+        // cancel encoding
+        THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_push,pp);
+      }
+      return os;
+    }
+
+    template <typename T>
+    stream_base & ydr_pop(stream_base & is, T & val, uint32_t & timeout_ms)
+    {
+      // calculate the required space to be allocated
+      size_t sz = ydr_util::ydr_length(val);
+      
+      stream_base::part_t p;
+      
+      // check if there are enough items to be read
+      size_t available_items = 0;
+      const stream_flags & fl(is.poll(sz, available_items, timeout_ms));
+      
+      if( available_items < sz )
+      {
+        // not enough items within the given time 
+        // TODO: rethink this for stream and string types ...
+        p.flags() << stream_flags::timed_out_;
+        p.flags() << fl;
+        THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_pop,p.flags());
+      }
+      else if( fl.is_ok() ==  false )
+      {
+        // other error in poll...
+        THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_pop,fl);
+      }
+      
+      stream_base::part_t & pp(is.get(sz, p));
+      
+      if( pp.flags().is_ok() == false )
+      {
+        // bad stream part...
+        THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_pop,pp.flags());
+      }
+      
+      // simple case: we have the required amount of data to be
+      //              decoded
+      ydr_util::ydr_copy_out(val, pp.data());
+      
+      return is;
+    }
+    
+    stream_base & ydr_pop(stream_base & is, str & val, uint32_t & timeout_ms) { return is; } // TODO
+    stream_base & ydr_pop(stream_base & is, ustr & val, uint32_t & timeout_ms) { return is; } // TODO
+    stream_base & ydr_pop(stream_base & is, binry & val, uint32_t & timeout_ms) { return is; } // TODO
+
+#undef THROW_YDR_CONVERT_EXCEPTION
 
     // stream_base
-    stream_base & ydr_push(stream_base & os, int32_t val);
-    stream_base & ydr_push(stream_base & os, uint32_t val);
-    stream_base & ydr_push(stream_base & os, int64_t val);
-    stream_base & ydr_push(stream_base & os, uint64_t val);
-    stream_base & ydr_push(stream_base & os, const char * val);
+#if 0 
     //stream_base & ydr_push(stream_base & os, const common::serializable & val);
     //stream_base & ydr_push(stream_base & os, const common::var & val);
     //stream_base & ydr_push(stream_base & os, const common::str & val);
@@ -158,6 +278,7 @@ namespace csl
     //stream_base & ydr_pop(stream_base & is, common::str & val, uint32_t & timeout_ms);
     //stream_base & ydr_pop(stream_base & is, common::ustr & val, uint32_t & timeout_ms);
     //stream_base & ydr_pop(stream_base & is, pbuf & val, uint32_t & timeout_ms);
+#endif //0
   }
 }
 
