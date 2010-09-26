@@ -76,6 +76,7 @@ namespace csl
         static const uint32_t partially_allocated_    = (1UL<<30);
 
         stream_flags() : flags_(ok_) {}
+        stream_flags(uint32_t f) : flags_(f) {}
 
         uint32_t flags() const;
         bool has_flags(uint32_t flags) const;

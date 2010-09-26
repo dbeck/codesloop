@@ -190,7 +190,7 @@ namespace csl
         else
         {
           // cannot commit ???
-          THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_push,pp);
+          THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_push,pp.flags());
         }
       }
       else
@@ -208,7 +208,7 @@ namespace csl
         os.confirm(0,p);
         
         // cancel encoding
-        THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_push,pp);
+        THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_push,pp.flags());
       }
       return os;
     }
@@ -231,12 +231,12 @@ namespace csl
         // TODO: rethink this for stream and string types ...
         p.flags() << stream_flags::timed_out_;
         p.flags() << fl;
-        THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_pop,p.flags());
+        THROW_YDR_CONVERT_EXCEPTION(is,rs_stream_pop,p.flags());
       }
       else if( fl.is_ok() ==  false )
       {
         // other error in poll...
-        THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_pop,fl);
+        THROW_YDR_CONVERT_EXCEPTION(is,rs_stream_pop,fl);
       }
       
       stream_base::part_t & pp(is.get(sz, p));
@@ -244,7 +244,7 @@ namespace csl
       if( pp.flags().is_ok() == false )
       {
         // bad stream part...
-        THROW_YDR_CONVERT_EXCEPTION(os,rs_stream_pop,pp.flags());
+        THROW_YDR_CONVERT_EXCEPTION(is,rs_stream_pop,pp.flags());
       }
       
       // simple case: we have the required amount of data to be
@@ -254,18 +254,13 @@ namespace csl
       return is;
     }
     
-    stream_base & ydr_pop(stream_base & is, str & val, uint32_t & timeout_ms) { return is; } // TODO
-    stream_base & ydr_pop(stream_base & is, ustr & val, uint32_t & timeout_ms) { return is; } // TODO
-    stream_base & ydr_pop(stream_base & is, binry & val, uint32_t & timeout_ms) { return is; } // TODO
-
-#undef THROW_YDR_CONVERT_EXCEPTION
+    stream_base & ydr_pop(stream_base & is, str & val, uint32_t & timeout_ms);
+    stream_base & ydr_pop(stream_base & is, ustr & val, uint32_t & timeout_ms);
+    stream_base & ydr_pop(stream_base & is, binry & val, uint32_t & timeout_ms);
 
     // stream_base
 #if 0 
     //stream_base & ydr_push(stream_base & os, const common::serializable & val);
-    //stream_base & ydr_push(stream_base & os, const common::var & val);
-    //stream_base & ydr_push(stream_base & os, const common::str & val);
-    //stream_base & ydr_push(stream_base & os, const common::ustr & val);
     //stream_base & ydr_push(stream_base & os, const bindata_t & val);
     //stream_base & ydr_push(stream_base & os, const pbuf & val);
 
@@ -274,9 +269,6 @@ namespace csl
     stream_base & ydr_pop(stream_base & is, int64_t & val, uint32_t & timeout_ms);
     stream_base & ydr_pop(stream_base & is, uint64_t & val, uint32_t & timeout_ms);
     //stream_base & ydr_pop(stream_base & is, common::serializable & val, uint32_t & timeout_ms);
-    //stream_base & ydr_pop(stream_base & is, common::var & val, uint32_t & timeout_ms);
-    //stream_base & ydr_pop(stream_base & is, common::str & val, uint32_t & timeout_ms);
-    //stream_base & ydr_pop(stream_base & is, common::ustr & val, uint32_t & timeout_ms);
     //stream_base & ydr_pop(stream_base & is, pbuf & val, uint32_t & timeout_ms);
 #endif //0
   }
