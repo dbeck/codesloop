@@ -189,6 +189,59 @@ namespace test_ydr_util
     v1 /= -1.1;
     v2 *= -1.1;
   }
+  
+  void test_conv_charp()
+  {
+    stream_buffer<uint8_t> buf;
+    buffered_stream<> bs(buf);
+    const char * hw = "hello world";
+    ydr_push(bs,hw);
+    assert(buf.len()==20);
+    uint32_t timeout=1;
+    ustr s;
+    ydr_pop(bs,s,timeout);
+    assert(s == hw);
+  }
+  
+  void test_conv_str()
+  {
+    stream_buffer<uint8_t> buf;
+    buffered_stream<> bs(buf);
+    str hw(L"hello world");
+    ydr_push(bs,hw);
+    uint32_t timeout=1;
+    str s;
+    ydr_pop(bs,s,timeout);
+    assert(s == hw);
+  }
+  
+  void test_conv_ustr()
+  {
+    stream_buffer<uint8_t> buf;
+    buffered_stream<> bs(buf);
+    ustr hw("hello world");
+    ydr_push(bs,hw);
+    uint32_t timeout=1;
+    ustr s;
+    ydr_pop(bs,s,timeout);
+    assert(s == hw);
+  }
+
+  void test_conv_binry()
+  {
+    stream_buffer<uint8_t> buf;
+    buffered_stream<> bs(buf);
+    unsigned char data[] = { 0,1,2,3,4,5,6,7,8,9,0,1,2 };
+    binry b;
+    b.from_binary(data,13);
+    ydr_push(bs,b);
+    uint32_t timeout=1;
+    binry b2;
+    ydr_pop(bs,b2,timeout);
+    assert(::memcmp(b.ucharp_data(),b2.ucharp_data(),b.var_size())==0);
+    assert(b2.var_size() == 13);
+    assert(::memcmp(data,b2.ucharp_data(),13)==0);
+  }
 
 } /* end of test_ydr_util */
 
@@ -196,22 +249,13 @@ using namespace test_ydr_util;
 
 int main()
 {
-  uint64_t a = 0x0102030405060708ULL;
-  unsigned char b[] = { 1,2,3,4,5,6,7,8 };
-  uint64_t c = htonll(a);
-  unsigned char * d = reinterpret_cast<unsigned char *>(&c);
-
-  for( int i=0;i<8;++i )
-  {
-    if( d[i] != b[i] )
-    {
-      printf("Conversion error at:%d (%d != %d)\n",i,d[i],b[i]);
-    }
-  }
-
-  assert( memcmp(b,d,8) == 0 );
   test_item_sizes();
 
+  csl_common_print_results( "conv_charp         ", csl_common_test_timer_v0(test_conv_charp),"" );
+  csl_common_print_results( "conv_str           ", csl_common_test_timer_v0(test_conv_str),"" );
+  csl_common_print_results( "conv_ustr          ", csl_common_test_timer_v0(test_conv_ustr),"" );
+  csl_common_print_results( "conv_binry         ", csl_common_test_timer_v0(test_conv_binry),"" );
+    
   csl_common_print_results( "baseline_u8buf     ", csl_common_test_timer_v0(baseline_u8buf),"" );
   csl_common_print_results( "baseline_u8stream  ", csl_common_test_timer_v0(baseline_u8stream),"" );
   csl_common_print_results( "baseline_u8push    ", csl_common_test_timer_v0(baseline_u8push),"" );

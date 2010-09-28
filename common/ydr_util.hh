@@ -105,6 +105,7 @@ namespace csl
       void ydr_copy_in(void * dst, const float & val);
       void ydr_copy_in(void * dst, const double & val);
       void ydr_copy_in(void * dst, const char * str, size_t len);
+      void ydr_copy_in(void * dst, const char * str);
       void ydr_copy_in(void * dst, const str & val);
       void ydr_copy_in(void * dst, const ustr & val);
       void ydr_copy_in(void * dst, const binry & val);
@@ -212,7 +213,7 @@ namespace csl
       }
       return os;
     }
-
+    
     template <typename T>
     stream_base & ydr_pop(stream_base & is, T & val, uint32_t & timeout_ms)
     {

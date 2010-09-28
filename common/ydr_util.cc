@@ -123,9 +123,14 @@ namespace csl
         unsigned char * p = static_cast<unsigned char *>(dst);
         ydr_copy_in(p,sz);
         p += ydr_length(sz);
-        ::memcpy(p,buf,static_cast<size_t>(sz));
+        if( sz > 0 ) ::memcpy(p,buf,static_cast<size_t>(sz));
       }
 
+      void ydr_copy_in(void * dst, const char * str)
+      {
+        if( !str ) ydr_copy_in_ptr(dst,str,0);
+        else       ydr_copy_in_ptr(dst,str,::strlen(str));
+      }
       void ydr_copy_in(void * dst, const char * str, size_t len) { ydr_copy_in_ptr(dst,str,len); }
       void ydr_copy_in(void * dst, const str & val)              { ydr_copy_in_ptr(dst,val.ucharp_data(),val.var_size()); }
       void ydr_copy_in(void * dst, const ustr & val)             { ydr_copy_in_ptr(dst,val.ucharp_data(),val.var_size()); }
