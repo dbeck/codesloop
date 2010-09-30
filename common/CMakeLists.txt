@@ -42,6 +42,7 @@ ADD_LIBRARY( csl_common STATIC
              logger.cc     logger.hh
              arch.cc       arch.hh
 	     ydr_util.cc   ydr_util.hh
+	     ydr_archiver.cc ydr_archiver.hh archiver.hh
              serializable.hh
              obj.cc        obj.hh
              hlprs.cc      hlprs.hh
