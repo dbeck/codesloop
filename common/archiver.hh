@@ -34,12 +34,20 @@ namespace csl
 {
   namespace common
   {
+    class str;
+    class ustr;
+    class dbl;
+    class int64;
+    class binry;
+    
     class archiver
     {
       public:
         enum direction { SERIALIZE, DESERIALIZE };
         
-        archiver( direction d, stream_base & s, uint32_t timeout_ms = 50 );
+        archiver( direction d, stream_base & s, uint32_t timeout_ms = 50 )
+          : dir_(d), stream_(&s), timeout_(timeout_ms) {}
+
         virtual ~archiver() {}
 
         /* abstract interface */

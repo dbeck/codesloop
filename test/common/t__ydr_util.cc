@@ -39,7 +39,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
 #include <assert.h>
-#include <iostream>
 
 using namespace csl::common;
 
