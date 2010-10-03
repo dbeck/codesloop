@@ -24,6 +24,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "codesloop/common/ydr_archiver.hh"
+#include "codesloop/common/ydr_util.hh"
 #include "codesloop/common/exc.hh"
 #include "codesloop/common/var.hh"
 #include "codesloop/common/str.hh"
@@ -38,27 +39,49 @@ namespace csl
   {  
     ydr_archiver::ydr_archiver( direction d, stream_base & s, uint32_t timeout_ms ) 
       : archiver(d,s,timeout_ms) {}
-
-    void ydr_archiver::reset() {}
-
-    archiver & ydr_archiver::serialize( str & v ) { return *this; }
-    archiver & ydr_archiver::serialize( ustr & v ) { return *this; }
-    archiver & ydr_archiver::serialize( dbl & v ) { return *this; }
-    archiver & ydr_archiver::serialize( int64 & v ) { return *this; }
-    archiver & ydr_archiver::serialize( binry & v ) { return *this; }
-
-    archiver & ydr_archiver::serialize( int8_t & v ) { return *this; }
-    archiver & ydr_archiver::serialize( int16_t & v ) { return *this; }
-    archiver & ydr_archiver::serialize( int32_t & v ) { return *this; }
-    archiver & ydr_archiver::serialize( int64_t & v ) { return *this; }
         
-    archiver & ydr_archiver::serialize( uint8_t & v ) { return *this; }
-    archiver & ydr_archiver::serialize( uint16_t & v ) { return *this; }
-    archiver & ydr_archiver::serialize( uint32_t & v ) { return *this; }
-    archiver & ydr_archiver::serialize( uint64_t & v ) { return *this; }
+    /* abstract interface */
+    void ydr_archiver::reset() {}
+                            
+    /* separate interface for push */
+    archiver & ydr_archiver::push( stream_base & b, const str & v )   { ydr_push(b,v); return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const ustr & v )  { ydr_push(b,v); return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const dbl & v )   { ydr_push(b,v); return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const int64 & v ) { ydr_push(b,v); return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const binry & v ) { ydr_push(b,v); return *this; }
 
-    archiver & ydr_archiver::serialize( float & v ) { return *this; }
-    archiver & ydr_archiver::serialize( double & v ) { return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const int8_t & v )  { ydr_push(b,v); return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const int16_t & v ) { ydr_push(b,v); return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const int32_t & v ) { ydr_push(b,v); return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const int64_t & v ) { ydr_push(b,v); return *this; }
+    
+    archiver & ydr_archiver::push( stream_base & b, const uint8_t & v )  { ydr_push(b,v); return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const uint16_t & v ) { ydr_push(b,v); return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const uint32_t & v ) { ydr_push(b,v); return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const uint64_t & v ) { ydr_push(b,v); return *this; }
+
+    archiver & ydr_archiver::push( stream_base & b, const float & v )  { ydr_push(b,v); return *this; }
+    archiver & ydr_archiver::push( stream_base & b, const double & v ) { ydr_push(b,v); return *this; }
+    
+    /* separate interface for pop */
+    archiver & ydr_archiver::pop( stream_base & b, str & v, uint32_t & t )   { ydr_pop(b,v,t); return *this; }
+    archiver & ydr_archiver::pop( stream_base & b, ustr & v, uint32_t & t )  { ydr_pop(b,v,t); return *this; }
+    archiver & ydr_archiver::pop( stream_base & b, dbl & v, uint32_t & t )   { ydr_pop(b,v,t); return *this; }
+    archiver & ydr_archiver::pop( stream_base & b, int64 & v, uint32_t & t ) { ydr_pop(b,v,t); return *this; }
+    archiver & ydr_archiver::pop( stream_base & b, binry & v, uint32_t & t ) { ydr_pop(b,v,t); return *this; }
+
+    archiver & ydr_archiver::pop( stream_base & b, int8_t & v, uint32_t & t )  { ydr_pop(b,v,t); return *this; }
+    archiver & ydr_archiver::pop( stream_base & b, int16_t & v, uint32_t & t ) { ydr_pop(b,v,t); return *this; }
+    archiver & ydr_archiver::pop( stream_base & b, int32_t & v, uint32_t & t ) { ydr_pop(b,v,t); return *this; }
+    archiver & ydr_archiver::pop( stream_base & b, int64_t & v, uint32_t & t ) { ydr_pop(b,v,t); return *this; }
+    
+    archiver & ydr_archiver::pop( stream_base & b, uint8_t & v, uint32_t & t )  { ydr_pop(b,v,t); return *this; }
+    archiver & ydr_archiver::pop( stream_base & b, uint16_t & v, uint32_t & t ) { ydr_pop(b,v,t); return *this; }
+    archiver & ydr_archiver::pop( stream_base & b, uint32_t & v, uint32_t & t ) { ydr_pop(b,v,t); return *this; }
+    archiver & ydr_archiver::pop( stream_base & b, uint64_t & v, uint32_t & t ) { ydr_pop(b,v,t); return *this; }
+
+    archiver & ydr_archiver::pop( stream_base & b, float & v, uint32_t & t )  { ydr_pop(b,v,t); return *this; }
+    archiver & ydr_archiver::pop( stream_base & b, double & v, uint32_t & t ) { ydr_pop(b,v,t); return *this; }  
   }
 }
 

@@ -42,25 +42,46 @@ namespace csl
 
         /* abstract interface */
         void reset();
+                                
+        /* separate interface for push */
+        archiver & push( stream_base & b, const str & v );
+        archiver & push( stream_base & b, const ustr & v );
+        archiver & push( stream_base & b, const dbl & v );
+        archiver & push( stream_base & b, const int64 & v );
+        archiver & push( stream_base & b, const binry & v );
 
-        archiver & serialize( str & v );
-        archiver & serialize( ustr & v );
-        archiver & serialize( dbl & v ) ;
-        archiver & serialize( int64 & v );
-        archiver & serialize( binry & v );
-
-        archiver & serialize( int8_t & v );
-        archiver & serialize( int16_t & v );
-        archiver & serialize( int32_t & v );
-        archiver & serialize( int64_t & v );
+        archiver & push( stream_base & b, const int8_t & v );
+        archiver & push( stream_base & b, const int16_t & v );
+        archiver & push( stream_base & b, const int32_t & v );
+        archiver & push( stream_base & b, const int64_t & v );
         
-        archiver & serialize( uint8_t & v );
-        archiver & serialize( uint16_t & v );
-        archiver & serialize( uint32_t & v );        
-        archiver & serialize( uint64_t & v );
+        archiver & push( stream_base & b, const uint8_t & v );
+        archiver & push( stream_base & b, const uint16_t & v );
+        archiver & push( stream_base & b, const uint32_t & v );        
+        archiver & push( stream_base & b, const uint64_t & v );
 
-        archiver & serialize( float & v );
-        archiver & serialize( double & v );
+        archiver & push( stream_base & b, const float & v );
+        archiver & push( stream_base & b, const double & v );
+        
+        /* separate interface for pop */
+        archiver & pop( stream_base & b, str & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, ustr & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, dbl & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, int64 & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, binry & v, uint32_t & timeout_ms );
+
+        archiver & pop( stream_base & b, int8_t & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, int16_t & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, int32_t & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, int64_t & v, uint32_t & timeout_ms );
+        
+        archiver & pop( stream_base & b, uint8_t & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, uint16_t & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, uint32_t & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, uint64_t & v, uint32_t & timeout_ms );
+
+        archiver & pop( stream_base & b, float & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, double & v, uint32_t & timeout_ms );
 
       private:
         /* no default construction */
