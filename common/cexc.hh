@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_cexc_hh_included_
 #define _csl_common_cexc_hh_included_
 
-/**
-   @file common/src/cexc.hh
-   @brief common base exception class for codesloop classes
- */
-
 #include "codesloop/common/str.hh"
 #include "codesloop/common/logger.hh"
 #ifdef __cplusplus
@@ -39,69 +34,37 @@ namespace csl
 {
   namespace common
   {
-    /**
-    @brief common base exception class for codesloop classes
-
-    this class is used as base class when a module implements its
-    own exception
-     */
     class cexc : public serializable
     {
       public:
-        /** @brief converts reason code to string */
         static const wchar_t * reason_string(int rc);
 
-        /** @brief converts exception to string
-        @param res string to store result */
         virtual void to_string(str & res);
 
-        /** @brief converts exception to string */
         virtual str to_string();
 
-        /** @brief constructor
-        *   @param component that caused the exception
-        */
         cexc(const wchar_t * component)
-        : reason_(0), component_(component), line_(0) {}
+          : reason_(0), component_(component), line_(0) {}
 
-        /** @brief constructor
-        *   @param reason is to tell why
-        *   @param component that cause the exception
-        */
         cexc(int reason, const wchar_t * component)
-        : reason_(reason), component_(component), line_(0) {}
+          : reason_(reason), component_(component), line_(0) {}
 
-        /** @brief constructor
-        *   @param reason is to tell why
-        *   @param component that cause the exception
-        *   @param txt provides some explanation
-        */
         cexc(int reason, const wchar_t * component, const wchar_t * txt)
-        : reason_(reason), component_(component), text_(txt), line_(0) {}
+          : reason_(reason), component_(component), text_(txt), line_(0) {}
 
-        /** @brief constructor
-        *   @param reason is to tell why
-        *   @param component that cause the exception
-        *   @param txt provides some explanation
-        *   @param file tells which source file caused the error
-        *   @param lin tells which line cause the error
-        */
         cexc(int reason, const wchar_t * component, const wchar_t * txt, const wchar_t * file, unsigned int line)
-        : reason_(reason), component_(component), text_(txt), file_(file), line_(line) {}
+          : reason_(reason), component_(component), text_(txt), file_(file), line_(line) {}
 
 
-        /** @brief serialize contents of the exception class
-        *   @param arch archiver class 
-        */
-        virtual void serialize(class arch & ar);
+        virtual void serialize(class archiver & ar);
 
         virtual ~cexc();
 
-        int reason_;        ///<reason code: one of rs_*
-        str component_;     ///<component name
-        str text_;          ///<error explanation
-        str file_;          ///<error source file
-        unsigned int line_; ///<error posintion in source file
+        int reason_;
+        str component_;
+        str text_;
+        str file_;
+        unsigned int line_;
 
       protected:
         cexc();

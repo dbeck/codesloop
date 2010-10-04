@@ -26,12 +26,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/cexc.hh"
 #include "codesloop/common/str.hh"
 #include "codesloop/common/common.h"
-#include "codesloop/common/arch.hh"
-
-/**
-  @file common/src/cexc.cc
-  @brief implementation of common::cexc
- */
+#include "codesloop/common/archiver.hh"
 
 namespace csl
 {
@@ -68,7 +63,7 @@ namespace csl
     }
 
 
-    void cexc::serialize(arch & ar)
+    void cexc::serialize(archiver & ar)
     {
       ar.serialize(reason_);      
       ar.serialize(component_);    
