@@ -432,7 +432,7 @@ namespace csl
       return false;
     }
 
-    bool ecdh_key::gen_shared_key(const bignum & peer_private_key, pbuf & shared_key) const
+    bool ecdh_key::gen_shared_key(const bignum & peer_private_key, common::pbuf & shared_key) const
     {
       try
       {
@@ -460,53 +460,11 @@ namespace csl
       return false;
     }
 
-    bool ecdh_key::to_xdr(xdrbuf & buf) const
+    void ecdh_key::serialize(common::archiver & a)
     {
-      bool ret = true;
-      try
-      {
-        buf << algname_;
-        if( !(x_.to_xdr( buf )) ) return false;
-        if( !(y_.to_xdr( buf )) ) return false;
-      }
-      catch( csl::common::exc e )
-      {
-        ret = false;
-      }
-      return ret;
-    }
-
-    bool ecdh_key::from_xdr(xdrbuf & buf)
-    {
-      bool ret = true;
-      try
-      {
-        char tmp[64];
-        tmp[63] = 0;
-
-        uint64_t sz = 0;
-        ret = buf.get_data( reinterpret_cast<unsigned char *>(tmp), sz, 64 );
-
-        if( ret )
-        {
-          tmp[sz] = 0;
-          algname_ = tmp;
-
-          if( !(x_.from_xdr(buf)) ) return false;
-          if( !(y_.from_xdr(buf)) ) return false;
-
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
-      catch( csl::common::exc e )
-      {
-        ret = false;
-      }
-      return ret;
+      algname_.serialize( a );
+      x_.serialize( a );
+      y_.serialize( a );
     }
 
     ecdh_key::ecdh_key() { }
