@@ -24,12 +24,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "codesloop/common/pbuf.hh"
-#include "codesloop/common/arch.hh"
-
-/**
-   @file pbuf.cc
-   @brief Paged buffer management
- */
+#include "codesloop/common/archiver.hh"
 
 namespace csl
 {
@@ -163,7 +158,7 @@ namespace csl
       return true;
     }
 
-    void pbuf::serialize(arch & ar)
+    void pbuf::serialize(archiver & ar)
     {
       ar.serialize( *this );
     }

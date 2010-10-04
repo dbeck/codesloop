@@ -26,7 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_archiver_hh_included_
 #define _csl_common_archiver_hh_included_
 #include "codesloop/common/common.h"
-#include "codesloop/common/stream.hh"
 #include "codesloop/common/obj.hh"
 #ifdef __cplusplus
 
@@ -39,6 +38,8 @@ namespace csl
     class dbl;
     class int64;
     class binry;
+    class pbuf;
+    class stream_base;
     
     class archiver
     {
@@ -74,6 +75,7 @@ namespace csl
         virtual archiver & push( stream_base & b, const dbl & v ) = 0;
         virtual archiver & push( stream_base & b, const int64 & v ) = 0;
         virtual archiver & push( stream_base & b, const binry & v ) = 0;
+        virtual archiver & push( stream_base & b, const pbuf & v ) = 0;
 
         virtual archiver & push( stream_base & b, const int8_t & v ) = 0;
         virtual archiver & push( stream_base & b, const int16_t & v ) = 0;
@@ -87,13 +89,14 @@ namespace csl
 
         virtual archiver & push( stream_base & b, const float & v ) = 0;
         virtual archiver & push( stream_base & b, const double & v ) = 0;
-        
+                
         /* separate interface for pop */
         virtual archiver & pop( stream_base & b, str & v, uint32_t & timeout_ms ) = 0;
         virtual archiver & pop( stream_base & b, ustr & v, uint32_t & timeout_ms ) = 0;
         virtual archiver & pop( stream_base & b, dbl & v, uint32_t & timeout_ms ) = 0;
         virtual archiver & pop( stream_base & b, int64 & v, uint32_t & timeout_ms ) = 0;
         virtual archiver & pop( stream_base & b, binry & v, uint32_t & timeout_ms ) = 0;
+        virtual archiver & pop( stream_base & b, pbuf & v, uint32_t & timeout_ms ) = 0;
 
         virtual archiver & pop( stream_base & b, int8_t & v, uint32_t & timeout_ms ) = 0;
         virtual archiver & pop( stream_base & b, int16_t & v, uint32_t & timeout_ms ) = 0;
@@ -107,7 +110,7 @@ namespace csl
 
         virtual archiver & pop( stream_base & b, float & v, uint32_t & timeout_ms ) = 0;
         virtual archiver & pop( stream_base & b, double & v, uint32_t & timeout_ms ) = 0;
-        
+                        
         /* accessors */
         direction get_direction() const               { return dir_;      }
         const stream_base & get_const_stream() const  { return *stream_;  }

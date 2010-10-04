@@ -204,7 +204,7 @@ namespace csl
           @param buf archiver class to/from serialize
           @throw common::exc
          */
-        virtual void serialize(arch & ar);
+        virtual void serialize(archiver & ar);
 
       private:
         buf * allocate(uint64_t size);
