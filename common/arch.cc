@@ -32,7 +32,7 @@ namespace csl
 {
   namespace common
   {
-    arch::arch( direction d )
+    arch_old0::arch_old0( direction d )
       : direction_(d)
     {
       pbuf_ = new pbuf;
@@ -42,7 +42,7 @@ namespace csl
         THRNORET(exc::rs_out_of_memory);
     }
 
-    arch::~arch()
+    arch_old0::~arch_old0()
     {
       if ( pbuf_ )
         delete pbuf_;
@@ -50,17 +50,17 @@ namespace csl
         delete xdrbuf_;
     }
 
-    uint64_t arch::size() const
+    uint64_t arch_old0::size() const
     {
       return pbuf_->size();
     }
 
-    pbuf * arch::get_pbuf() const
+    pbuf * arch_old0::get_pbuf() const
     {
       return pbuf_;
     }
 
-    void arch::set_pbuf( const pbuf & src )
+    void arch_old0::set_pbuf( const pbuf & src )
     {
       if (  &src != pbuf_) 
       {
@@ -75,12 +75,12 @@ namespace csl
         THRNORET(exc::rs_out_of_memory);
     }
     
-    void arch::set_direction( direction d) { 
+    void arch_old0::set_direction( direction d) { 
       reset();
       direction_ = d;
     }
 
-    void arch::reset() {
+    void arch_old0::reset() {
       xdrbuf_->rewind();
       pbuf_->free_all();
     }

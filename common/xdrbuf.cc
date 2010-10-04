@@ -86,7 +86,7 @@ namespace csl
 
   namespace common
   {
-    xdrbuf & xdrbuf::operator<<(int32_t val)
+    xdrbuf_old0 & xdrbuf_old0::operator<<(int32_t val)
     {
       int32_t v = htonl(val);
 
@@ -98,7 +98,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator<<(uint32_t val)
+    xdrbuf_old0 & xdrbuf_old0::operator<<(uint32_t val)
     {
       uint32_t v = htonl(val);
 
@@ -110,7 +110,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator<<(int64_t val)
+    xdrbuf_old0 & xdrbuf_old0::operator<<(int64_t val)
     {
       int64_t v = htonll(val);
 
@@ -122,7 +122,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator<<(uint64_t val)
+    xdrbuf_old0 & xdrbuf_old0::operator<<(uint64_t val)
     {
       uint64_t v = htonll(val);
 
@@ -134,7 +134,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator<<(const char * val)
+    xdrbuf_old0 & xdrbuf_old0::operator<<(const char * val)
     {
       uint64_t sz = 0;
       if( !val )
@@ -163,24 +163,25 @@ namespace csl
       }
       return *this;
     }
-
-    xdrbuf & xdrbuf::operator<<(const common::serializable & val)
+/*
+    xdrbuf_old0 & xdrbuf_old0::operator<<(const common::serializable & val)
     {
-      common::arch ar(common::arch::SERIALIZE);
+      common::archiver ar(common::arch::SERIALIZE);
       const_cast<common::serializable&>(val).serialize( ar );
       
       (*this) << *(ar.get_pbuf());
 
       return *this;
     }
-
-    xdrbuf & xdrbuf::operator<<(const common::var & val)
+*/
+/*
+    xdrbuf_old0 & xdrbuf_old0::operator<<(const common::var & val)
     {
       val.to_xdr( *this );
       return *this;
     }
-
-    xdrbuf & xdrbuf::operator<<(const common::str & val)
+*/
+    xdrbuf_old0 & xdrbuf_old0::operator<<(const common::str & val)
     {
       uint64_t sz = val.nbytes(); 
       if( sz )
@@ -203,7 +204,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator<<(const common::ustr & val)
+    xdrbuf_old0 & xdrbuf_old0::operator<<(const common::ustr & val)
     {
       uint64_t sz = val.nbytes(); 
       if( sz )
@@ -224,7 +225,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator<<(const xdrbuf::bindata_t & val)
+    xdrbuf_old0 & xdrbuf_old0::operator<<(const xdrbuf_old0::bindata_t & val)
     {
       uint64_t sz = val.second; 
       if( sz )
@@ -245,7 +246,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator<<(const pbuf & val)
+    xdrbuf_old0 & xdrbuf_old0::operator<<(const pbuf & val)
     {
       uint64_t sz = val.size(); (*this) << sz;
 
@@ -269,7 +270,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator>>(int32_t & val)
+    xdrbuf_old0 & xdrbuf_old0::operator>>(int32_t & val)
     {
       int32_t tmp;
       uint64_t szrd=0;
@@ -294,7 +295,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator>>(uint32_t & val)
+    xdrbuf_old0 & xdrbuf_old0::operator>>(uint32_t & val)
     {
       uint32_t tmp;
       uint64_t szrd=0;
@@ -319,7 +320,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator>>(int64_t & val)
+    xdrbuf_old0 & xdrbuf_old0::operator>>(int64_t & val)
     {
       int64_t tmp;
       uint64_t szrd=0;
@@ -344,7 +345,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator>>(uint64_t & val)
+    xdrbuf_old0 & xdrbuf_old0::operator>>(uint64_t & val)
     {
       uint64_t tmp;
       uint64_t szrd=0;
@@ -369,7 +370,8 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator>>(common::serializable & val)
+/*
+    xdrbuf_old0 & xdrbuf_old0::operator>>(common::serializable & val)
     {
       common::arch ar(common::arch::DESERIALIZE);
 
@@ -381,14 +383,14 @@ namespace csl
 
       return *this;
     }
-
-    xdrbuf & xdrbuf::operator>>(common::var & val)
+*/
+    xdrbuf_old0 & xdrbuf_old0::operator>>(common::var & val)
     {
       val.from_xdr( *this );
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator>>(common::str & val)
+    xdrbuf_old0 & xdrbuf_old0::operator>>(common::str & val)
     {
       uint64_t sz = 0;
       (*this) >> sz;
@@ -421,7 +423,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator>>(common::ustr & val)
+    xdrbuf_old0 & xdrbuf_old0::operator>>(common::ustr & val)
     {
       uint64_t sz = 0;
       (*this) >> sz;
@@ -454,7 +456,7 @@ namespace csl
       return *this;
     }
 
-    xdrbuf & xdrbuf::operator>>(pbuf & val)
+    xdrbuf_old0 & xdrbuf_old0::operator>>(pbuf & val)
     {
       uint64_t size = 0;
       uint64_t saved_size = 0;
@@ -517,7 +519,7 @@ namespace csl
         return *this;
     }
 
-    bool xdrbuf::get_data(unsigned char * where, uint64_t & size, uint64_t max_size)
+    bool xdrbuf_old0::get_data(unsigned char * where, uint64_t & size, uint64_t max_size)
     {
       pbuf::iterator oldit = it_;
       uint64_t oldpos  = pos_;
@@ -543,7 +545,7 @@ namespace csl
       }
     }
 
-    uint64_t xdrbuf::get_data(unsigned char * where, uint64_t size)
+    uint64_t xdrbuf_old0::get_data(unsigned char * where, uint64_t size)
     {
       uint64_t ret = 0;
 
@@ -590,7 +592,7 @@ namespace csl
       return ret;
     }
 
-    bool xdrbuf::forward(uint64_t n)
+    bool xdrbuf_old0::forward(uint64_t n)
     {
       if( it_ == b_->end() ) return false;
 
@@ -631,13 +633,13 @@ namespace csl
       else         return false;
     }
 
-    void xdrbuf::rewind()
+    void xdrbuf_old0::rewind()
     {
       pos_ = 0;
       it_  = b_->begin();
     }
 
-    uint64_t xdrbuf::position()
+    uint64_t xdrbuf_old0::position()
     {
       uint64_t ret = 0;
       pbuf::iterator it = b_->begin();

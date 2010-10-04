@@ -26,10 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_arch_hh_included_
 #define _csl_common_arch_hh_included_
 
-/**
-   @file arch.hh
-   @brief XDR helper to reduce XDR dependecies
-*/
 
 #include "codesloop/common/common.h"
 #include "codesloop/common/obj.hh"
@@ -51,7 +47,7 @@ namespace csl
     Allows you to save a complex network of objects in a permanent binary
     form (usually disk storage) that persists after those objects are deleted.
     */
-    class arch
+    class arch_old0
     {
       public:
         /** @brief specifies arch object's behaviour.
@@ -70,8 +66,8 @@ namespace csl
          @param d default direction (serialization / deserialization )
          @throw common::exc
         */
-        arch( direction d );
-        virtual ~arch();
+        arch_old0( direction d );
+        virtual ~arch_old0();
 
         /**
           @brief serialize or deserialize val to xdrbuf
@@ -117,7 +113,7 @@ namespace csl
         xdrbuf * xdrbuf_;
         direction direction_;
         
-      CSL_OBJ(csl::common,arch);
+      CSL_OBJ(csl::common,arch_old0);
       USE_EXC();
     };
   }
