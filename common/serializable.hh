@@ -26,23 +26,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_serializable_hh_included_
 #define _csl_common_serializable_hh_included_
 
-/**
-   @file serializable.hh
-   @brief super class of all csl serializables
-   @todo document me
- */
-
 #ifdef __cplusplus
 
 namespace csl
 {
   namespace common
   {
-    /** @brief superclass of all codesloop serializables */
+    class archiver;
+    
     class serializable
     {
     public:
-      virtual void serialize(class arch & buf) = 0;
+      virtual void serialize(archiver & buf) = 0;
       virtual inline ~serializable() {}
     };
   }
