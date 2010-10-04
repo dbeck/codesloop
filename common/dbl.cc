@@ -68,8 +68,6 @@ namespace csl
       return (b.from_double(value_) && b.to_binary(v,sz));
     }
 
-    bool dbl::to_xdr(xdrbuf & b) const { return false; } // TODO
-
     /* conversions from other types */
     bool dbl::from_string(const str & v)
     {
@@ -115,8 +113,6 @@ namespace csl
       binry b;
       return (b.from_binary(v,sz) && b.to_double(value_));
     }
-
-    bool dbl::from_xdr(xdrbuf & v) { return false; } // TODO
   };
 };
 

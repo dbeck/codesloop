@@ -243,19 +243,6 @@ namespace csl
       return true;
     }
 
-    bool ustr::to_xdr(xdrbuf & b) const
-    {
-      try
-      {
-        b << (*this);
-        return true;
-      }
-      catch( exc e )
-      {
-        return false;
-      }
-    }
-
     /* conversions from other types */
     bool ustr::from_integer(int64_t v)
     {
@@ -319,20 +306,7 @@ namespace csl
       }
       return true;
     }
-
-    bool ustr::from_xdr(xdrbuf & v)
-    {
-      try
-      {
-        v >> (*this);
-        return true;
-      }
-      catch( exc e )
-      {
-        return false;
-      }
-    }
-
+    
     int64 ustr::crc64() const
     {
       int64 ret;

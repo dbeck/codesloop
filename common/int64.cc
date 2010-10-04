@@ -74,23 +74,6 @@ namespace csl
       return (b.from_integer(value_) && b.to_binary(v,sz));
     }
 
-    bool int64::to_xdr(xdrbuf & b) const
-    {
-      int32_t high = static_cast<int32_t>(value_>>32);
-      int32_t low  = static_cast<int32_t>(value_&0xffffffff);
-
-      try
-      {
-        b << high;
-        b << low;
-        return true;
-      }
-      catch( exc e )
-      {
-        return false;
-      }
-    }
-
     /* conversions from other types */
     bool int64::from_double(const dbl & v)
     {
@@ -141,27 +124,6 @@ namespace csl
       binry b;
       return (b.from_binary(v,sz) && b.to_integer(value_));
     }
-
-    bool int64::from_xdr(xdrbuf & v)
-    {
-      int32_t high=0;
-      int32_t low=0;
-
-      try
-      {
-        v >> high;
-        v >> low;
-
-        value_ = ( (static_cast<int64_t>(high)<<32) + static_cast<int64_t>(low) );
-
-        return true;
-      }
-      catch( exc e )
-      {
-        return false;
-      }
-    }
-
   };
 };
 

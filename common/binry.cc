@@ -99,19 +99,6 @@ namespace csl
       return true;
     }
 
-    bool binry::to_xdr(xdrbuf & b) const
-    {
-      try
-      {
-        b << xdrbuf::bindata_t( value_.data(), value_.size() );
-        return true;
-      }
-      catch( exc & e )
-      {
-        return false;
-      }
-    }
-
     /* conversions from other types */
     bool binry::from_integer(int64_t v)
     {
@@ -176,22 +163,6 @@ namespace csl
       if( !v ) return false;
       if( !sz ) { value_.reset(); return true; }
       return value_.set( reinterpret_cast<const unsigned char *>(v), sz );
-    }
-
-    bool binry::from_xdr(xdrbuf & v)
-    {
-      try
-      {
-        uint64_t sz=0,max=0x3fffffff;
-        bool r = v.get_data( value_, sz, max );
-        if( sz == 0 ) value_.reset();
-        else if( r == false ) return false;
-        return true;
-      }
-      catch( exc & e )
-      {
-        return false;
-      }
     }
 
     bool binry::from_var(const var & v)

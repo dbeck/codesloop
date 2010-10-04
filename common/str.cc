@@ -341,19 +341,6 @@ namespace csl
       return true;
     }
 
-    bool str::to_xdr(xdrbuf & b) const
-    {
-      try
-      {
-        b << (*this);
-        return true;
-      }
-      catch( exc e )
-      {
-        return false;
-      }
-    }
-
     /* conversions from other types */
     bool str::from_integer(int64_t v)
     {
@@ -420,19 +407,6 @@ namespace csl
         ensure_trailing_zero();
       }
       return true;
-    }
-
-    bool str::from_xdr(xdrbuf & v)
-    {
-      try
-      {
-        v >> (*this);
-        return true;
-      }
-      catch( exc e )
-      {
-        return false;
-      }
     }
 
     int64 str::crc64() const

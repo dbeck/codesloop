@@ -29,7 +29,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/var.hh"
 #include "codesloop/common/dbl.hh"
 #include "codesloop/common/preallocated_array.hh"
-#include "codesloop/common/arch.hh"
+#include "codesloop/common/archiver.hh"
 #ifdef __cplusplus
 
 namespace csl
@@ -53,29 +53,35 @@ namespace csl
       public:
         binry();
 
-        inline binry & operator=(const binry & other)
+        binry & operator=(const binry & other)
         {
           value_ = other.value_;
           return *this;
         }
+        
+        bool operator==(const binry & other) const
+        {
+          return (value_==other.value_);
+        }
 
         binry(const unsigned char * ptr,size_t sz);
-        virtual inline ~binry() {}
-        inline value_t value() const { return value_; }
-        inline int var_type() const { return var_type_v; }
-        inline void reset() { value_.reset(); }
+        virtual ~binry() {}
+        value_t value() const { return value_; }
+        int var_type() const { return var_type_v; }
+        void reset() { value_.reset(); }
+        
+        unsigned char * allocate(size_t sz) { return value_.allocate(sz); }
+        const unsigned char * ucharp_data() const { return value_.data(); }
+        size_t var_size() const { return value_.size(); }
 
-        inline const unsigned char * ucharp_data() const { return value_.data(); }
-        inline size_t var_size() const { return value_.size(); }
-
-        inline bool to_integer(int64 & v) const { return v.from_binary(value_.data(),value_.size()); }
+        bool to_integer(int64 & v) const { return v.from_binary(value_.data(),value_.size()); }
         bool to_integer(int64_t & v) const;
-        inline bool from_integer(const int64 & v) { return v.to_binary(*this); }
+        bool from_integer(const int64 & v) { return v.to_binary(*this); }
         bool from_integer(int64_t v);
 
-        inline bool to_double(dbl & v) const { return v.from_binary(value_.data(),value_.size()); }
+        bool to_double(dbl & v) const { return v.from_binary(value_.data(),value_.size()); }
         bool to_double(double & v) const;
-        inline bool from_double(const dbl & v)  { return v.to_binary(*this); }
+        bool from_double(const dbl & v)  { return v.to_binary(*this); }
         bool from_double(double v);
 
         bool to_string(str & v) const;
@@ -87,20 +93,17 @@ namespace csl
         bool from_string(const char * v);
         bool from_string(const wchar_t * v);
         
-        inline bool to_binary(binry & v) const { return v.from_binary(value_.data(),value_.size()); }
+        bool to_binary(binry & v) const { return v.from_binary(value_.data(),value_.size()); }
         bool to_binary(unsigned char * v, size_t & sz) const;
         bool to_binary(void * v, size_t & sz) const;
         bool from_binary(const binry & v);
         bool from_binary(const unsigned char * v,size_t sz);
         bool from_binary(const void * v,size_t sz);
-
-        bool to_xdr(xdrbuf & b) const;
-        bool from_xdr(xdrbuf & v);
         
-        inline bool to_var(var & v) const { return v.from_binary(value_.data(),value_.size()); }
+        bool to_var(var & v) const { return v.from_binary(value_.data(),value_.size()); }
         bool from_var(const var & v);
 
-        virtual inline void serialize(arch & buf) { buf.serialize(*this); }
+        virtual void serialize(archiver & a) { a.serialize(*this); }
     };
   }
 }

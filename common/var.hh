@@ -84,9 +84,6 @@ namespace csl
         virtual bool to_var(var & v) const = 0;
         virtual bool from_var(const var & v) = 0;
 
-        virtual bool to_xdr(xdrbuf & b) const = 0;
-        virtual bool from_xdr(xdrbuf & v) = 0;
-
         virtual size_t var_size() const = 0;
         virtual const unsigned char * ucharp_data() const = 0;
 

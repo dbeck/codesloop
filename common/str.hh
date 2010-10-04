@@ -34,7 +34,7 @@ Credits: some techniques and code pieces are borrowed from Christian
 #include "codesloop/common/preallocated_array.hh"
 #include "codesloop/common/var.hh"
 #include "codesloop/common/binry.hh"
-#include "codesloop/common/arch.hh"
+#include "codesloop/common/archiver.hh"
 #include <wctype.h>
 #ifdef __cplusplus
 #include <string>
@@ -252,14 +252,11 @@ namespace csl
         /* ------------------------------------------------------------------------ *
         **    other conversion operations
         ** ------------------------------------------------------------------------ */
-                         
-        bool to_xdr(xdrbuf & b) const;
-        bool from_xdr(xdrbuf & v);
 
         inline bool to_var(var & v) const { return v.from_string(data()); }
         inline bool from_var(const var & v) { return v.to_string(*this); }
         
-        virtual inline void serialize(arch & buf) { buf.serialize(*this); }
+        virtual inline void serialize(archiver & a) { a.serialize(*this); }
 
         inline str & operator+=(const var & other)
         {

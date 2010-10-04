@@ -27,7 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_common_int64_hh_included_
 
 #include "codesloop/common/var.hh"
-#include "codesloop/common/arch.hh"
+#include "codesloop/common/archiver.hh"
 #ifdef __cplusplus
 
 namespace csl
@@ -102,13 +102,10 @@ namespace csl
         bool from_binary(const unsigned char * v,size_t sz);
         bool from_binary(const void * v,size_t sz);
 
-        bool to_xdr(xdrbuf & b) const;
-        bool from_xdr(xdrbuf & v);
-
         inline bool to_var(var & v) const   { return v.from_integer(value_); }
         inline bool from_var(const var & v) { return v.to_integer(value_); }
 
-        virtual inline void serialize(arch & buf) { buf.serialize(*this); }
+        virtual inline void serialize(archiver & a) { a.serialize(*this); }
     };
   }
 }

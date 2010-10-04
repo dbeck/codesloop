@@ -302,14 +302,11 @@ namespace csl
         /* ------------------------------------------------------------------------ *
         **  other conversion operations
         ** ------------------------------------------------------------------------ */
-      
-        bool to_xdr(xdrbuf & b) const;
-        bool from_xdr(xdrbuf & v);
         
         inline bool to_var(var & v) const { return v.from_string(data()); }        
         bool from_var(const var & v) { return v.to_string(*this); }
         
-        virtual inline void serialize(arch & buf) { buf.serialize(*this); }
+        virtual inline void serialize(archiver & a) { a.serialize(*this); }
 
         inline ustr & operator+=(const var & other)
         {
