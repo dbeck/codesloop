@@ -49,6 +49,7 @@ namespace csl
         archiver & push( stream_base & b, const dbl & v );
         archiver & push( stream_base & b, const int64 & v );
         archiver & push( stream_base & b, const binry & v );
+        archiver & push( stream_base & b, const pbuf & v );
 
         archiver & push( stream_base & b, const int8_t & v );
         archiver & push( stream_base & b, const int16_t & v );
@@ -69,6 +70,7 @@ namespace csl
         archiver & pop( stream_base & b, dbl & v, uint32_t & timeout_ms );
         archiver & pop( stream_base & b, int64 & v, uint32_t & timeout_ms );
         archiver & pop( stream_base & b, binry & v, uint32_t & timeout_ms );
+        archiver & pop( stream_base & b, pbuf & v, uint32_t & timeout_ms );
 
         archiver & pop( stream_base & b, int8_t & v, uint32_t & timeout_ms );
         archiver & pop( stream_base & b, int16_t & v, uint32_t & timeout_ms );
