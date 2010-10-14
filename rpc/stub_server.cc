@@ -47,7 +47,7 @@ namespace csl
         << "#ifdef __cplusplus" << endl
         << "#include \"" << (ifname_+"_srv.hh").c_str() << "\""
         << endl
-        << "#include <codesloop/common/arch.hh>"
+        << "#include <codesloop/common/archiver.hh>"
         << endl
         << "#include <codesloop/common/pbuf.hh>" 
         << endl
@@ -73,9 +73,9 @@ namespace csl
 
       output_
         << ls_ << "/* implement function call routing */" << endl
-        << ls_ << "void " << class_name << "::despatch (" << endl
+        << ls_ << "void " << class_name << "::dispatch (" << endl
         << ls_ << "  /* input */  const csl::rpc::client_info & ci," << endl
-        << ls_ << "  /* inout */  csl::common::arch & archiver)" << endl
+        << ls_ << "  /* inout */  csl::common::archiver & ar)" << endl
         << ls_ << "{" << endl 
         << ls_ << "  ENTER_FUNCTION();" << endl << endl
         << ls_ << "  int64_t interface_id;" << endl
@@ -84,16 +84,16 @@ namespace csl
         << ls_ << "  uint32_t retval = rt_succcess;" << endl
         << ls_ << "  uint32_t exc_nr = 0;" << endl
         << ls_ << endl
-        << ls_ << "  archiver.serialize(interface_id);" << endl
-        << ls_ << "  archiver.serialize(function_id);" << endl 
-        << ls_ << "  archiver.serialize(__handle);" << endl 
+        << ls_ << "  ar.serialize(interface_id);" << endl
+        << ls_ << "  ar.serialize(function_id);" << endl 
+        << ls_ << "  ar.serialize(__handle);" << endl 
         << ls_ << endl
         << ls_ << "  if ( interface_id != get_crc64() ) { " << endl
         << ls_ << "    CSL_DEBUGF(L\"Interface error, local: %lld, remote: %lld\""
         <<        ", get_crc64(), interface_id );" << endl
-        << ls_ << "    archiver.reset();" << endl
+        << ls_ << "    ar.reset();" << endl
         << ls_ << "    throw csl::rpc::exc(csl::rpc::exc::rs_incompat_iface,"
-        <<        "L\"Can not despatch request, interfaces are different\"); " << endl 
+        <<        "L\"Can not dispatch request, interfaces are different\"); " << endl 
         << ls_ << "  }" << endl << endl
         << ls_ << "  switch( function_id )" << endl          
         << ls_ << "  {" << endl
@@ -118,7 +118,7 @@ namespace csl
             // deserialize data if necessary
             if ( (*param_it).kind!=MD_OUTPUT ) {
               output_ 
-                << ls_ << "      archiver.serialize( " << (*param_it).name << ");" 
+                << ls_ << "      ar.serialize( " << (*param_it).name << ");" 
                 << endl
               ;
             }
@@ -132,7 +132,7 @@ namespace csl
 
         // call it!
         output_ 
-          << ls_ << "      archiver.set_direction( csl::common::arch::SERIALIZE );" 
+          << ls_ << "      ar.set_direction( csl::common::archiver::SERIALIZE );" 
           << endl << endl
           << ls_ << "      try { " << endl << endl
           << ls_ << "        " << (*func_it).name << "(ci, "
@@ -154,7 +154,7 @@ namespace csl
         output_ << ");" << endl << endl;
 
         // handle output parameters
-        output_ << "              archiver.serialize( retval );" << endl;
+        output_ << "              ar.serialize( retval );" << endl;
         param_it = (*func_it).params.begin();
         while( param_it != (*func_it).params.end() )
         {
@@ -162,7 +162,7 @@ namespace csl
           if ( (*param_it).kind==MD_OUTPUT ||  (*param_it).kind==MD_INOUT ) 
           {
             output_
-              << ls_ << "        archiver.serialize( " << (*param_it).name << ");"
+              << ls_ << "        ar.serialize( " << (*param_it).name << ");"
               << endl
             ;
           }
@@ -182,17 +182,17 @@ namespace csl
               << (*param_it).name<< ") {" << endl
               << ls_ << "        retval = rt_exception;" << endl
               << ls_ << "        exc_nr = " << exc_nr++ << ";" << endl
-              << ls_ << "        archiver.serialize( retval );" << endl
-              << ls_ << "        archiver.serialize( exc_nr );" << endl
-              << ls_ << "        archiver.serialize( "<<  (*param_it).name <<" ); " << endl 
+              << ls_ << "        ar.serialize( retval );" << endl
+              << ls_ << "        ar.serialize( exc_nr );" << endl
+              << ls_ << "        ar.serialize( "<<  (*param_it).name <<" ); " << endl 
             ;
           }
           param_it++;
         }
         output_ 
           << ls_ << "      } catch(...) {" << endl
-          << ls_ << "        archiver.serialize( retval );" << endl
-          << ls_ << "        archiver.serialize( exc_nr );" << endl
+          << ls_ << "        ar.serialize( retval );" << endl
+          << ls_ << "        ar.serialize( exc_nr );" << endl
           << ls_ << "      } " << endl;
 
         output_

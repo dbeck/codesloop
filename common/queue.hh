@@ -175,23 +175,23 @@ namespace csl
         }
 
         bool pop(handler & h);
-        uint64_t n_items();  ///<returns the number of active items
-        uint64_t size();     ///<returns the number of all allocated items
+        uint64_t n_items();  // returns the number of active items
+        uint64_t size();     // returns the number of all allocated items
 
-        /** The purpose of new and del upcalls is to provide means for waitable queue.
-        *** A waitable queue may use nthread::event or other synchronization facilities depending on the
-        *** implementation. The base class however does not implement that for perforance reasons. Upcalls
-        *** should be implemented by subclassing this class.
-        ***/
-        inline virtual void on_new_item() {} ///<event upcall: called when new item is placed into the list
-        inline virtual void on_del_item() {} ///<event upcall: called when an item is removed from the active list
+        /* The purpose of new and del upcalls is to provide means for waitable queue.
+        ** A waitable queue may use nthread::event or other synchronization facilities depending on the
+        ** implementation. The base class however does not implement that for perforance reasons. Upcalls
+        ** should be implemented by subclassing this class.
+        */
+        inline virtual void on_new_item() {} // event upcall: called when new item is placed into the list
+        inline virtual void on_del_item() {} // event upcall: called when an item is removed from the active list
 
-        /** The purpose of the lock unlock upcalls is to provide means for a threadsafe version.
-        *** The threadsafe version should use a locking facility such as nthread::mutex to synchronize access
-        *** to the given class. Upcalls should be implemented by subclassing this class.
-        **/
-        inline virtual void on_lock_queue() {} ///<event upcall: called when a queue should be locked
-        inline virtual void on_unlock_queue() {} ///<event upcall: called when a queue should be unlocked
+        /* The purpose of the lock unlock upcalls is to provide means for a threadsafe version.
+        ** The threadsafe version should use a locking facility such as nthread::mutex to synchronize access
+        ** to the given class. Upcalls should be implemented by subclassing this class.
+        */
+        inline virtual void on_lock_queue() {}   // event upcall: called when a queue should be locked
+        inline virtual void on_unlock_queue() {} // event upcall: called when a queue should be unlocked
 
         CSL_OBJ(csl::common,queue);
         USE_EXC();

@@ -54,7 +54,7 @@ namespace csl
         << endl
         << "#include \"" << (ifname_+"_cli.hh").c_str() << "\""  
         << endl
-        << "#include <codesloop/common/arch.hh>"        
+        << "#include <codesloop/common/archiver.hh>"        
         << endl
         << "#include <codesloop/rpc/exc.hh>"        
         << endl
@@ -150,11 +150,11 @@ namespace csl
           generate_ping_body();
 
         output_
-          << ls_ << "  csl::common::arch archiver(csl::common::arch::SERIALIZE);" << endl
+          << ls_ << "  csl::common::archiver ar(csl::common::archiver::SERIALIZE);" << endl
           << endl
-          << ls_ << "  archiver.serialize(interface_id); " << endl
-          << ls_ << "  archiver.serialize(function_id);" << endl        
-          << ls_ << "  archiver.serialize(__handle);" << endl        
+          << ls_ << "  ar.serialize(interface_id); " << endl
+          << ls_ << "  ar.serialize(function_id); " << endl        
+          << ls_ << "  ar.serialize(__handle); " << endl        
         ;
 
         param_it = (*func_it).params.begin();
@@ -180,7 +180,7 @@ namespace csl
           if ( (*param_it).kind!=MD_OUTPUT) 
           {
             output_
-              << ls_ << "  archiver.serialize(const_cast<" << (*param_it).type 
+              << ls_ << "  ar.serialize(const_cast<" << (*param_it).type 
               << "&>(" << (*param_it).name
               << "));" << endl
             ;
@@ -191,7 +191,7 @@ namespace csl
 
         output_
           << endl
-          << ls_ << "  send(__handle,archiver.get_pbuf());"
+          << ls_ << "  send(__handle,ar /*XXX FIXME*/ );"
           << endl
           << ls_ << "  outp_ptrs_.insert(handle_params_pair_t(__handle,out_params_t(function_id, opp)));"
           << endl
@@ -239,7 +239,7 @@ namespace csl
         << ls_ << "void " << class_name << "::decode_response(" << endl
         << ls_ << "        /* input */ const csl::rpc::handle & __handle," << endl
         << ls_ << "        /* input */ const uint32_t function_id," << endl
-        << ls_ << "        /* inout */ csl::common::arch & archiver) " << endl
+        << ls_ << "        /* inout */ csl::common::archiver & ar) " << endl
         << ls_ << "{"<< endl
         << ls_ << "  ENTER_FUNCTION();" << endl << endl
         << ls_ << "  uint32_t retval = rt_succcess;" << endl
@@ -247,7 +247,7 @@ namespace csl
         << ls_ << "  uint32_t ptr = 0;" << endl
         << ls_ << "  uint32_t exc_nr = 0;" << endl
         << ls_ << endl
-        << ls_ << "  archiver.serialize(retval);" << endl
+        << ls_ << "  ar.serialize(retval);" << endl
         << ls_ << endl
         << ls_ << "  if ( retval == rt_succcess ) {" << endl
         << ls_ << endl
@@ -270,7 +270,7 @@ namespace csl
               << ls_ << "        " << (*param_it).type << " *" << (*param_it).name << " = " 
               << "static_cast<"<<  (*param_it).type<< " *>(ivec->get(ptr++));"
               << endl
-              << ls_ << "        archiver.serialize( *" << (*param_it).name << ");" << endl
+              << ls_ << "        ar.serialize( *" << (*param_it).name << ");" << endl
               << endl
               ;
           }
@@ -294,7 +294,7 @@ namespace csl
         << ls_ << "    } /* switch */" << endl
         << ls_ << "  } else if ( retval == rt_exception) { /* if exception occured */"  << endl 
         << endl
-        << ls_ << "    archiver.serialize(exc_nr);" << endl 
+        << ls_ << "    ar.serialize(exc_nr);" << endl 
         << endl
         << ls_ << "    switch( function_id )" << endl
         << ls_ << "    {" << endl
@@ -317,7 +317,7 @@ namespace csl
             output_ 
               << ls_ << "        if ( exc_nr == " << exc_nr++ << " ) {" << endl
               << ls_ << "          " << (*param_it).type << " " << (*param_it).name << "(L\"\");" << endl
-              << ls_ << "          archiver.serialize( " << (*param_it).name << " );" << endl
+              << ls_ << "          ar.serialize( " << (*param_it).name << " );" << endl
               << ls_ << "          throw " << (*param_it).name << ";" << endl
               << ls_ << "        }"
               << endl

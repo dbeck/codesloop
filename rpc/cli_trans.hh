@@ -40,7 +40,6 @@ namespace csl
 { 
   namespace rpc 
   {
-    /** @brief stores parsed interface description */
     class cli_trans : public csl::common::obj
     {
       CSL_OBJ(csl::rpc,cli_trans);
@@ -64,7 +63,7 @@ namespace csl
       virtual void decode_response(
           const csl::rpc::handle &,
           const uint32_t,
-          csl::common::arch &) = 0;
+          csl::common::archiver &) = 0;
 
     protected:
       void create_handle(handle &);

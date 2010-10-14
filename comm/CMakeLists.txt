@@ -39,11 +39,13 @@ ADD_LIBRARY( csl_comm STATIC
              tcp_lstnr_old0.cc         tcp_lstnr_old0.hh
              tcp_client_old0.cc        tcp_client_old0.hh
              # -- UDP --
-             udp_recvr.cc              udp_recvr.hh
-             udp_hello.cc              udp_hello.hh
-             udp_auth.cc               udp_auth.hh
-             udp_data.cc               udp_data.hh
+	     # TODO : rewrite these ...
+             # udp_recvr.cc              udp_recvr.hh
+             # udp_hello.cc              udp_hello.hh
+             # udp_auth.cc               udp_auth.hh
+             # udp_data.cc               udp_data.hh
              # -- Generic --
+	     evmgr.cc                  evmgr.hh
              bfd.cc                    bfd.hh
              exc.cc                    exc.hh
              initcomm.cc               initcomm.hh

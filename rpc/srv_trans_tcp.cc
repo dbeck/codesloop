@@ -110,9 +110,9 @@ namespace csl
         csl::common::arch archiver(csl::common::arch::DESERIALIZE);
         archiver.set_pbuf( pb );        
 
-        // invoke generated despatcher 
+        // invoke generated dispatcher 
         try { 
-          despatch( ci, archiver );
+          dispatch( ci, archiver );
         } catch ( csl::rpc::exc & e ) {
           logger::error( e.to_string()  );
         }

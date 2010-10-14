@@ -28,7 +28,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/common.h"
 #include "codesloop/common/obj.hh"
-#include "codesloop/common/arch.hh"
+#include "codesloop/common/archiver.hh"
 #include "codesloop/comm/tcp_lstnr_old0.hh"
 #include "codesloop/rpc/client_info.hh"
 #include "codesloop/rpc/srv_trans.hh"
@@ -41,7 +41,6 @@ namespace csl
 { 
   namespace rpc 
   {
-    /** @brief stores parsed interface description */
     class srv_trans_tcp : public srv_trans
     {
       CSL_OBJ(csl::rpc,srv_trans_tcp);
@@ -61,8 +60,8 @@ namespace csl
       virtual void on_disconnected( connid_t id,
                                     const SAI & sai );
   
-      virtual void despatch(  const csl::rpc::client_info & ci,
-                              csl::common::arch & archive) = 0;      
+      virtual void dispatch(  const csl::rpc::client_info & ci,
+                              csl::common::archiver & ar) = 0;      
     };
 
 

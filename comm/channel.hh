@@ -38,8 +38,8 @@ namespace csl
     public:
       typedef csl::common::stream_base stream_t;
 
-      virtual stream_t & in() const = 0;
-      virtual stream_t & out() const = 0;
+      virtual stream_t & in() = 0;
+      virtual stream_t & out() = 0;
 
       virtual ~channel() {}
     };

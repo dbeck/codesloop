@@ -96,7 +96,7 @@ namespace csl
       CSL_DEBUGF(L"Read %llu bytes from socket.", rr.bytes() );
 
       csl::common::pbuf pb;
-      csl::common::arch arch( csl::common::arch::DESERIALIZE) ;
+      csl::common::archiver ar( csl::common::archiver::DESERIALIZE) ;
       pb.append( rr.data(), rr.bytes() );
       arch.set_pbuf(pb);
 

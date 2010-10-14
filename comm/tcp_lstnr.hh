@@ -51,7 +51,7 @@ namespace csl
 
           bool init( channel_factory & chn_ftry,
                      handler_factory & hlr_ftry,
-                     endpoint & me ) = 0;
+                     endpoint & me );
 
           bool start();
           bool stop();
@@ -59,9 +59,9 @@ namespace csl
           pevent & start_event();
           pevent & exit_event();
 
+          struct impl;
         private:
           /* private implementation */
-          struct impl;
           std::auto_ptr<impl> impl_;
 
           /* no-copy */

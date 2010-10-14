@@ -39,18 +39,11 @@ namespace csl
 { 
   namespace rpc 
   {
-    /** @brief stores parsed interface description */
     class cli_trans_tcp : public cli_trans
     {
       CSL_OBJ(csl::rpc,cli_trans);
 
     public:
-      /**
-       * connects to a remote server object
-       *
-       * @param hostname host to connect
-       * @param port port to connect
-       */
       void connect(const char * hostname, unsigned short port);
 
     protected:
@@ -59,7 +52,6 @@ namespace csl
 
     private:
       csl::comm::tcp::client_old0 client_;
-
     };
   }
 }

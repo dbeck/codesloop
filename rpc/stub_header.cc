@@ -226,15 +226,15 @@ namespace csl
 
       if ( kind == STUB_SERVER ) 
       {
-        output_ << ls_ << "virtual void despatch(" << endl;
+        output_ << ls_ << "virtual void dispatch(" << endl;
         output_ << ls_ << "  /* input */  const csl::rpc::client_info & ci," << endl;
-        output_ << ls_ << "  /* inout */  csl::common::arch & archive" << endl;
+        output_ << ls_ << "  /* inout */  csl::common::archiver & ar" << endl;
         output_ << ls_ << ");" << endl;
       } else if ( kind == STUB_CLIENT)  {
         output_ << ls_ << "virtual void decode_response(" << endl;
         output_ << ls_ << "  /* input */  const csl::rpc::handle & __handle," << endl;
         output_ << ls_ << "  /* input */  const uint32_t function_id," << endl;
-        output_ << ls_ << "  /* inout */  csl::common::arch & archive" << endl;
+        output_ << ls_ << "  /* inout */  csl::common::archive & ar" << endl;
         output_ << ls_ << ");" << endl;
       }
 
