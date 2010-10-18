@@ -26,12 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_obj_hh_included_
 #define _csl_common_obj_hh_included_
 
-/**
-   @file obj.hh
-   @brief super class of all csl objects
-   @todo document me
- */
-
 #include "codesloop/common/common.h"
 #ifdef __cplusplus
 

@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__sql_helper.cc
-   @brief Tests to check and measure various slt3::sql::helper features
- */
-
 #include "codesloop/common/obj.hh"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/db/slt3/sql.hh"
@@ -44,10 +39,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace csl::db;
 using namespace csl::common;
 
-/** @brief contains tests related to slt3::sql::helper */
 namespace test_sql_helper {
 
-  /** @test baseline for comparison */
   void baseline()
   {
     slt3::sql::helper h("xtable");
@@ -77,14 +70,12 @@ namespace test_sql_helper {
   slt3::sql::helper X::sql_helper_("Xtable");
   slt3::reg::helper X::reg_("test_mapper","test_mapper.db");
 
-  /** @test calls init_sql() */
   void usage1()
   {
     X x;
     (void)x.sql_helper().init_sql();
   }
 
-  /** @test verifies a more complex ORM scenario */
   void usage2()
   {
     X x,x2,x3;
@@ -119,7 +110,6 @@ namespace test_sql_helper {
     }
   }
 
-  /** @test verify create() and remove() object to/from database */
   void crdelete()
   {
     X x;

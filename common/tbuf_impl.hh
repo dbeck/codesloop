@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_tbuf_impl_hh_included_
 #define _csl_common_tbuf_impl_hh_included_
 
-/**
-   @file tbuf_impl.hh
-   @brief tbuf implementation should only be used in tbuf.hh
- */
-
 #ifdef __cplusplus
 
 namespace csl

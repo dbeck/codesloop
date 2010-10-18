@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_queue_impl_hh_included
 #define _csl_common_queue_impl_hh_included
 
-/**
-    @file queue_impl.hh
-    @brief TODO: complete description
-*/
-
 /* this is to be included in queue.hh */
 
 #ifdef __cplusplus

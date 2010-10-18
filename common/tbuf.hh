@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_tbuf_hh_included_
 #define _csl_common_tbuf_hh_included_
 
-/**
-   @file tbuf.hh
-   @brief Preallocated template buffer
- */
-
 #include "codesloop/common/pbuf.hh"
 #include "codesloop/common/hlprs.hh"
 #include "codesloop/common/obj.hh"
@@ -41,15 +36,6 @@ namespace csl
 {
   namespace common
   {
-    /**
-    @brief templated buffer
-
-    this class is a dynamic memory buffer with a twist: it uses a preallocated static
-    memory area and only allocates memory if more is needed. if the SZ template parameter
-    is chosen wisely this may lead to significant performance improvements for the common case.
-
-    the SZ parameter tells how many bytes of memory will be statically allocated.
-     */
     template <uint64_t SZ>
     class tbuf
     {
@@ -58,45 +44,29 @@ namespace csl
 
         inline ~tbuf() { reset(); }
 
-        /** @brief default constructor */
         inline tbuf() : data_(preallocated_), size_(0) { }
 
-        /**
-        @brief copy constructor
-        @param c is the value to be copied in
-
-        allocates 1 byte of memory and copies in c
-        */
         inline explicit tbuf(unsigned char c) : data_(preallocated_), size_(1)
         {
           preallocated_[0] = c;
         }
 
-        /**
-        @brief copy constructor
-        @param c is the value to be copied in
-
-        allocates sizeof(wchar_t) memory and copies in c
-         */
         inline explicit tbuf(wchar_t c) : data_(preallocated_), size_(sizeof(wchar_t))
         {
           const uint8_t * p = (reinterpret_cast<const uint8_t *>(&c));
           copy_n_uchars<sizeof(wchar_t)>(preallocated_,p);
         }
 
-        /** @brief copy constructor */
         inline tbuf(const tbuf & other) : data_(preallocated_), size_(0)
         {
           *this = other;
         }
 
-        /** @brief copy constructor */
         inline explicit tbuf(const char * other) : data_(preallocated_), size_(0)
         {
           *this = other;
         }
 
-        /** @brief comparison operator */
         inline bool operator==(const tbuf & other) const
         {
           if( other.size_ != size_ ) return false;
@@ -106,14 +76,12 @@ namespace csl
           return (::memcmp( other.data_, data_, static_cast<size_t>(size_) ) == 0);
         }
 
-        /** @brief copy operator */
         inline tbuf & operator=(const char * other)
         {
           if( other ) set( reinterpret_cast<const uint8_t *>(other), (::strlen(other)+1) );
           return *this;
         }
 
-        /** @brief copy operator */
         inline tbuf & operator=(const pbuf & other)
         {
           uint64_t sz = other.size();
@@ -128,7 +96,6 @@ namespace csl
           return *this;
         }
 
-        /** @brief copy operator */
         inline tbuf & operator=(const tbuf & other)
         {
           /* return immediately if they are the same */
@@ -149,10 +116,8 @@ namespace csl
           return *this;
         }
 
-        /** @brief resets the internal buffer */
         void reset();
 
-        /** @brief copies the internal data to the given buffer */
         inline bool get(uint8_t * dta)
         {
           if( !dta || !size_ || !data_ ) { return false; }
@@ -160,7 +125,6 @@ namespace csl
           return true;
         }
 
-        /** @brief sets the internal data from the given (ptr+size) */
         inline bool set(const uint8_t * dta, uint64_t sz)
         {
           /* if no data on the other side we are done */
@@ -181,19 +145,8 @@ namespace csl
           }
         }
 
-        /**
-        @brief allocate the given amount of memory and return a pointer to it
-        @todo test: allocate with existing data: should copy the old data!!!
-
-        if new buffer is allocated and the old buffer had data, then the new buffer is
-        initialized with the old data
-         */
         uint8_t * allocate(uint64_t sz);
 
-        /**
-        @brief allocate the given amount of memory and return a pointer to it
-        @todo test: allocate with existing data: should copy the old data!!!
-         */
         inline uint8_t * allocate_nocopy(uint64_t sz)
         {
           if( !sz ) { reset(); return data_; }
@@ -230,13 +183,11 @@ namespace csl
           }
         }
 
-        /** @brief append a single character to the internal buffer */
         inline void append(unsigned char c)
         {
           set_at(size_,c);
         }
 
-        /** @brief append a memory region (ptr+size) to the internal buffer */
         inline bool append(const uint8_t * dta, uint64_t sz)
         {
           /* if no data on the other side we are done */
@@ -257,17 +208,11 @@ namespace csl
           }
         }
 
-        /** @brief append an other tbuf's data to the internal buffer */
         inline bool append(const tbuf & other)
         {
           return append( other.data(), other.size() );
         }
 
-        /**
-        @brief set character c at position: pos
-        @param pos is where to place the given character
-        @param c is the character to be placed at pos
-         */
         inline void set_at(uint64_t pos,unsigned char c)
         {
           uint8_t * t = data_;
@@ -276,23 +221,18 @@ namespace csl
         }
 
         /* inline functions */
-        inline bool is_empty() const        { return (size_ == 0); }             ///<checks if empty
-        inline bool has_data() const        { return (size_ > 0); }              ///<checks if has_data
-        inline bool is_static() const       { return (data_ == preallocated_); } ///<checks if statically allocated
+        inline bool is_empty() const        { return (size_ == 0); } 
+        inline bool has_data() const        { return (size_ > 0); }
+        inline bool is_static() const       { return (data_ == preallocated_); }
 
-        /** @brief returns the size of the allocated data */
-        inline uint64_t size() const    { return size_; }  ///<returns the used buffer size
-
-        /** @brief return the allocated data */
-        inline const uint8_t * data() const { return data_; } ///<returns a pointer to the internal buffer
-
-        /** @brief return the internal data pointer */
-        inline uint8_t * private_data() const { return data_; } ///<returns a non-const pointer to the internal buffer
+        inline uint64_t size() const          { return size_; }
+        inline const uint8_t * data() const   { return data_; }
+        inline uint8_t * private_data() const { return data_; }
 
       private:
-        uint8_t            preallocated_[SZ];   ///<the preallocated buffer
-        uint8_t *          data_;               ///<the data
-        uint64_t           size_;               ///<the allocated size
+        uint8_t      preallocated_[SZ];
+        uint8_t *    data_;
+        uint64_t     size_;
     };
   }
 }

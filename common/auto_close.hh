@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_auto_close_hh_included_
 #define _csl_common_auto_close_hh_included_
 
-/**
-  @file auto_close.hh
-  @brief @todo
-*/
-
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/obj.hh"
 #include "codesloop/common/common.h"

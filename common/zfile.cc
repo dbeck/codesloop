@@ -30,11 +30,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/str.hh"
 #include <zlib.h>
 
-/**
-  @file zfile.cc
-  @brief implementation of zfile
-*/
-
 #ifndef CSL_COMMON_ZFILE_CUSTOM_ALLOC_SIZE
 #define CSL_COMMON_ZFILE_CUSTOM_ALLOC_SIZE 512
 #endif /* CSL_COMMON_ZFILE_CUSTOM_ALLOC_SIZE */
@@ -49,7 +44,6 @@ namespace csl
 {
   namespace common
   {
-    /** @brief Private implementation of zfile */
     struct zfile::impl
     {
       /* typedef helpers */

@@ -26,32 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_pvlist_hh_included_
 #define _csl_common_pvlist_hh_included_
 
-/**
-   @file pvlist.hh
-   @brief Very simple pointer store (a list of pointer vectors/arrays)
-
-   pvlist is intended for uses when many small memory allocation is done
-   and they are not deallocated up to the end of the task. Then these memory
-   blocks could be deallocated together. The memory blocks would not be
-   iterated over. Free function is provided but not recommended, because it is
-   slow.
-
-   pvlist is a template class that could use different template policies for
-   freeing its data. 3 are provided: nop_destructor that does nothing,
-   free_destructor and delete_destructor. 
-
-   the design goal of pvlist is to be fast for the outlined specific case, thus:
-
-   1) should have minimal overhead when instantiated
-   2) should have minimal overhead when adding new pointers
-   3) should have minimal overhead when destroyed
-
-   on the downside pvlist has minimal functionality, thus:
-
-   1) fast lookup of pointers is not possible, because that involves list traversal
-   2) changing pointers can be slow for large pointer collections
-*/
-
 #include <stdlib.h>
 #include <stdio.h>
 #ifdef __cplusplus
@@ -60,14 +34,6 @@ namespace csl
 {
   namespace common
   {
-
-    /**
-     @brief policy for pvlist template
-
-     This policy is handful when pvlist stores pointers that should not be
-     freed, like pointers to static data or pointers that are owned by other
-     instance.
-     */
     template <typename T>
     struct nop_destructor
     {
@@ -75,11 +41,6 @@ namespace csl
       inline void destruct(T * p) { }
     };
 
-    /**
-     @brief policy for pvlist template
-
-     This policy is handful when pvlist stores pointers that are malloced.
-     */
     template <typename T>
     struct free_destructor
     {
@@ -96,12 +57,6 @@ namespace csl
       }
     };
 
-    /**
-     @brief policy for pvlist template
-
-     This policy is handful when pvlist stores pointers that are allocated
-     by new.
-     */
     template <typename T>
     struct delete_destructor
     {
@@ -118,36 +73,6 @@ namespace csl
       }
     };
 
-    /**
-     @brief template class to collect many allocations that should be freed together
-
-     The design of this class is driven by the need of a very simple pool class
-     that can collect a few dynamically allocated pointers and free them together.
-
-     The overhead of this object should be minimal for a few cases, while others
-     possible uses are not optimized. 
-
-     It should be fast to declare this object alone, so if not used its overhead
-     should be minimal. Also if only a few pointers are stored, it should be 
-     pretty fast too. The I parameter can be used to tune how many pointers
-     should be statically allocated. They are allocated on the stack rather
-     then on the heap.
-
-     To summarize these benefits:
-
-        1) should have minimal overhead when instantiated
-        2) should have minimal overhead when adding new pointers
-        3) should have minimal overhead when destroyed
-
-     On the downside:
-
-        It is possible to get or set pointers in pvlist but its performance is 
-        slow for large collections. O(n/I)
-
-     The T parameter is used for setting what type of pointer will be stored.
-     If T is set to type_t then pvlist receives type_t*-s.
-
-     */
     template <
       size_t   I=64,
       typename T=void,
@@ -158,7 +83,6 @@ namespace csl
       enum { block_size = I };
       typedef T item_type_t;
 
-      /** @brief returns the blocksize=I that was statically declared */
       inline size_t bs() { return block_size; }
 
       struct iterator;
@@ -190,11 +114,6 @@ namespace csl
       }
 
     public:
-      /**
-      @brief pvlist iterator
-
-      very simple, forward only iterator
-      */
       class iterator
       {
       private:
@@ -205,13 +124,8 @@ namespace csl
       public:
         ~iterator() {}
 
-        /** @brief initializer constructor */
         iterator(item * i, size_t pos) : i_(i), pos_(pos) {}
-
-        /** @brief copy constructor */
         iterator(const iterator & other) : i_(other.i_), pos_(other.pos_) {}
-
-        /** @brief copy operator */
         iterator & operator=(const iterator & other)
         {
           i_   = other.i_;
@@ -219,8 +133,6 @@ namespace csl
           return *this;
         }
 
-        /** @brief creates an iterator of ls
-            @param ls is the pvlist to be iterated over */
         iterator(pvlist & ls) : i_(&(ls.head_)), pos_(0)
         {
           {
@@ -228,19 +140,16 @@ namespace csl
           }
         }
 
-        /** @brief checks equality */
         bool operator==(const iterator & other)
         {
           return ((i_ == other.i_ && pos_ == other.pos_) ? true : false );
         }
 
-        /** @brief checks if not equal */
         bool operator!=(const iterator & other)
         {
           return (!(operator==(other)));
         }
 
-        /** @brief step forward */
         void operator++()
         {
           if( i_ == 0 )
@@ -259,17 +168,14 @@ namespace csl
           }
         }
 
-        /** @brief sets the iterator to end */
         void zero() { i_ = 0; pos_ = 0; }
 
-        /** @brief returns the pointed item */
         item_type_t * operator*()
         {
           if( i_ ) { return i_->ptrs_[pos_]; }
           else     { return 0;               }
         }
 
-        /** @brief free item at the given iterator position */
         void free()
         {
           D d;
@@ -281,12 +187,6 @@ namespace csl
         }
       };
 
-
-      /**
-      @brief pvlist const iterator
-
-      very simple, forward only constant iterator
-       */
       class const_iterator
       {
         private:
@@ -297,13 +197,8 @@ namespace csl
         public:
           ~const_iterator() {}
 
-          /** @brief initializer constructor */
           const_iterator(const item * i, size_t pos) : i_(i), pos_(pos) {}
-
-          /** @brief copy constructor */
           const_iterator(const const_iterator & other) : i_(other.i_), pos_(other.pos_) {}
-
-          /** @brief copy operator */
           const_iterator & operator=(const const_iterator & other)
           {
             i_   = other.i_;
@@ -311,26 +206,21 @@ namespace csl
             return *this;
           }
 
-          /** @brief creates an iterator of ls
-              @param ls is the pvlist to be iterated over */
           const_iterator(const pvlist & ls) : i_(&(ls.head_)), pos_(0)
           {
             if(!ls.n_items_) i_ = 0;
           }
 
-          /** @brief checks equality */
           bool operator==(const const_iterator & other) const
           {
             return ((i_ == other.i_ && pos_ == other.pos_) ? true : false );
           }
 
-          /** @brief checks if not equal */
           bool operator!=(const const_iterator & other) const
           {
             return (!(operator==(other)));
           }
 
-          /** @brief step forward */
           void operator++()
           {
             if( i_ == 0 )
@@ -349,10 +239,7 @@ namespace csl
             }
           }
 
-          /** @brief sets the iterator to end */
           void zero() { i_ = 0; pos_ = 0; }
-
-          /** @brief returns the pointed item */
           const item_type_t * operator*() const
           {
             if( i_ ) { return i_->ptrs_[pos_]; }
@@ -360,14 +247,12 @@ namespace csl
           }
       };
 
-      /** @brief returns iterator pointed at the beginning of the container */
       iterator begin()
       {
         iterator ret(*this);
         return ret;
       }
 
-      /** @brief returns iterator represents the end of this container */
       iterator end()
       {
         iterator ret(*this);
@@ -375,7 +260,6 @@ namespace csl
         return ret;
       }
 
-      /** @brief returns iterator represents the last item in this container */
       iterator last()
       {
         if( !n_items_ || !tail_ || !(tail_->used_) )
@@ -389,17 +273,13 @@ namespace csl
         }
       }
 
-      /** @brief returns a constant iterator pointed at the beginning of the container */
       const_iterator const_begin() const
       {
         const_iterator ret(*this);
         return ret;
       }
 
-      /** @brief returns a constant iterator pointed at the beginning of the container */
       const_iterator begin() const { return const_begin(); }
-
-      /** @brief returns a constant iterator represents the end of this container */
       const_iterator const_end() const
       {
         const_iterator ret(*this);
@@ -407,10 +287,7 @@ namespace csl
         return ret;
       }
 
-      /** @brief returns a constant iterator represents the end of this container */
       const_iterator end() const { return const_end(); }
-
-      /** @brief returns a constant iterator represents the last item in this container */
       const_iterator const_last() const
       {
         if( !n_items_ || !tail_ || !(tail_->used_) )
@@ -424,34 +301,17 @@ namespace csl
         }
       }
 
-      /** @brief returns a constant iterator represents the last item in this container */
       const_iterator last() const { return const_last(); }
 
     public:
-      /** @brief constructor */
       inline pvlist() : tail_(&head_), n_items_(0) { }
-
-      /** @brief destructor */
       inline ~pvlist()
       {
         free_all();
       }
 
-      /** 
-       @brief number of items stored
-       @return the number of items
-       */
       inline size_t n_items() const { return n_items_; }
-
-      /** 
-      @brief number of items stored
-      @return the number of items
-
-      same as n_items()
-       */
       inline size_t size() const { return n_items_; }
-
-      /** @brief call the destruct() function on each items and frees internal memory */
       inline void free_all()
       {
         D d;
@@ -470,10 +330,6 @@ namespace csl
         n_items_ = 0;
       }
 
-      /** 
-       @brief search for a pointer in pvlist
-       @param p the pointer to be searched
-       */
       inline bool find(T * p)
       {
         item * i = &head_;
@@ -492,17 +348,6 @@ namespace csl
         return false;
       }
 
-      /** 
-       @brief free()-s p and set all p's occurence to NULL
-       @param p the pointer to be destructed
-       @return true if pointer found and freed
-
-       this function iterates through the whole collection, the first occurence of p
-       will be destructed() and if more found then they will be set to NULL
-
-       this function does not touch the number of items, it rather replaces
-       the destructed pointers with NULL
-       */
       inline bool free(T * p)
       {
         bool freed=false;
@@ -528,21 +373,6 @@ namespace csl
         return freed;
       }
 
-      /**
-       @brief free()-s p first occurence and returns
-       @param p the pointer to be destructed
-       @return true if pointer found and freed
-
-       this function iterates through the collection untill p was found, then
-       it destructs that, sets that occurence to NULL  and returns immediately
-
-       if more then one occuernce of p exists in the collection they wont be
-       touched so they may lead to memory corruption problems. care must be
-       taken....
-
-       this function does not touch the number of items, it rather replaces
-       the destructed pointer with NULL
-       */
       inline bool free_one(T * p)
       {
         D d;
@@ -564,13 +394,6 @@ namespace csl
         return false;
       }
 
-      /**
-       @brief adds an item to the end of the list
-       @param p the pointer to be appended
-
-       the number of stored items will be increased by 1 after 
-       calling this function
-       */
       inline T * push_back(T * p)
       {
         item * i = ensure_item();
@@ -580,11 +403,6 @@ namespace csl
         return p;
       }
 
-      /**
-       @brief gets the item at the specified position
-       @param which is the desired position
-       @return T * which is the item at that position or NULL of the position is invalid
-       */
       inline T * get_at(size_t which) const
       {
         if( which >= n_items_ ) return 0;
@@ -612,12 +430,6 @@ namespace csl
         return (rm < pt->used_ ? pt->ptrs_[rm] : 0);
       }
 
-      /**
-       @brief sets the item at the specified position
-       @param which is the desired position
-       @param ptr is the pointer to be set
-       @return true if successful, false if the position is invalid
-       */
       inline bool set_at(size_t which, T * ptr)
       {
         if( which >= n_items_ ) return false;
@@ -657,7 +469,6 @@ namespace csl
         }
       }
 
-      /** @brief prints some debug information to STDOUT */
       inline void debug()
       {
         printf("== pvlist::debug ==\n");

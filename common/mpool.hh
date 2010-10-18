@@ -26,14 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_mpool_hh_included_
 #define _csl_common_mpool_hh_included_
 
-/**
-   @file mpool.hh
-   @brief mpool is a template class to collect dinamically allocated memory blocks
-
-   mpool is parametrized by the container class that stores the pointers, its
-   default is pvlist
-*/
-
 #include "codesloop/common/pvlist.hh"
 #include "codesloop/common/common.h"
 #ifdef __cplusplus
@@ -42,12 +34,6 @@ namespace csl
 {
   namespace common
   {
-    /**
-       @brief collects dinamically allocated memory blocks
-
-       mpool is parametrized by the container class that stores the pointers, its
-       default is pvlist
-     */
     template <typename P=pvlist< 64,void,free_destructor<void> > >
     class mpool
     {
@@ -58,14 +44,8 @@ namespace csl
       mpool & operator=(const mpool & other) { return *this; }
 
     public:
-      /** @brief constructor */
       inline mpool() {}
-
-      /**
-       @brief allocates memory w/ malloc() and stores the result
-       @param len is the length to be allocated
-       */
-      inline void * allocate(uint64_t len)
+      inline void * allocate(uint64_t len) // TODO : change to size_t
       {
         if( !len ) { return 0; }
         void * ret = ::malloc( static_cast<size_t>(len) );
@@ -73,19 +53,11 @@ namespace csl
         return ret;
       }
 
-      /**
-      @brief get n-th pointer of pool
-      @param which is the item position
-      */
       inline void * get_at(uint64_t which) const
       {
         return v_.get_at(which);
       }
 
-      /**
-      @brief duplicates the given string (allocates memory from pool)
-      @param str is the string to be duplicated
-       */
       inline char * strdup(const char * str)
       {
         if( !str ) return 0;
@@ -97,10 +69,6 @@ namespace csl
         return ret;
       }
 
-      /**
-        @brief duplicates the given string (allocates memory from pool)
-        @param str is the string to be duplicated
-      */
       inline wchar_t * wcsdup(const wchar_t * str)
       {
         if( !str ) return 0;
@@ -115,11 +83,6 @@ namespace csl
         return ret;
       }
 
-      /**
-      @brief duplicates the given memory region (allocates memory from pool)
-      @param ptr is the start of the memory region to be duplicated
-      @param sz is the size of the memory region
-       */
       inline void * memdup(const void * ptr, uint64_t sz)
       {
         if( !ptr || !sz ) return 0;
@@ -129,55 +92,26 @@ namespace csl
         return ret;
       }
 
-      /** @brief calls the container's debug() function */
       inline void debug()
       {
         v_.debug();
       }
 
-      /**
-       @brief calls the container's free_all() function
-
-       frees all pointers in the pool
-      */
       inline void free_all()
       {
         v_.free_all();
       }
 
-      /**
-       @brief calls the container's free_one() function
-       @param p is the pointer to be freed
-
-       the function assumes, that only this class inserts pointers
-       w/ allocate() and thus free_one() is sufficient, because the other
-       functions only insert fresh new objects, so there is
-       no need to scan the whole collection as the standard free() function
-       of the container would do
-       */
       inline bool free(void * p)
       {
         return v_.free_one(p);
       }
 
-      /**
-       @brief calls the container's find(p) function
-       @param p is the pointer to be found
-
-       checks wether a given pointer is allocated from this pool
-       */
       inline bool is_from(void * p)
       {
         return v_.find(p);
       }
 
-      /**
-       @brief calls the container's find(p) function
-       @param p is the pointer to be found
-
-       the same functionality as is_from(). it checks wether a given
-       pointer is allocated from this pool
-       */
       inline bool find(void * p)
       {
         return v_.find(p);

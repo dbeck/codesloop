@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_hash_hh_included_
 #define _csl_common_hash_hh_included_
 
-/**
-   @file hash.hh
-   @brief generic hash table class
- */
-
 #include "codesloop/common/obj.hh"
 #include "codesloop/common/hash_helpers.hh"
 #include "codesloop/common/exc.hh"

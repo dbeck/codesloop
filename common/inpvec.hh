@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_inpvec_hh_included_
 #define _csl_common_inpvec_hh_included_
 
-/**
-   @file inpvec.hh
-   @brief vector that utilizes in-place construction
- */
-
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/hlprs.hh"
 #include "codesloop/common/exc.hh"
@@ -232,7 +227,6 @@ namespace csl
             }
 
           public:
-            /// @brief initializer constructor
             inline iterator(item * i, size_t pos, size_t gp) : i_(i), pos_(pos), gpos_(gp)
             {
               ENTER_FUNCTION_X();
@@ -242,7 +236,6 @@ namespace csl
 
             void init(item * i, size_t pos, size_t gp);
 
-            /// @brief copy constructor
             inline iterator(const iterator & other) : i_(other.i_), pos_(other.pos_), gpos_(other.gpos_)
             {
               ENTER_FUNCTION_X();
@@ -250,8 +243,6 @@ namespace csl
               LEAVE_FUNCTION_X();
             }
 
-            /// @brief creates an iterator of ls
-            /// @param ls is the pvlist to be iterated over
             inline iterator(inpvec & ipv) : i_(&(ipv.head_)), pos_(0), gpos_(0)
             {
               ENTER_FUNCTION_X();
@@ -275,7 +266,6 @@ namespace csl
             T * construct();
             T * set(const T & t);
 
-            /// @brief sets the item at the iterator position
             template <typename T1>
             T * set(const T1 & t1)
             {
@@ -286,7 +276,6 @@ namespace csl
               RETURN_FUNCTION( ret );
             }
 
-            /// @brief sets the item at the iterator position
             template <typename T1,typename T2>
             T * set(const T1 & t1,const T2 & t2)
             {
@@ -297,7 +286,6 @@ namespace csl
               RETURN_FUNCTION( ret );
             }
 
-            /// @brief sets the item at the iterator position
             template <typename T1,typename T2,typename T3>
             T * set(const T1 & t1,const T2 & t2,const T3 & t3)
             {
@@ -308,7 +296,6 @@ namespace csl
               RETURN_FUNCTION( ret );
             }
 
-            /// @brief sets the item at the iterator position
             template <typename T1,typename T2,typename T3,typename T4>
             T * set(const T1 & t1,const T2 & t2,const T3 & t3,const T4 & t4)
             {

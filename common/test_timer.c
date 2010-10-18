@@ -27,11 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdlib.h>
 #include "test_timer.h"
 
-/**
-  @file test_timer.c
-  @brief implementation of performance timers
-*/
-
 #ifndef MAX_SAMPLING_INTERVAL_MS
 #define MAX_SAMPLING_INTERVAL_MS (getenv("SAMPLING_INTERVAL_MS")==NULL?1700.0:atoi(getenv("SAMPLING_INTERVAL_MS")))
 #endif /* MAX_SAMPLING_INTERVAL_MS */

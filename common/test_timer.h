@@ -28,54 +28,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-/**
-   @file test_timer.h
-   @brief Performance testing helpers
-
-   These function runs the given callback function iteratively until
-   the predefined MAX_SAMPLING_INTERVAL_MS is not reached. In each iteration
-   the number of loops will double.
-
-   The default value for MAX_SAMPLING_INTERVAL_MS is 1700 ms. This can be
-   changed at compile time by -DMAX_SAMPLING_INTERVAL_MS=othervalue
-
-   @struct csl_common_timer_result
-   @brief Performance testing results are returned in this struct
- */
-
 struct csl_common_timer_result
 {
-  double   ms_per_call;  /**< @brief avarage ms spent in the function  */
-  double   call_per_sec; /**< @brief avarage function calls per second */
-  double   total_ms;     /**< @brief total ms spent in testing         */
-  size_t   n_loops;      /**< @brief number of test loops executed     */
+  double   ms_per_call;
+  double   call_per_sec;
+  double   total_ms;
+  size_t   n_loops;
 };
 
-/**
-   @brief Tests a parameterless function
-   @param test_function The function to be tested
-   @return Measurement results
- */
 CSL_CDECL
 struct csl_common_timer_result
 csl_common_test_timer_v0( void (*test_function)(void) );
 
-/**
-   @brief Tests a single parameter function
-   @param test_function The function to be tested
-   @param param This will be given to the test_function in each iteration
-   @return Measurement results
- */
 CSL_CDECL
 struct csl_common_timer_result
 csl_common_test_timer_i1( void (*test_function)(int), int param );
 
-/**
-   @brief Very simple print function for the lazy
-   @param prefix Each line will be prefixed with this string
-   @param tr The performance measurement results
-   @param postfix This will be appended to each line
- */
 CSL_CDECL
 void
 csl_common_print_results(

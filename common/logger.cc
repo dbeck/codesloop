@@ -27,14 +27,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/exc.hh"
 
-
 #include <iostream>
 #include <fstream>
-
-/**
-  @file common/src/logger.cc
-  @brief implementation of csl::common::logger
- */
 
 namespace csl
 {

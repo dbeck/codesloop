@@ -41,42 +41,17 @@ namespace csl
     class pbuf;
     class xdrbuf;
 
-    /**
-    @brief arch de/serializes data to a pbuf in XDR format using xdrbuf
-
-    Allows you to save a complex network of objects in a permanent binary
-    form (usually disk storage) that persists after those objects are deleted.
-    */
     class arch_old0
     {
       public:
-        /** @brief specifies arch object's behaviour.
-
-         if serialize specified in arch constructor, then
-         the serialize function serializes incoming data, otherwise
-         deserializes
-        */
         enum direction {
-          SERIALIZE,    ///< serialize function serializes
-          DESERIALIZE   ///< serialize function deserializes
+          SERIALIZE,
+          DESERIALIZE
         };
 
-        /**
-         @brief constructor with default direction
-         @param d default direction (serialization / deserialization )
-         @throw common::exc
-        */
         arch_old0( direction d );
         virtual ~arch_old0();
 
-        /**
-          @brief serialize or deserialize val to xdrbuf
-          @param val is the value to be de/serialized
-          @throw common::exc
-
-          based on object's direction the function loads
-          or stores val from/to buffer
-        */
         template <typename T> void serialize(T & val)
         {
           if ( direction_ == SERIALIZE )
@@ -85,27 +60,10 @@ namespace csl
             (*xdrbuf_) >> val;
         }
 
-        /**
-          @brief return the size of the serialized data
-        */
         uint64_t size() const;
-        /**
-          @brief return serialized data buffer in pbuf
-        */
         pbuf * get_pbuf() const;
-        /**
-          @brief sets input buffer for deserialization
-        */
         void set_pbuf( const pbuf & src );
-
-        /**
-          @brief sets direction of serialization
-        */
         void set_direction( direction d);
-
-        /**
-          @brief resets archiver for reuse
-        */
         void reset();
 
       private:
