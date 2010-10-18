@@ -34,11 +34,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace csl::comm;
 using namespace csl::comm::tcp;
 
-/**
-  @file rpc/src/cli_trans_tcp.cc
-  @brief implementation of codesloop interface descriptor
- */
-
 namespace csl
 {
   namespace rpc

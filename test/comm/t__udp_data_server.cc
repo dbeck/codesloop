@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__udp_data_server.cc
-   @brief Tests to verify udp::data_srv routines
- */
-
 #include "codesloop/comm/udp_hello.hh"
 #include "codesloop/comm/udp_auth.hh"
 #include "codesloop/comm/udp_data.hh"
@@ -44,7 +39,6 @@ using namespace csl::comm;
 using namespace csl::sec;
 using namespace csl::nthread;
 
-/** @brief contains tests related to udp data servers */
 namespace test_udp_data_server {
 
   struct SessionStore

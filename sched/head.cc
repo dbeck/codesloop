@@ -30,11 +30,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include <memory>
 
-/**
-  @file head.cc
-  @brief implementation of sched::head
- */
-
 namespace csl
 {
   namespace sched

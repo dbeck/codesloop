@@ -30,11 +30,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include <memory>
 
-/**
-  @file remote_peer.cc
-  @brief implementation of sched::remote_peer
- */
-
 namespace csl
 {
   namespace sched

@@ -42,11 +42,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # include "thread_impl_pthread.cc"
 #endif /* WIN32 */
 
-/**
-  @file thread.cc
-  @brief implementation of thread
-*/
-
 namespace csl
 {
   namespace nthread

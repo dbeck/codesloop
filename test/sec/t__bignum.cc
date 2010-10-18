@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__bignum.cc
-   @brief Tests to verify bignum
- */
-
 #include "codesloop/sec/bignum.hh"
 #include "codesloop/sec/ecdh_key.hh"
 #include "codesloop/common/zfile.hh"
@@ -40,27 +35,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace csl::sec;
 using namespace csl::common;
 
-/** @brief contains tests related to bignum */
 namespace test_bignum {
 
-  /** @test performance baseline */
   void baseline() { bignum bn; }
 
-  /** @test performance of allocating 100 bytes */
   void alloc_100()
   {
     bignum bn;
     bn.allocate(100);
   }
 
-  /** @test performance of allocating 200 bytes */
   void alloc_200()
   {
     bignum bn;
     bn.allocate(200);
   }
 
-  /** @test performance of copying 100 bytes */
   void copy_100()
   {
     bignum bn;
@@ -70,7 +60,6 @@ namespace test_bignum {
     assert( bn2 == bn );
   }
 
-  /** @test performance of copying 200 bytes */
   void copy_200()
   {
     bignum bn;
@@ -80,7 +69,6 @@ namespace test_bignum {
     assert( bn2 == bn );
   }
 
-  /** @test */
   void xdr()
   {
     bignum a,b;
@@ -137,7 +125,6 @@ namespace test_bignum {
      { 0, 0 }
   };
 
-  /** @test to see XDR conversion survives random garbage */
   void random_xdr()
   {
     rndata * p = random_files;

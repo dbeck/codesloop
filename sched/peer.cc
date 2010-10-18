@@ -30,11 +30,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/pbuf.hh"
 #include <memory>
 
-/**
-  @file peer.cc
-  @brief implementation of sched::peer
- */
-
 using namespace csl::common;
 using namespace csl::sec;
 

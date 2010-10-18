@@ -27,10 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include "codesloop/sec/csl_sec.h"
 
-/**
-   @file sha1_conv.cc
-   @brief the implementation of SHA1 hexdigest generation
-*/
 CSL_CDECL
 void * csl_sec_sha1_conv(
         const void  * in,

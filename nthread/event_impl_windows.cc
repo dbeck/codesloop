@@ -27,11 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include <errno.h>
 
-/**
-  @file event_impl_windows.cc
-  @brief windows native implementation of event class
-*/
-
 namespace csl
 {
   namespace nthread

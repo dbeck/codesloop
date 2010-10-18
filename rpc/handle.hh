@@ -35,7 +35,6 @@ namespace csl
   {
 
 #define CSL_RPC_HANDLE_NULL  csl::rpc::handle(NULL)
-    /** @brief call identifier */
     typedef uint64_t handle;
 
     extern handle __handle_sequence;

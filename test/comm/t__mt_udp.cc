@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__mt_udp.cc
-   @brief Tests to verify multithreading and udp socket interworking
- */
-
 #include "codesloop/comm/initcomm.hh"
 #include "codesloop/nthread/thread.hh"
 #include "codesloop/nthread/event.hh"
@@ -40,7 +35,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace csl::nthread;
 using namespace csl::comm;
 
-/** @brief contains tests related to comm interface */
 namespace test_mt_udp {
 
   class entry : public thread::callback

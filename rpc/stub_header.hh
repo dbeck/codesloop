@@ -37,7 +37,6 @@ namespace csl
 { 
   namespace rpc 
   {
-    /** @brief stores parsed interface description */
     class stub_header : public stub_base
     {
       CSL_OBJ(csl::rpc,stub_header);

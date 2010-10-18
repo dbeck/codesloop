@@ -32,10 +32,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/arch.hh"
 #include "codesloop/rpc/exc.hh"
 
-/**
-  @file rpc/src/srv_trans.cc
-  @brief common functions of rpc transport layer (server side)
- */
 using csl::common::logger;
 
 namespace csl

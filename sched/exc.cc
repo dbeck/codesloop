@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/sched/exc.hh"
 #include "codesloop/common/common.h"
 
-/**
-  @file sched/src/exc.cc
-  @brief implementation of sched::exc
- */
-
 namespace csl
 {
   namespace sched

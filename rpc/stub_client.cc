@@ -29,11 +29,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/rpc/iface.hh"
 
 
-/**
-  @file rpc/src/stub_client.cc
-  @brief implementation of codesloop interface descriptor
- */
-
 using std::endl;
 using csl::common::ustr;
 using csl::rpc::iface;

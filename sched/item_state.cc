@@ -30,11 +30,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include <memory>
 
-/**
-  @file item_state.cc
-  @brief implementation of sched::item_state
- */
-
 namespace csl
 {
   namespace sched

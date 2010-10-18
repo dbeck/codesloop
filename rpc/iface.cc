@@ -27,11 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/logger.hh"
 
-/**
-  @file rpc/src/iface.cc
-  @brief implementation of codesloop interface descriptor
- */
-
 namespace csl
 {
   namespace rpc

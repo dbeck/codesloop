@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__schedule.cc
-   @brief Tests to check and measure various sched::schedule features
- */
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/sched/schedule.hh"
 #include "exc.hh"
@@ -39,17 +34,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace csl::slt3;
 using namespace csl::sched;
 
-/** @brief contains tests related to sched::schedule */
 namespace test_schedule {
 
-  /** @todo document me */
   void baseline()
   {
     schedule s;
   }
 
 #if 0
-  /** @todo document me */
   void usage1()
   {
     peer p;
@@ -65,7 +57,6 @@ namespace test_schedule {
     assert( caught == true );
   }
 
-  /** @todo document me */
   void usage2()
   {
     peer p;
@@ -74,7 +65,6 @@ namespace test_schedule {
     assert( p.find_by_cn(std::string("More garbage")) == false );
   }
 
-  /** @todo document me */
   void usage3()
   {
     peer p;
@@ -98,7 +88,6 @@ namespace test_schedule {
     assert( p3.private_key().is_empty() == false );
   }
 
-  /** @todo document me */
   void usage4()
   {
     peer p2;
@@ -107,7 +96,6 @@ namespace test_schedule {
     assert( p2.private_key().is_empty() == false );
   }
 
-  /** @todo document me */
   void usage5()
   {
     peer p2;

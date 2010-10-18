@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file bfd.cc
-   @brief buffered file descriptor (fd)
- */
-
 #if 0
 #ifndef DEBUG
 #define DEBUG

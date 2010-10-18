@@ -34,11 +34,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # include "event_impl_pthread.cc"
 #endif /* WIN32 */
 
-/**
-  @file event.cc
-  @brief implementation of event
-*/
-
 namespace csl
 {
   namespace nthread

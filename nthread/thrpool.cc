@@ -38,11 +38,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/logger.hh"
 #include <assert.h>
 
-/**
-  @file thrpool.cc
-  @brief implementation of thrpool
- */
-
 namespace csl
 {
   namespace nthread

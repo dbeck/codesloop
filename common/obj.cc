@@ -29,7 +29,6 @@ namespace csl
 {
   namespace common
   {
-    /** @todo implement */
     obj::obj() : logger_flags_(0), use_exc_(false)
     {
     }

@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_sec_csl_sec_h_included_
 #define _csl_sec_csl_sec_h_included_
 
-/**
-   @file csl_sec.h
-   @brief Some common security related functions
-*/
-
 #include "codesloop/common/common.h"
 
 /* sha1 support functions */
@@ -47,14 +42,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #  define CSL_EC_STRENGTH_MAX 521
 #endif /*CSL_EC_STRENGTH_MAX*/
 
-/**
-    @brief Generates an SHA1 hexdigest of the given buffer
-    @param in input buffer to be used
-    @param inlen the length of the input buffer
-    @param out where to place the result
-    @param outlen the length of the generated data placed here (always SHA1_HEX_DIGEST_STR_LENGTH)
-    @return the same as out or NULL if failed
-*/
 CSL_CDECL
 void * csl_sec_sha1_conv(
         const void *in,
@@ -62,11 +49,6 @@ void * csl_sec_sha1_conv(
         void *out,
         size_t *outlen);
 
-/**
-    @brief Generates random data
-    @param buf is the pointer to memory region to be filled with random data
-    @param len is the amount of random data to be generated
- */
 CSL_CDECL
 void csl_sec_gen_rand( void * buf, size_t len );
 

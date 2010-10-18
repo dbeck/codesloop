@@ -36,8 +36,6 @@ namespace csl
 { 
   namespace rpc 
   {
-
-    /** @brief client information for invoked party */
     typedef struct client_info {
       csl::comm::connid_t id;  
       csl::comm::SAI * sai;

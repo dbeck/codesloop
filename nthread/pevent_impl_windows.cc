@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/nthread/pevent.hh"
 #include "codesloop/common/common.h"
 
-/**
-  @file pevent_impl_windows.cc
-  @brief windows native implementation of pevent class
-*/
-
 namespace csl
 {
   namespace nthread

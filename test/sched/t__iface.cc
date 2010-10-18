@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__iface.cc
-   @brief Tests to check various sched interfaces
- */
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/sched/schedule.hh"
 #include "exc.hh"
@@ -38,7 +33,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace csl::slt3;
 using namespace csl::sched;
 
-/** @brief contains tests related to sched::schedule */
 namespace test_iface {
 
   void baseline()

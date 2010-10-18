@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/sched/db.hh"
 #include "codesloop/common/common.h"
 
-/**
-  @file sched/src/db.cc
-  @brief implementation of sched::db
- */
-
 namespace csl
 {
   namespace sched

@@ -27,10 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include "codesloop/sec/csl_sec.h"
 
-/**
-   @file gen_rand.cc
-   @brief the implementation of random generator
- */
 CSL_CDECL
 void csl_sec_gen_rand( void * buf, size_t len )
 {

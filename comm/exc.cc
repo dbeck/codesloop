@@ -27,11 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/str.hh"
 #include "codesloop/common/common.h"
 
-/**
-  @file comm/src/exc.cc
-  @brief implementation of comm::exc
- */
-
 namespace csl
 {
   namespace comm

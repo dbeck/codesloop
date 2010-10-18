@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_sched_cfg_hh_included_
 #define _csl_sched_cfg_hh_included_
 
-/**
-   @file cfg.hh
-   @brief cfg @todo cfg
- */
-
 #include "codesloop/db/conn.hh"
 #include "codesloop/db/reg.hh"
 #include "codesloop/db/obj.hh"
@@ -57,7 +52,6 @@ namespace csl
     using slt3::reg;
     using slt3::sql;
 
-    /** @todo document me */
     class cfg : public slt3::obj
     {
       public:

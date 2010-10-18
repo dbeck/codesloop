@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_nthread_csl_nthread_hh_included_
 #define _csl_nthread_csl_nthread_hh_included_
 
-/**
-   @file csl_nthread.hh
-   @brief CSL threading features
- */
-
 #include "codesloop/nthread/exc.hh"
 #include "codesloop/nthread/thread.hh"
 #include "codesloop/nthread/mutex.hh"

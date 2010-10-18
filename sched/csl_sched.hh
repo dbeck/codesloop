@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_sched_csl_sched_hh_included_
 #define _csl_sched_csl_sched_hh_included_
 
-/**
-   @file csl_sched.hh
-   @brief Common schedule related functions
- */
-
 #include "codesloop/sched/cfg.hh"
 #include "codesloop/sched/data.hh"
 #include "codesloop/sched/exc.hh"

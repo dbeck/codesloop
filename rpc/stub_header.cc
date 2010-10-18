@@ -34,11 +34,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using csl::common::ustr;
 using std::endl;
 
-/**
-  @file rpc/src/stub_header.cc
-  @brief implementation of codesloop interface descriptor
- */
-
 namespace csl
 {
   namespace rpc

@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__sha1.c
-   @brief basic SHA1 tests
-*/
-
 #include "codesloop/sec/csl_sec.h"
 #include <string.h>
 #include <stdio.h>

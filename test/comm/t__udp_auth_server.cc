@@ -25,11 +25,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // TODO : segfault
 
-/**
-   @file t__udp_auth_server.cc
-   @brief Tests to verify udp::auth_srv routines
- */
-
 #include "codesloop/comm/udp_hello.hh"
 #include "codesloop/comm/udp_auth.hh"
 #include "codesloop/common/test_timer.h"
@@ -40,7 +35,6 @@ using namespace csl::common;
 using namespace csl::comm;
 using namespace csl::sec;
 
-/** @brief contains tests related to udp auth servers */
 namespace test_udp_auth_server {
 
   void basic()

@@ -33,11 +33,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # include "mutex_impl_pthread.cc"
 #endif /* WIN32 */
 
-/**
-  @file mutex.cc
-  @brief implementation of mutex
-*/
-
 namespace csl
 {
   namespace nthread

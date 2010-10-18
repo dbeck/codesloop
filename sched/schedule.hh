@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_sched_schedule_hh_included_
 #define _csl_sched_schedule_hh_included_
 
-/**
-   @file schedule.hh
-   @brief schedule @todo schedule
- */
-
 #include "codesloop/db/conn.hh"
 #include "codesloop/db/reg.hh"
 #include "codesloop/common/obj.hh"
@@ -58,7 +53,6 @@ namespace csl
     using slt3::reg;
     using slt3::sql;
 
-    /** @todo document me */
     class schedule : public slt3::obj
     {
       public:

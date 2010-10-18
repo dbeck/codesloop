@@ -23,7 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 #if 0
 #ifndef DEBUG
 #define DEBUG
@@ -37,11 +36,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/logger.hh"
 #include <pthread.h>
-
-/**
-  @file thread_impl_pthread.cc
-  @brief pthread implementation of thread class
-*/
 
 namespace csl
 {

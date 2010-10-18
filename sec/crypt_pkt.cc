@@ -31,11 +31,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/sec/umac_ae.h"
 #include <openssl/rand.h>
 
-/**
-  @file crypt_pkt.cc
-  @brief implementation of crypt_pkt
- */
-
 using csl::common::tbuf;
 
 namespace csl

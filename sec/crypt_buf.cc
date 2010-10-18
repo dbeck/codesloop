@@ -31,16 +31,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/str.hh"
 #include "codesloop/common/common.h"
 
-/**
-  @file crypt_buf.cc
-  @brief implementation of crypt_buf
-*/
-
 namespace csl
 {
   namespace sec
   {
-    /** @brief Private implementation of crypt_buf */
     struct crypt_buf::impl
     {
       /* variables */

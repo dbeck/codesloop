@@ -37,13 +37,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/ustr.hh"
 #include "codesloop/common/str.hh"
 
-
-
 namespace csl 
 { 
   namespace rpc 
   {
-    /** @brief stores parsed interface description */
     class stub_base : public csl::common::obj
     {
       CSL_OBJ(csl::rpc,stub_base);

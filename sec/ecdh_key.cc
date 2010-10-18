@@ -33,11 +33,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/ustr.hh"
 #include "codesloop/common/csl_common.hh"
 
-/**
-  @file ecdh_key.cc
-  @brief ECDH key helper w/ XDR features
- */
-
 using namespace csl::common;
 
 namespace csl

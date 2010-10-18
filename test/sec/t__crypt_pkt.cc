@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__crypt_pkt.cc
-   @brief Tests to verify crypt_pkt
- */
-
 #include "codesloop/common/pbuf.hh"
 #include "codesloop/common/zfile.hh"
 #include "codesloop/sec/exc.hh"
@@ -43,7 +38,6 @@ using csl::sec::exc;
 using csl::common::zfile;
 using csl::common::pbuf;
 
-/** @brief contains tests related to crypt_pkt */
 namespace test_crypt_pkt {
 
   void print_hex(const char * prefix, const void * vp, uint64_t len)

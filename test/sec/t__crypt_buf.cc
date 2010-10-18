@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__crypt_buf.cc
-   @brief Tests to verify crypt_buf
-*/
-
 #include "codesloop/sec/crypt_buf.hh"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/common/common.h"
@@ -35,7 +30,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using csl::sec::crypt_buf;
 
-/** @brief contains tests related to crypt_buf */
 namespace test_crypt_buf {
 
 void print_hex(char * prefix, unsigned char * hx, uint64_t len)
@@ -46,15 +40,6 @@ void print_hex(char * prefix, unsigned char * hx, uint64_t len)
 }
 
 
-/**
-   @test Crypto-streaming test 1
-   @param l is an array that represents the stream block sizes
-
-   This test verifies that multiple small blocks of possibly different sizes
-   can be added, encrypted and decrypted. It also verifies that MAC matches.
-
-   This test uses C string key.
-*/
 void test_crypt(uint64_t * l)
 {
   unsigned char plain[200];
@@ -134,11 +119,6 @@ void test_crypt(uint64_t * l)
 
 unsigned char speed_buff_[1024*1024*4];
 
-/**
-   @test Crypto speed test
-
-   Encrypts 4MB of data using C string key/
-*/
 void test_speed()
 {
   const char * key = "adc83b19e793491b1c6ea0fd8b46cd9f32e592fc";
@@ -147,11 +127,6 @@ void test_speed()
   assert( cre.add_data(speed_buff_,sizeof(speed_buff_),true) == true );
 }
 
-/**
-   @test Crypto speed test
-
-   Encrypts 4MB of data using memory buffer key.
-*/
 void test_speed2()
 {
   unsigned char key[20];
@@ -190,16 +165,6 @@ void test_rn()
   assert( memcmp(enc1,enc2,CSL_SEC_CRYPT_BUF_HEAD_LEN+100) != 0 );
 }
 
-
-/**
-   @test Crypto-streaming test 2
-   @param l is an array that represents the stream block sizes
-
-   This test verifies that multiple small blocks of possibly different sizes
-   can be added, encrypted and decrypted. It also verifies that MAC matches.
-
-   This test uses memory buffer key.
-*/
 void test_crypt2(uint64_t * l)
 {
   unsigned char plain[200];

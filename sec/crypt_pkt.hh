@@ -26,12 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_sec_crypt_pkt_hh_included_
 #define _csl_sec_crypt_pkt_hh_included_
 
-/**
-   @file crypt_pkt.hh
-
-   Encryption is based on AES and UMAC
- */
-
 #include "codesloop/common/csl_common.hh"
 #ifdef __cplusplus
 #include <memory>
@@ -40,7 +34,6 @@ namespace csl
 {
   namespace sec
   {
-    /** @todo document me */
     class crypt_pkt : public csl::common::obj
     {
       public:

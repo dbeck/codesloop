@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__ecdh_key.cc
-   @brief Tests to verify ecdh_key
- */
-
 #include "codesloop/sec/ecdh_key.hh"
 #include "codesloop/sec/bignum.hh"
 #include "codesloop/common/test_timer.h"
@@ -42,23 +37,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace csl::sec;
 using namespace csl::common;
 
-/** @brief contains tests related to ecdh_key */
 namespace test_ecdh_key {
 
-  /** @test performance baseline */
   void baseline()
   {
     ecdh_key k;
   }
 
-  /** @test set algorithm name */
   void bl_prime192v3_1()
   {
     ecdh_key k;
     k.algname("prime192v3");
   }
 
-  /** @test generate prime192v3 keypair */
   void bl_prime192v3_2()
   {
     ecdh_key k;
@@ -67,7 +58,6 @@ namespace test_ecdh_key {
     assert( k.gen_keypair(private_key) == true );
   }
 
-  /** @test print internal data */
   void print_prime192v3()
   {
     ecdh_key k1,k2;
@@ -105,7 +95,6 @@ namespace test_ecdh_key {
     PRINTF(L"Key sizes: [%d] [%d]\n",pb1.size(),pb2.size());
   }
 
-  /** @test generate prime192v3 keypairs and shared key */
   void prime192v3_keypair()
   {
     ecdh_key k1,k2;
@@ -156,7 +145,6 @@ namespace test_ecdh_key {
     { 0, 0 }
   };
 
-  /** @test to see XDR conversion survives random garbage */
   void random_xdr()
   {
     rndata * p = random_files;

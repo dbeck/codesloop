@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_comm_exc_hh_included_
 #define _csl_comm_exc_hh_included_
 
-/**
-   @file comm/src/exc.hh
-   @brief comm exception class for common
- */
-
 #include "codesloop/common/str.hh"
 #include "codesloop/common/cexc.hh"
 #ifdef __cplusplus
@@ -39,82 +34,57 @@ namespace csl
 {
   namespace comm
   {
-    /**
-    @brief common exception class used by com classes
-
-    this class is used by the comm classes as an exception to be thrown
-     */
     class exc : public csl::common::cexc
     {
       public:
         enum {
-          rs_unknown,             ///<Unknown error.
-          rs_socket_failed,       ///<socket() call failed
-          rs_bind_failed,         ///<bind() call failed
-          rs_listen_failed,       ///<listen() call failed
-          rs_accept_failed,       ///<accept() call failed
-          rs_connect_failed,      ///<connect() call failed
-          rs_pubkey_empty,        ///<Required public key parameter not set.
-          rs_privkey_empty,       ///<Required private key parameter not set.
-          rs_xdr_error,           ///<XDR error.
-          rs_send_failed,         ///<send() call failed.
-          rs_recv_failed,         ///<recv() call failed.
-          rs_timeout,             ///<Timed out.
-          rs_select_failed,       ///<select() call failed.
-          rs_thread_start,        ///<Thread start failed.
-          rs_wsa_startup,         ///<Windows WSA Startup failed
-          rs_getsockname_failed,  ///<getsockname() call failed.
-          rs_invalid_packet_type, ///<invalid packet type
-          rs_common_error,        ///<Error from common:: routines
-          rs_sec_error,           ///<Error from sec:: routines
-          rs_crypt_pkt_error,     ///<Error in crypt pkt
-          rs_too_big,             ///<Too big data to be placed into the given buffer
-          rs_pkt_error,           ///<Cannot encode/decode packet
-          rs_null_param,          ///<NULL parameter supplied.
-          rs_not_inited,          ///<Not initialized.
-          rs_init_failed,         ///<Cannot initialize.
-          rs_need_login,          ///<Need login.
-          rs_need_pass,           ///<Need pass.
-          rs_sesskey_empty,       ///<session key is not set
-          rs_salt_size,           ///<invalid salt size
-          rs_not_implemented,     ///<Function is not implemented
-          rs_setsockopt,          ///<setsockopt failed
-          rs_assert,              ///<assert failed
-          rs_unknown_op,          ///<uknown op
-          rs_internal_state,      ///<internal state is bad
+          rs_unknown,
+          rs_socket_failed,
+          rs_bind_failed,
+          rs_listen_failed,
+          rs_accept_failed,
+          rs_connect_failed,
+          rs_pubkey_empty,
+          rs_privkey_empty,
+          rs_xdr_error,
+          rs_send_failed,
+          rs_recv_failed,
+          rs_timeout,
+          rs_select_failed,
+          rs_thread_start,
+          rs_wsa_startup,
+          rs_getsockname_failed,
+          rs_invalid_packet_type,
+          rs_common_error,
+          rs_sec_error,
+          rs_crypt_pkt_error,
+          rs_too_big,
+          rs_pkt_error,
+          rs_null_param,
+          rs_not_inited,
+          rs_init_failed,
+          rs_need_login,
+          rs_need_pass,
+          rs_sesskey_empty,
+          rs_salt_size,
+          rs_not_implemented,
+          rs_setsockopt,
+          rs_assert,
+          rs_unknown_op,
+          rs_internal_state,
         };
 
-        /** @brief converts reason code to string */
         static const wchar_t * reason_string(int rc);
 
-        /** @brief constructor
-         *   @param component that caused the exception
-         */
         exc(const wchar_t * component)
         : csl::common::cexc(component) {}
 
-        /** @brief constructor
-         *   @param reason is to tell why
-         *   @param component that cause the exception
-         */
         exc(int reason, const wchar_t * component)
         : csl::common::cexc(reason,component) {}
 
-        /** @brief constructor
-         *   @param reason is to tell why
-         *   @param component that cause the exception
-         *   @param txt provides some explanation
-         */
         exc(int reason, const wchar_t * component, const wchar_t * txt)
         : csl::common::cexc(reason,component,txt) {}
 
-        /** @brief constructor
-         *   @param reason is to tell why
-         *   @param component that cause the exception
-         *   @param txt provides some explanation
-         *   @param file tells which source file caused the error
-         *   @param lin tells which line cause the error
-         */
         exc(int reason, const wchar_t * component, const wchar_t * txt, const wchar_t * file, unsigned int line)
         : csl::common::cexc(reason,component,txt,file,line) {}
     };

@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/rpc/handle.hh"
 
-/**
-  @file rpc/src/handle.cc
-  @brief implementation of static rpc handle 
- */
-
 csl::rpc::handle csl::rpc::__handle_sequence = 1;
 
 /* EOF */

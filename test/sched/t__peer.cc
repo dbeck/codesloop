@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__peer.cc
-   @brief Tests to check and measure various sched::peer features
- */
-
 #include "codesloop/db/csl_slt3.hh"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/sched/peer.hh"
@@ -42,16 +37,13 @@ using namespace csl::sched;
 using namespace csl::sec;
 using namespace csl::common;
 
-/** @brief contains tests related to sched::peer */
 namespace test_peer {
 
-  /** @test  baseline for performance comparison */
   void baseline()
   {
     peer p;
   }
 
-  /** @test check if exceptions are thrown when misused */
   void usage1()
   {
     peer p;
@@ -75,7 +67,6 @@ namespace test_peer {
     assert( caught == true );
   }
 
-  /** @test to see find_by_id and find_by returns false when bad parameter given */
   void usage2()
   {
     peer p;
@@ -88,7 +79,6 @@ namespace test_peer {
     assert( p.find_by(t,1) == false );
   }
 
-  /** @test basic db operations for peer class */
   void usage3()
   {
     peer p;
@@ -118,7 +108,6 @@ namespace test_peer {
     assert( p.remove(t) == true );
   }
 
-  /** @test basic DB operations of peer */
   void usage3_nodel()
   {
     peer p;
@@ -146,7 +135,6 @@ namespace test_peer {
     assert( p3.private_key().is_empty() == false );
   }
 
-  /** @test locating peer in DB that was created by usage3_nodel */
   void usage4()
   {
     peer p2;
@@ -158,7 +146,6 @@ namespace test_peer {
     assert( p2.private_key().is_empty() == false );
   }
 
-  /** @test DB ops of peer */
   void usage5()
   {
     peer p2;

@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_sched_db_hh_included_
 #define _csl_sched_db_hh_included_
 
-/**
-   @file db.hh
-   @brief db @todo db
- */
-
 #include "codesloop/common/pvlist.hh"
 #include "codesloop/db/conn.hh"
 #include "codesloop/common/mpool.hh"

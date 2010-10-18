@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__tcp_libev.cc
-   @brief @todo
- */
-
 #if 0
 #ifndef DEBUG
 #define DEBUG
@@ -51,7 +46,6 @@ using namespace csl::comm;
 using namespace csl::common;
 using namespace csl::nthread;
 
-/** @brief @todo */
 namespace test_tcp_libev {
 
   /*

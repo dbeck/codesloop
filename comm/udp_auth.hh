@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_comm_udp_auth_hh_included_
 #define _csl_comm_udp_auth_hh_included_
 
-/**
-   @file udp_auth.hh
-   @brief the authentication part of the UDP communication layer
- */
-
 #include "codesloop/comm/udp_hello.hh"
 #include "codesloop/comm/udp_recvr.hh"
 #include "codesloop/common/common.h"
@@ -55,20 +50,18 @@ namespace csl
   {
     namespace udp
     {
-      typedef tbuf<8> saltbuf_t; ///<type for salt data
+      typedef tbuf<8> saltbuf_t;
 
-      /** @brief server side callback for validating credentials sent by the client */
       class valid_creds_callback
       {
         public:
           virtual ~valid_creds_callback() {}
-          virtual bool operator()( const ecdh_key & peer_public_key,    // in
-                                   const SAI & addr,                    // in
-                                   const ustr & login,                // in
-                                   const ustr & pass) = 0;            // in
+          virtual bool operator()( const ecdh_key & peer_public_key,
+                                   const SAI & addr,
+                                   const ustr & login,
+                                   const ustr & pass) = 0;
       };
 
-      /** @brief server side callback for registering authenticated clients */
       class register_auth_callback
       {
         public:
@@ -81,7 +74,6 @@ namespace csl
                                    saltbuf_t & my_salt ) = 0;
       };
 
-      /** @brief handler that is called on new packet arrival */
       class auth_handler : public recvr::msg_handler
       {
         public:
@@ -113,7 +105,6 @@ namespace csl
           CSL_OBJ(csl::comm::udp,auth_handler);
       };
 
-      /** @brief the server class to be started */
       class auth_srv : public csl::common::obj
       {
         public:
@@ -183,7 +174,6 @@ namespace csl
           CSL_OBJ(csl::comm::udp,auth_srv);
       };
 
-      /** @brief the client class */
       class auth_cli : public csl::common::obj
       {
         public:

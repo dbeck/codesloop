@@ -34,11 +34,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # include "pevent_impl_pthread.cc"
 #endif /* WIN32 */
 
-/**
-  @file pevent.cc
-  @brief implementation of pevent
-*/
-
 namespace csl
 {
   namespace nthread

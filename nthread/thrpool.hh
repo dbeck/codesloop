@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_nthread_thrpool_hh_included_
 #define _csl_nthread_thrpool_hh_included_
 
-/**
-   @file thrpool.hh
-   @brief thread pool
- */
-
 #include "codesloop/nthread/event.hh"
 #include "codesloop/nthread/mutex.hh"
 #include "codesloop/nthread/thread.hh"
@@ -44,7 +39,6 @@ namespace csl
 {
   namespace nthread
   {
-    /** @todo document me */
     class thrpool : public csl::common::obj
     {
       CSL_OBJ(csl::nthread,thrpool);

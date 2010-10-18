@@ -27,11 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include <pthread.h>
 
-/**
-  @file event_impl_pthread.cc
-  @brief pthread implementation of event class
-*/
-
 namespace csl
 {
   namespace nthread

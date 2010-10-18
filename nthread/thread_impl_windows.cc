@@ -27,11 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/nthread/mutex.hh"
 #include "codesloop/common/common.h"
 
-/**
-  @file thread_impl_windows.cc
-  @brief windows native implementation of thread class
-*/
-
 namespace csl
 {
   namespace nthread

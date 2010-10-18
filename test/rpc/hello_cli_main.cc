@@ -26,12 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "hello_cli.hh"
 #include "codesloop/common/test_timer.h"
 
-
-/**
-  @file test/rpc/hello_cli_main.cc
-  @brief main function for hello world test case
- */
-
 using csl::rpc::hello::hello_cli;
 using namespace csl::common;
 

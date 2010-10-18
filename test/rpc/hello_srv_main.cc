@@ -25,11 +25,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "hello_srv.hh"
 
-/**
-  @file test/rpc/hello_srv_main.cc
-  @brief main function for hello world test case
- */
-
 using csl::common::str;
 
 namespace csl 

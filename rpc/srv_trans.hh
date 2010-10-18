@@ -41,7 +41,6 @@ namespace csl
 { 
   namespace rpc 
   {
-    /** @brief stores parsed interface description */
     class srv_trans : public csl::comm::handler_old0, public csl::common::obj
     {
       CSL_OBJ(csl::rpc,srv_trans);

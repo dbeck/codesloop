@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_sched_item_hh_included_
 #define _csl_sched_item_hh_included_
 
-/**
-   @file item.hh
-   @brief item @todo item
- */
-
 #include "codesloop/db/csl_slt3.hh"
 #include "codesloop/sched/head.hh"
 #include "codesloop/sched/data.hh"
@@ -56,7 +51,6 @@ namespace csl
     using slt3::reg;
     using slt3::sql;
 
-    /** @todo document me */
     class item : public slt3::obj
     {
       public:

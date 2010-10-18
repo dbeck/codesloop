@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__umac.cc
-   @brief Tests to verify umac routines
- */
-
 #include "codesloop/sec/umac_ae.h"
 #include "codesloop/common/tbuf.hh"
 #include "codesloop/common/test_timer.h"
@@ -36,7 +31,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::common;
 
-/** @brief contains tests related to umac routines */
 namespace test_umac {
 
   void print_hex(const char * prefix,const void * vp,size_t len)

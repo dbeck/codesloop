@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__derive_ec_params.c
-   @brief tests to see how EC and OpenSSL works
-*/
-
 #ifdef WIN32
 int main() { return 0; }
 #else /* WIN32 */

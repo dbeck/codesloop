@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_sec_csl_sec_hh_included_
 #define _csl_sec_csl_sec_hh_included_
 
-/**
-   @file csl_sec.hh
-   @brief Common security related functions
- */
-
 #include "codesloop/sec/csl_sec.h"
 #include "codesloop/sec/exc.hh"
 #include "codesloop/sec/bignum.hh"

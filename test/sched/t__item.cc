@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__item.cc
-   @brief Tests to check various sched::item features
- */
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/sched/item.hh"
 #include "exc.hh"
@@ -39,10 +34,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace csl::slt3;
 using namespace csl::sched;
 
-/** @brief contains tests related to sched::item */
 namespace test_item {
 
-  /** @test baseline for performance comparison */
   void baseline()
   {
     item s;

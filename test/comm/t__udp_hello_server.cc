@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__udp_server2.cc
-   @brief Tests to verify udp::srv routines
- */
-
 #include "codesloop/comm/udp_hello.hh"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/common/common.h"
@@ -37,7 +32,6 @@ using namespace csl::common;
 using namespace csl::comm;
 using namespace csl::sec;
 
-/** @brief contains tests related to udp servers */
 namespace test_udp_server2 {
 
   void basic()

@@ -27,11 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/str.hh"
 #include "codesloop/common/common.h"
 
-/**
-  @file nthread/src/exc.cc
-  @brief implementation of nthread::exc
- */
-
 namespace csl
 {
   namespace nthread
