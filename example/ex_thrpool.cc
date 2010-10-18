@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-  @file ex_thrpool.cc
-  @brief basic thread pool usage
- */
-
 #include "codesloop/nthread/thrpool.hh"
 #include "codesloop/common/common.h"
 #include "codesloop/nthread/event.hh"
@@ -35,21 +30,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace csl::nthread;
 
 /*
-** This example demonstrates the usage of the codesloop's threadpool facility
-**
-** thrpool is the class that manages a number of threads. the number of threads
-** that are running in any given time is kept between the limits given during
-** initialization.
-**
-** The concept that thrpool follows:
-**
-** - the parameters at initialization controls all aspects of its operation
-** - the ev parameter is an event that the threads are waiting to be signaled
-** - when ev is signaled a thread is woken up and calls the handler that is supplied
-**   at initialization time
-** - each running thread checks wether there are more events waiting to be dispatched
-**   then the available number of thread. if so a new thread will be started if the
-**   number of currently running threads wouldn't exceed the limit given to init
+-- This example demonstrates the usage of the codesloop's threadpool facility
+--
+-- thrpool is the class that manages a number of threads. the number of threads
+-- that are running in any given time is kept between the limits given during
+-- initialization.
+--
+-- The concept that thrpool follows:
+--
+-- - the parameters at initialization controls all aspects of its operation
+-- - the ev parameter is an event that the threads are waiting to be signaled
+-- - when ev is signaled a thread is woken up and calls the handler that is supplied
+--   at initialization time
+-- - each running thread checks wether there are more events waiting to be dispatched
+--   then the available number of thread. if so a new thread will be started if the
+--   number of currently running threads wouldn't exceed the limit given to init
 */
 
 class handler : public thread::callback
@@ -63,7 +58,7 @@ class handler : public thread::callback
     virtual ~handler() {}
 
     /* member variables should be used for passing data to be processed
-    ** by the worker threads
+    -- by the worker threads
     */
 };
 
@@ -81,27 +76,27 @@ int main()
 
 
   /* this initializes and starts the threadpool:
-  **
-  ** the supplied parameters are:
-  **
-  **   min_thread_to_be_run : tells how many thread should be kept
-  **                          operational
-  **
-  **   max_thread_to_be_run : tells what is the maximum number of threads may
-  **                          be running
-  **
-  **   timeout_ms :           tells how long should a thread wait for the
-  **                          notification if a timeout happens 'max_timedout_attempt'
-  **                          times then the thread checks if there are more then
-  **                          'min_thread_to_be_run' threads are running and if thats
-  **                          the case it exits
-  **
-  **   max_timedout_attempt : tells how many time the thread can timeout before
-  **                          it checks if he is really needed
-  **
-  **   notification_event :   is the object all thread in the threadpool are waiting for
-  **
-  **   handler_to_be_called : is the object to be called when a new event arrives
+  --
+  -- the supplied parameters are:
+  --
+  --   min_thread_to_be_run : tells how many thread should be kept
+  --                          operational
+  --
+  --   max_thread_to_be_run : tells what is the maximum number of threads may
+  --                          be running
+  --
+  --   timeout_ms :           tells how long should a thread wait for the
+  --                          notification if a timeout happens 'max_timedout_attempt'
+  --                          times then the thread checks if there are more then
+  --                          'min_thread_to_be_run' threads are running and if thats
+  --                          the case it exits
+  --
+  --   max_timedout_attempt : tells how many time the thread can timeout before
+  --                          it checks if he is really needed
+  --
+  --   notification_event :   is the object all thread in the threadpool are waiting for
+  --
+  --   handler_to_be_called : is the object to be called when a new event arrives
   */
   pool.init(
             min_thread_to_be_run,

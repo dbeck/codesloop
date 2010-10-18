@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_logger_hh_included_
 #define _csl_common_logger_hh_included_
 
-/**
-   @file common/src/logger.hh
-   @brief common logger class
- */
-
 #include "codesloop/common/str.hh"
 #ifdef __cplusplus
 #include <string>
@@ -155,11 +150,6 @@ DEBUG_ENABLE_INDENT - this tells wether to indent the debug output or not
 namespace csl {
   namespace common {
 
-    /**
-    @brief log level identifiers
-
-    log levels are defined from DEBUG to CRITICAL
-     */
     typedef enum logger_types
     {
       LOG_UNKNOWN     = 0,
@@ -172,64 +162,26 @@ namespace csl {
       LOG_LAST
     } logger_types;
 
-
-    /**
-    @brief logger class used for tracing and printf style debugging
-
-    this class is used by common classes for logging purpose. DEBUG
-    messages are only available in DEBUG builds.
-     */
     class logger : public obj
     {
       CSL_OBJ(csl::common,logger);
 
       public:
-        /** @brief main logger function
-        @param type log level (debug, error, etc.)
-        @param str  message to log */
         static void log( logger_types type, const str & str );
         static void log( logger_types type, const char * fmt, va_list args);
         static void log( logger_types type, const wchar_t * fmt, va_list args);
         static void log( logger_types type, const char * fmt, ...);
         static void log( logger_types type, const wchar_t * fmt, ...);
 
-        /** @brief override default log file name and location
-        @param logfile full path of demanded file name */
-        static void             set_log_file( const char * logfile );
+        static void set_log_file( const char * logfile );
 
-        /** @brief shortcut function for critical errors
-        @param str  message to log */
-        static inline void      critical( const str & str )
-        {
-          log( LOG_CRITICAL, str );
-        }
-        /** @brief shortcut function for info messages
-        @param str  message to log */
-        static inline void      info ( const str & str ) {
-          log( LOG_INFO, str );
-        }
-        /** @brief shortcut function for warning messages
-        @param str  message to log */
-        static inline void      warning( const str & str ) {
-          log( LOG_WARNING, str );
-        }
-        /** @brief shortcut function for authentication logs
-        @param str  message to log */
-        static inline void      auth( const str & str ) {
-          log( LOG_AUTH, str );
-        }
-        /** @brief shortcut function for normal errors
-        @param str  message to log */
-        static inline void      error( const str & str ) {
-          log( LOG_ERROR, str );
-        }
+        static inline void critical( const str & str ) { log( LOG_CRITICAL, str ); }
+        static inline void info ( const str & str )    { log( LOG_INFO, str ); }
+        static inline void warning( const str & str )  { log( LOG_WARNING, str ); }
+        static inline void auth( const str & str )     { log( LOG_AUTH, str ); }
+        static inline void error( const str & str )    { log( LOG_ERROR, str ); }
 
 #ifdef DEBUG_ENABLE_INDENT
-        /** @brief helper function for more digestable debug logs
-        *** @note that this function is not thread safe so this should not be used in production builds
-        *** @param change tells how much we change the indentation
-        *** @return the indent value
-        ***/
         static inline int get_indent(int change) {
           static int indent_value_ = 0;
           int ret = indent_value_;
@@ -238,30 +190,19 @@ namespace csl {
           else             return (ret);
         }
 #endif
-        /** @brief shortcut function for debug messages
-
-        Debug messages are only available in DEBUG builds, otherwise
-        compiler optimizes out the debug related log macros
-        @param str  message to log */
-        static inline void      debug( const str & st,
-                                       const wchar_t * invoker = NULL )
+        static inline void debug( const str & st,
+                                  const wchar_t * invoker = NULL )
         {
 #ifdef ENABLE_LOGGER
           if ( class_to_trace_ == L"all" ||
-              class_to_trace_.find( str(invoker) ) != str::npos )
+               class_to_trace_.find( str(invoker) ) != str::npos )
           {
             log( LOG_DEBUG, st );
           }
 #endif /*ENABLE_LOGGER*/
         }
 
-        /** @brief shortcut function for debug messages
-
-          Debug messages are only available in DEBUG builds, otherwise
-          compiler optimizes out the debug related log macros
-          @param str  message to log */
-        static inline void      debug( const wchar_t * invoker,
-            const wchar_t * fmt, ... )
+        static inline void debug( const wchar_t * invoker, const wchar_t * fmt, ... )
         {
 #ifdef ENABLE_LOGGER
           if ( class_to_trace_ == L"all" ||
@@ -276,16 +217,11 @@ namespace csl {
 #endif /*ENABLE_LOGGER*/
         }
 
-        /** @brief shortcut function for debug messages
-
-        Debug messages are only available in DEBUG builds, otherwise
-        compiler optimizes out the debug related log macros
-        @param str  message to log */
 #ifdef DEBUG_ENABLE_INDENT
-        static inline void      debug( const wchar_t * invoker,
-                                       int indent,
-                                       const wchar_t * fmt1,
-                                       ... )
+        static inline void debug( const wchar_t * invoker,
+                                  int indent,
+                                  const wchar_t * fmt1,
+                                  ... )
         {
 #ifdef ENABLE_LOGGER
           if ( class_to_trace_ == L"all" ||
@@ -317,16 +253,15 @@ namespace csl {
         }
 #endif /*DEBUG_ENABLE_INDENT*/
 
-        /** @brief executed at program startup */
-        static int           init();
+        static int init();
 
       private:
-        static std::string   logfile_;
+        static std::string logfile_;
 #ifdef ENABLE_LOGGER
       public:
-        static bool          enable_trace_;
-        static str           class_to_trace_;
-        static bool          enable_stderr_;
+        static bool enable_trace_;
+        static str  class_to_trace_;
+        static bool enable_stderr_;
 #endif /*ENABLE_LOGGER*/
     }; /* class */
   }; /* namespace common */

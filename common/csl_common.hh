@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_csl_common_hh_included_
 #define _csl_common_csl_common_hh_included_
 
-/**
-   @file csl_common.hh
-   @brief Common features
- */
-
 #include "codesloop/common/common.h"
 #include "codesloop/common/exc.hh"
 #include "codesloop/common/pvlist.hh"

@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-  @file ex_sql2.cc
-  @brief basic slt3 demonstration not using exceptions
- */
-
 #include "codesloop/db/slt3/csl_slt3.hh"
 #include "codesloop/common/common.h"
 
