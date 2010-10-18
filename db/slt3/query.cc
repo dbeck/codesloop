@@ -28,11 +28,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/db/slt3/query.hh"
 #include "codesloop/db/slt3/_shared_impl.hh"
 
-/**
-  @file query.cc
-  @brief implementation of slt3::query
- */
-
 using csl::common::str;
 using csl::common::ustr;
 

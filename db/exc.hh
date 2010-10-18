@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_slt3_exc_hh_included_
 #define _csl_slt3_exc_hh_included_
 
-/**
-   @file slt3/src/exc.hh
-   @brief common exception class for slt3
- */
-
 #include "codesloop/common/cexc.hh"
 #include "codesloop/common/str.hh"
 #ifdef __cplusplus
@@ -39,89 +34,64 @@ namespace csl
 {
   namespace db
   {
-    /**
-    @brief common exception class used by slt3 classes
-
-    this class is used by the slt3 class as an exception to be thrown
-    */
     class exc : public csl::common::cexc
     {
       public:
         enum {
-          rs_unknown,             ///<Unknown error.
-          rs_notopened,           ///<Database not opened.
-          rs_nullparam,           ///<Null parameter given.
-          rs_nulltran,            ///<Transaction is null.
-          rs_nullconn,            ///<Connection is null.
-          rs_nulldb,              ///<DB handle is null.
-          rs_nullstmnt,           ///<Statement handle is null.
-          rs_transaction_already_started, ///<Transaction already aborted.
-          rs_internal,            ///<Internal error.
-          rs_permission,          ///<Access permission denied. Cannot read or write to the database file.
-          rs_abort,               ///<A callback routine caused the transaction to abort.
-          rs_busy,                ///<The database file locked.
-          rs_locked,              ///<Table locked.
-          rs_nomem,               ///<Malloc failed.
-          rs_readonly,            ///<Readonly database.
-          rs_ioerr,               ///<Input/Output error.
-          rs_corrupt,             ///<Corrupt database.
-          rs_notfound,            ///<Not found.
-          rs_cantopen,            ///<Cannot open DB.
-          rs_full,                ///<Database full.
-          rs_protocol,            ///<Database locked or lock protocol error.
-          rs_empty,               ///<The database table is empty.
-          rs_schema,              ///<Schema changed.
-          rs_toobig,              ///<Too big.
-          rs_constraint,          ///<Constraint violation.
-          rs_mismatch,            ///<Data type mismatch.
-          rs_misuse,              ///<Library misuse.
-          rs_auth,                ///<Authorization error.
-          rs_format,              ///<Format error.
-          rs_range,               ///<Range error.
-          rs_notadb,              ///<Not a database.
-          rs_cannot_reg,          ///<Cannot register database
-          rs_not_implemented,     ///<Not implemented
-          rs_mysql_init,          ///<mysql_init() failed
-          rs_mysql_real_connect,  ///<mysql_real_connect() failed
-          rs_mysql_outofmem,      ///<mysql client ran out of memory
-          rs_empty_query,         ///<The query is empty
-          rs_cannot_prepare,      ///<Cannot prepare query
-          rs_invalid_param,       ///<Invalid parameter received
-          rs_mysql_stmt_bind,     ///<mysql_stmt_bind_param() failed
-          rs_mysql_stmt_execute,  ///<mysql_stmt_execute() failed
+          rs_unknown,   
+          rs_notopened,
+          rs_nullparam,
+          rs_nulltran,
+          rs_nullconn,
+          rs_nulldb,
+          rs_nullstmnt,
+          rs_transaction_already_started,
+          rs_internal,
+          rs_permission,
+          rs_abort,
+          rs_busy,
+          rs_locked,
+          rs_nomem,
+          rs_readonly,
+          rs_ioerr,
+          rs_corrupt,
+          rs_notfound,
+          rs_cantopen,
+          rs_full,
+          rs_protocol,
+          rs_empty,
+          rs_schema,
+          rs_toobig,
+          rs_constraint,
+          rs_mismatch,
+          rs_misuse,
+          rs_auth,
+          rs_format,
+          rs_range,
+          rs_notadb,
+          rs_cannot_reg,
+          rs_not_implemented,
+          rs_mysql_init,
+          rs_mysql_real_connect,
+          rs_mysql_outofmem,
+          rs_empty_query,
+          rs_cannot_prepare,
+          rs_invalid_param,
+          rs_mysql_stmt_bind,
+          rs_mysql_stmt_execute,
         };
 
-        /** @brief converts reason code to string */
         static const wchar_t * reason_string(int rc);
 
-        /** @brief constructor
-         *   @param component that caused the exception
-         */
         exc(const wchar_t * component)
         : csl::common::cexc(component) {}
 
-        /** @brief constructor
-         *   @param reason is to tell why
-         *   @param component that cause the exception
-         */
         exc(int reason, const wchar_t * component)
         : csl::common::cexc(reason,component) {}
 
-        /** @brief constructor
-         *   @param reason is to tell why
-         *   @param component that cause the exception
-         *   @param txt provides some explanation
-         */
         exc(int reason, const wchar_t * component, const wchar_t * txt)
         : csl::common::cexc(reason,component,txt) {}
 
-        /** @brief constructor
-         *   @param reason is to tell why
-         *   @param component that cause the exception
-         *   @param txt provides some explanation
-         *   @param file tells which source file caused the error
-         *   @param lin tells which line cause the error
-         */
         exc(int reason, const wchar_t * component, const wchar_t * txt, const wchar_t * file, unsigned int line)
         : csl::common::cexc(reason,component,txt,file,line) {}
     };

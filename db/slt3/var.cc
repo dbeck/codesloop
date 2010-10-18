@@ -32,11 +32,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/db/slt3/tran.hh"
 #include "codesloop/db/slt3/query.hh"
 
-/**
-  @file var.cc
-  @brief implementation of slt3::var
- */
-
 using csl::common::str;
 using csl::common::ustr;
 using csl::common::pbuf;

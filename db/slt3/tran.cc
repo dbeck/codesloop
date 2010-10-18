@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/db/slt3/tran.hh"
 #include "codesloop/db/slt3/_shared_impl.hh"
 
-/**
-  @file tran.cc
-  @brief implementation of slt3::tran
- */
-
 namespace csl
 {
   namespace db

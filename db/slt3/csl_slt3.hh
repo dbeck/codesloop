@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_slt3_slt3_hh_included_
 #define _csl_slt3_slt3_hh_included_
 
-/**
-  @file csl_slt3.hh
-  @brief common slt3 header
- */
-
 #define CSL_WINDOWS_H_INCLUDED
 #include "codesloop/db/slt3/query.hh"
 #include "codesloop/db/slt3/conn.hh"

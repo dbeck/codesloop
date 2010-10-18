@@ -28,11 +28,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/db/slt3/conn.hh"
 #include "codesloop/db/slt3/_shared_impl.hh"
 
-/**
-  @file conn.cc
-  @brief implementation of sqlite3 conn
- */
-
 using csl::common::str;
 using csl::common::ustr;
 

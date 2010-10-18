@@ -25,11 +25,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/db/slt3/obj.hh"
 
-/**
-  @file obj.cc
-  @brief implementation of slt3::obj
- */
-
 namespace csl
 {
   namespace db

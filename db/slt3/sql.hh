@@ -26,11 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_db_sql_hh_included_
 #define _csl_db_sql_hh_included_
 
-/**
-  @file sql.hh
-  @brief sql helper to be used to generate ORM related SQL queries
- */
-
 #include "codesloop/common/pvlist.hh"
 #include "codesloop/common/mpool.hh"
 #include "codesloop/common/tbuf.hh"
@@ -46,24 +41,20 @@ namespace csl
     {
       class obj;
 
-      /** @brief only a container of the sql::helper class */
       class sql
       {
         public:
 
-          /** @brief sql::helper is used for generating ORM related SQL queries */
           class helper
           {
             public:
 
-              /** @brief helper::data contains descriptions of ORM fields */
               struct data
               {
-                const char * name_;  ///<the column name
-                const char * type_;  ///<the column type (INTEGER,BLOB,TEXT,etc...)
-                const char * flags_; ///<misc flags like (AUTOINCREMENT, UNIQUE, PRIMARY KEY, etc...)
+                const char * name_;
+                const char * type_;
+                const char * flags_;
 
-                /** @brief initializing constructor */
                 data(const char * name, const char * typ,const char * flags)
                   : name_(name), type_(typ), flags_(flags) {}
               };
@@ -73,38 +64,27 @@ namespace csl
 
               inline const char * table_name() { return table_name_; }
 
-              /**
-              @brief initializing constructor
-              @param tablename is the database table name associated with the class
-               */
               helper(const char * tablename);
 
-              /**
-              @brief registers a database field with the SQL helper
-              @param name is the column name
-              @param typ is the column type like (INTEGER, BLOB, REAL, etc...)
-              @param flags is the database column flags like (PRIMARY KEY, DEFAULT value, UNIQUE, etc...)
-
-              registers the database field within the internal structure of the SQL helper
-               */
               bool add_field(const char * name,const char * typ, const char * flags="");
 
-              const char * init_sql();     ///<returns: CREATE TABLE...
-              const char * create_sql();   ///<returns: INSERT INTO...
-              const char * save_sql();     ///<returns: UPDATE ....
-              const char * remove_sql();   ///<returns: DELETE FROM ...
+              const char * init_sql();     // returns: CREATE TABLE...
+              const char * create_sql();   // returns: INSERT INTO...
+              const char * save_sql();     // returns: UPDATE ....
+              const char * remove_sql();   // returns: DELETE FROM ...
               const char * find_by_id_sql();
               const char * find_by(int field1,
                                       int field2=-1,
                                       int field3=-1,
                                       int field4=-1,
-                                      int field5=-1); ///<returns: SELECT... WHERE ...
+                                      int field5=-1); // returns: SELECT... WHERE ...
 
-              inline void use_exc(bool yesno) { use_exc_ = yesno; }  ///<sets exception usage
-              inline bool use_exc() const     { return use_exc_; }  ///<should throw exceptions?
+              // TODO : use EXC macro instead
+              inline void use_exc(bool yesno) { use_exc_ = yesno; }
+              inline bool use_exc() const     { return use_exc_; }
 
             private:
-              helper() {} ///<destructor
+              helper() {}
 
               const char * table_name_;
               bool         done_;

@@ -29,11 +29,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/ustr.hh"
 
-/**
-  @file sqhelpr.cc
-  @brief implementation of slt3::sql
- */
-
 namespace csl
 {
   using common::ustr;
@@ -59,7 +54,7 @@ namespace csl
         fieldlist_t::iterator it(fields_.begin());
         fieldlist_t::iterator end(fields_.end());
 
-        /** @todo this is highly inefficient. performance improvement needed */
+        /* TODO : this is highly inefficient. performance improvement needed */
 
         for( ;it!=end;++it )
         {

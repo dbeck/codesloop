@@ -27,11 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/str.hh"
 #include "codesloop/common/common.h"
 
-/**
-  @file slt3/src/exc.cc
-  @brief implementation of slt3::exc
- */
-
 namespace csl
 {
   namespace db

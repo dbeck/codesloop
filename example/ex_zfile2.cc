@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-  @file ex_zfile2.cc
-  @brief basic zfile usage for reading and writing files
- */
-
 #include "codesloop/common/zfile.hh"
 #include <stdlib.h>
 

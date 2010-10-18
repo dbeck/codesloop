@@ -31,11 +31,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/ustr.hh"
 #include "codesloop/common/int64.hh"
 
-/**
-  @file slt3/src/reg.cc
-  @brief implementation of slt3::reg
- */
-
 using csl::common::str;
 using csl::common::ustr;
 using csl::common::int64;

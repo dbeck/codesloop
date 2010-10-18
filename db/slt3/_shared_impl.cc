@@ -46,11 +46,6 @@ using csl::common::int64;
 using csl::common::dbl;
 using csl::common::binry;
 
-/**
-  @file _shared_impl.cc
-  @brief private implementation of slt3 classes
- */
-
 #define THRE(FUN,RC,MSG,RET) \
     do { \
       if( this->use_exc_ ) \

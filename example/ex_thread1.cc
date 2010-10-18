@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-  @file ex_thread1.cc
-  @brief basic thread and event usage
- */
-
 #include "codesloop/common/common.h"
 #include "codesloop/nthread/thread.hh"
 #include "codesloop/nthread/event.hh"

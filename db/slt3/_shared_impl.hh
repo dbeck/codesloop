@@ -37,11 +37,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/csl_common.hh"
 
-/**
-  @file _shared_impl.hh
-  @brief private implementation of slt3 classes
- */
-
 namespace csl
 {
   namespace db
