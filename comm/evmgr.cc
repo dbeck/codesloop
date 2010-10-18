@@ -48,23 +48,59 @@ namespace csl
     struct evmgr::impl
     {
       int dummy_;
+
+      bool init();
+      bool shutdown();
+
+      bool add_timer( int tid, uint32_t toms, handler::flags_t fl, handler & h );
+      bool remove_timer( int tid );
+
+      bool add_fd( int fd, handler::flags_t fl, handler & h );
+      bool remove_fd( int fd );
+
+      bool add_signal( int sig, handler::flags_t fl, handler & h );
+      bool remove_signal( int sig );
+
+      bool add_idle( int iid, handler::flags_t fl, handler & h );
+      bool remove_idle( int iid );
     };
 
-    bool evmgr::init() { return false; /*TODO*/ }
-    bool evmgr::shutdown() { return false; /*TODO*/ }
+    // implementation
+    bool evmgr::impl::init() { return false; /*TODO*/ }
+    bool evmgr::impl::shutdown() { return false; /*TODO*/ }
 
-    bool evmgr::add_timer(int tid, uint32_t timeout_ms, handler::flags_t fl, handler & h) { return false; /*TODO*/ }
-    bool evmgr::add_fd(int fd, handler::flags_t fl, handler & h) { return false; /*TODO*/ }
-    bool evmgr::add_signal(int s, handler::flags_t fl, handler & h) { return false; /*TODO*/ }
-    bool evmgr::add_idle(int iid, handler::flags_t fl, handler & h) { return false; /*TODO*/ }
+    bool evmgr::impl::add_timer( int tid, uint32_t toms, handler::flags_t fl, handler & h ) { return false; /*TODO*/ }
+    bool evmgr::impl::remove_timer( int tid ) { return false; /*TODO*/ }
 
-    bool evmgr::remove_timer(int tid) { return false; /*TODO*/ }
-    bool evmgr::remove_fd(int fd) { return false; /*TODO*/ }
-    bool evmgr::remove_signal(int sig) { return false; /*TODO*/ }
-    bool evmgr::remove_idle(int iid) { return false; /*TODO*/ }
+    bool evmgr::impl::add_fd( int fd, handler::flags_t fl, handler & h ) { return false; /*TODO*/ }
+    bool evmgr::impl::remove_fd( int fd ) { return false; /*TODO*/ }
 
-    evmgr::evmgr() : impl_(new impl) { /*TODO*/ }
-    evmgr::~evmgr() { /*TODO*/ }
+    bool evmgr::impl::add_signal( int sig, handler::flags_t fl, handler & h ) { return false; /*TODO*/ }
+    bool evmgr::impl::remove_signal( int sig ) { return false; /*TODO*/ }
+
+    bool evmgr::impl::add_idle( int iid, handler::flags_t fl, handler & h ) { return false; /*TODO*/ }
+    bool evmgr::impl::remove_idle( int iid ) { return false; /*TODO*/ }
+
+    // forwarders
+    bool evmgr::init()     { return impl_->init(); }
+    bool evmgr::shutdown() { return impl_->shutdown(); }
+
+    bool evmgr::add_timer(int tid, uint32_t toms, handler::flags_t fl, handler & h)
+    {
+      return impl_->add_timer(tid,toms,fl,h);
+    }
+
+    bool evmgr::add_fd(int fd, handler::flags_t fl, handler & h)    { return impl_->add_fd(fd,fl,h); }
+    bool evmgr::add_signal(int s, handler::flags_t fl, handler & h) { return impl_->add_signal(s,fl,h); }
+    bool evmgr::add_idle(int iid, handler::flags_t fl, handler & h) { return impl_->add_idle(iid,fl,h); }
+
+    bool evmgr::remove_timer(int tid)  { return impl_->remove_timer(tid);  }
+    bool evmgr::remove_fd(int fd)      { return impl_->remove_fd(fd);      }
+    bool evmgr::remove_signal(int sig) { return impl_->remove_signal(sig); }
+    bool evmgr::remove_idle(int iid)   { return impl_->remove_idle(iid);   }
+
+    evmgr::evmgr() : impl_(new impl) { }
+    evmgr::~evmgr() { }
 
     /* no-copy */
     evmgr::evmgr(const evmgr &) : impl_(0) {}
