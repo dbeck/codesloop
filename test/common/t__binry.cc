@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__binry.cc
-   @brief Tests to verify binry
- */
-
 #include "codesloop/common/int64.hh"
 #include "codesloop/common/dbl.hh"
 #include "codesloop/common/binry.hh"
@@ -41,10 +36,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::common;
 
-/** @brief contains tests related to binry */
 namespace test_binry {
 
-  /** @test baseline for performance comparison */
   void baseline()
   {
     binry v;

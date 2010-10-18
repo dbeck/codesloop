@@ -24,12 +24,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-/**
-   @file t__obj.cc
-   @brief Tests to verify serialization/deserialization routines
-   @todo add more test case for each vars
- */
-
 #ifndef DEBUG
 #define DEBUG
 #endif /* DEBUG */

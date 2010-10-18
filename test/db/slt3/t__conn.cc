@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__conn.cc
-   @brief Tests to check and measure various slt3::conn features
- */
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/db/slt3/conn.hh"
 #include "codesloop/db/exc.hh"
@@ -37,10 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::db;
 
-/** @brief contains tests related to slt3::conn */
 namespace test_conn {
 
-  /** @test open invalid file w/o throwing exception */
   void open_fail_nothrow()
   {
     slt3::conn c;
@@ -50,7 +43,6 @@ namespace test_conn {
     assert( c.close() == false );
   }
 
-  /** @test open invalid db and throw exception */
   void open_fail_throw()
   {
     bool thrown = false;
@@ -70,7 +62,6 @@ namespace test_conn {
     assert( c.close() == false );
   }
 
-  /** @test open and close db */
   void open_close()
   {
     slt3::conn c;
@@ -80,7 +71,6 @@ namespace test_conn {
     assert( c.close() == false );
   }
 
-  /** @test set and check use_exc */
   void set_exc()
   {
     slt3::conn c;
@@ -90,7 +80,6 @@ namespace test_conn {
     assert( c.use_exc() == false );
   }
 
-  /** @test baseline for performance comparison */
   void baseline()
   {
     slt3::conn c;

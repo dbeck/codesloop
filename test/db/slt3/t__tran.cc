@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__tran.cc
-   @brief Tests to check and measure various slt3::tran features
- */
-
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/db/slt3/tran.hh"
@@ -43,10 +38,8 @@ using namespace csl::db;
 using csl::common::str;
 using csl::common::ustr;
 
-/** @brief contains tests related to slt3::tran */
 namespace test_tran {
 
-  /** @test baseline for performance comparison */
   void baseline()
   {
     slt3::conn c;
@@ -56,7 +49,6 @@ namespace test_tran {
     assert( t.use_exc() == false );
   }
 
-  /** @test commit */
   void test_commit()
   {
     slt3::conn c;
@@ -82,7 +74,6 @@ namespace test_tran {
     }
   }
 
-  /** @test commit on destruct */
   void commit_on_destr()
   {
     slt3::conn c;
@@ -114,7 +105,6 @@ namespace test_tran {
     }
   }
 
-  /** @test rollback */
   void test_rollback()
   {
     slt3::conn c;
@@ -149,7 +139,6 @@ namespace test_tran {
     assert( caught == true );
   }
 
-  /** @test rollback on destruct */
   void rollb_on_destr()
   {
     slt3::conn c;

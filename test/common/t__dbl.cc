@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__dbl.cc
-   @brief Tests to verify dbl
- */
-
 #include "codesloop/common/dbl.hh"
 #include "codesloop/common/int64.hh"
 #include "codesloop/common/str.hh"
@@ -40,10 +35,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::common;
 
-/** @brief contains tests related to dbl */
 namespace test_dbl {
 
-  /** @test baseline for performance comparison */
   void baseline()
   {
     dbl v;

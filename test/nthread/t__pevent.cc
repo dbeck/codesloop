@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__pevent.cc
-   @brief Tests to check csl permanent event behaviour
-*/
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/nthread/pevent.hh"
 #include "codesloop/nthread/thread.hh"
@@ -45,10 +40,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::nthread;
 
-/** @brief contains tests related to csl pevents */
 namespace test_pevent
 {
-  /** @test baseline for timing */
   void test_init()
   {
     pevent p;
@@ -69,7 +62,6 @@ namespace test_pevent
     pevent * e2_;
   };
 
-  /** @test concurrent notification test w/ 200 threads */
   void test_notify1()
   {
     pevent e1,e2;

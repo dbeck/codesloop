@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__query.cc
-   @brief Tests to check and measure various slt3::query features for in memory db
- */
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/db/slt3/query.hh"
 #include "codesloop/db/slt3/tran.hh"
@@ -45,10 +40,8 @@ using csl::common::int64;
 using csl::common::binry;
 using csl::common::dbl;
 
-/** @brief contains tests related to slt3::query */
 namespace test_query {
 
-  /** @test baseline for performance comparison */
   void baseline()
   {
     slt3::conn c;
@@ -61,7 +54,6 @@ namespace test_query {
     assert( q.use_exc() == false );
   }
 
-  /** @test querying a database that was not opened w/o throwing exception */
   void noopen_nothrow()
   {
     slt3::conn c;
@@ -72,7 +64,6 @@ namespace test_query {
     assert( q.execute("CREATE TABLE nothrow (i INT);") == false );
   }
 
-  /** @test querying a database that was not opened w/ throwing exception */
   void noopen_throw()
   {
     bool caught = false;
@@ -91,10 +82,8 @@ namespace test_query {
     assert( caught == true );
   }
 
-  /** @test declare colhead */
   void test_colhead() { slt3::query::colhead ch; }
 
-  /** @test parameter handling */
   void test_param()
   {
     slt3::conn c;
@@ -160,7 +149,6 @@ namespace test_query {
     assert( pc1.empty() == true );
   }
 
-  /** @test iterative query w/o retval (no automatic reset) */
   void stepw_noret_noaut()
   {
     slt3::conn c;
@@ -194,7 +182,6 @@ namespace test_query {
     }
   }
 
-  /** @test iterative query w/o retval (automatic reset) */
   void stepw_noret_aut()
   {
     slt3::conn c;
@@ -223,7 +210,6 @@ namespace test_query {
     }
   }
 
-  /** @test iterative query w/ retval (automatic reset) */
   void stepw_ret_noaut()
   {
     slt3::conn c;
@@ -261,7 +247,6 @@ namespace test_query {
     }
   }
 
-  /** @test iterative query w/ retval (automatic reset) */
   void stepw_ret_aut()
   {
     slt3::conn c;
@@ -300,7 +285,6 @@ namespace test_query {
     }
   }
 
-  /** @test onestep query w/o retval (no automatic reset) */
   void onesht_noret_noaut()
   {
     slt3::conn c;
@@ -322,7 +306,6 @@ namespace test_query {
     }
   }
 
-  /** @test onestep query w/o retval (automatic reset) */
   void onesht_noret_aut()
   {
     slt3::conn c;
@@ -344,7 +327,6 @@ namespace test_query {
     }
   }
 
-  /** @test onestep query w/ retval (no automatic reset) */
   void onesht_ret_noaut()
   {
     slt3::conn c;
@@ -368,7 +350,6 @@ namespace test_query {
     }
   }
 
-  /** @test onestep query w/ retval (utomatic reset) */
   void onesht_ret_aut()
   {
     slt3::conn c;
@@ -395,7 +376,6 @@ namespace test_query {
   static slt3::conn * perf_conn_ = 0;
   static slt3::tran * perf_tran_ = 0;
 
-  /** @test insert and delete integer */
   void ins_del_int()
   {
     slt3::tran t(*perf_conn_);
@@ -405,7 +385,6 @@ namespace test_query {
     assert( q.execute("DELETE FROM perftest2 WHERE i=1;") == true );
   }
 
-  /** @test insert and delete double */
   void ins_del_double()
   {
     slt3::tran t(*perf_conn_);
@@ -415,7 +394,6 @@ namespace test_query {
     assert( q.execute("DELETE FROM perftest2 WHERE d='3.14123';") == true );
   }
 
-  /** @test insert and delete string */
   void ins_del_str()
   {
     slt3::tran t(*perf_conn_);
@@ -425,7 +403,6 @@ namespace test_query {
     assert( q.execute("DELETE FROM perftest2 WHERE s='3.14123';") == true );
   }
 
-  /** @test insert and delete blob */
   void ins_del_blob()
   {
     slt3::tran t(*perf_conn_);
@@ -435,7 +412,6 @@ namespace test_query {
     assert( q.execute("DELETE FROM perftest2 WHERE b='3.14123';") == true );
   }
 
-  /** @test insert and delete integer */
   void insdel_int_notran()
   {
     slt3::query q(*perf_tran_);

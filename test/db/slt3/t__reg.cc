@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__reg.cc
-   @brief Tests to check and measure various slt3::reg features
- */
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/db/slt3/reg.hh"
 #include "codesloop/db/exc.hh"
@@ -40,16 +35,13 @@ using namespace csl::db;
 
 using csl::common::str;
 
-/** @brief contains tests related to slt3::reg */
 namespace test_reg {
 
-  /** @test baseline for performance comparison */
   void baseline()
   {
     slt3::reg & r(slt3::reg::instance("test.db"));
   }
 
-  /** @test registers and gets an item from database registry */
   void usage1()
   {
     slt3::reg & r(slt3::reg::instance("test.db"));
@@ -64,7 +56,6 @@ namespace test_reg {
     ::free(db);
   }
 
-  /** @test simple usage scenario */
   void usage2()
   {
     slt3::reg & r(slt3::reg::instance("test.db"));
@@ -75,7 +66,6 @@ namespace test_reg {
     assert( str("hello.db") == i.path_ );
   }
 
-  /** @test how double inserting the same values behave */
   void usage3()
   {
     slt3::reg & r(slt3::reg::instance("test.db"));
@@ -88,7 +78,6 @@ namespace test_reg {
     ::free(db);
   }
 
-  /** @test how lookup of nonexistent values behave */
   void usage4()
   {
     slt3::reg & r(slt3::reg::instance("test.db"));

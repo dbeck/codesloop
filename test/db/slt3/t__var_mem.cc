@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__var_mem.cc
-   @brief Tests to check and measure various slt3::var features for in memory db
- */
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/common/obj.hh"
 #include "codesloop/common/var.hh"
@@ -51,7 +46,6 @@ using csl::common::int64;
 using csl::common::dbl;
 using csl::common::binry;
 
-/** @brief contains tests related to slt3::var */
 namespace test_var {
 
   /** Helper base class */
@@ -129,25 +123,21 @@ namespace test_var {
 
   slt3::sql::helper SingleBlob::sql_helper_("single_blob");
 
-  /** @test baseline for performance comparison */
   void baseline()
   {
   }
 
-  /** @test to see how much time needed to declare an instance of SingleInt */
   void single_int0()
   {
     SingleInt i0;
   }
 
-  /** @test to see how long init() takes */
   void single_int1()
   {
     SingleInt i0;
     assert( i0.init() == true );
   }
 
-  /** @test to see how long create() and remove() takes */
   void single_int2()
   {
     SingleInt i0;
@@ -158,7 +148,6 @@ namespace test_var {
     assert( i0.remove(t) == true );
   }
 
-  /** @test to verify find() and get() */
   void single_int3()
   {
     SingleInt i0;
@@ -181,20 +170,17 @@ namespace test_var {
     }
   }
 
-  /** @test to see how much time needed to declare an instance of SingleString */
   void single_str0()
   {
     SingleString s0;
   }
 
-  /** @test to see how long init() takes */
   void single_str1()
   {
     SingleString s0;
     assert( s0.init() == true );
   }
 
-  /** @test to see how long create() and remove() takes */
   void single_str2()
   {
     SingleString s0;
@@ -203,7 +189,6 @@ namespace test_var {
     assert( s0.remove(t) == true );
   }
 
-  /** @test to verify find() and get() */
   void single_str3()
   {
     SingleString s0;
@@ -224,20 +209,17 @@ namespace test_var {
     }
   }
 
-  /** @test to see how much time needed to declare an instance of SingleDouble */
   void single_dbl0()
   {
     SingleDouble v0;
   }
 
-  /** @test to see how long init() takes */
   void single_dbl1()
   {
     SingleDouble v0;
     assert( v0.init() == true );
   }
 
-  /** @test to see how long create() and remove() takes */
   void single_dbl2()
   {
     SingleDouble v0;
@@ -246,7 +228,6 @@ namespace test_var {
     assert( v0.remove(t) == true );
   }
 
-  /** @test to verify find() and get() */
   void single_dbl3()
   {
     SingleDouble v0;
@@ -267,20 +248,17 @@ namespace test_var {
     }
   }
 
-  /** @test to see how much time needed to declare an instance of SingleBlob */
   void single_blb0()
   {
     SingleBlob v0;
   }
 
-  /** @test to see how long init() takes */
   void single_blb1()
   {
     SingleBlob v0;
     assert( v0.init() == true );
   }
 
-  /** @test to see how long create() and remove() takes */
   void single_blb2()
   {
     SingleBlob v0;
@@ -289,7 +267,6 @@ namespace test_var {
     assert( v0.remove(t) == true );
   }
 
-  /** @test to verify find() and get() */
   void single_blb3()
   {
     std::vector<unsigned char> ve;

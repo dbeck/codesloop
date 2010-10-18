@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__ustr.cc
-   @brief Tests to verify unicode character string
- */
-
 #if 0
 #ifndef DEBUG
 #define DEBUG
@@ -49,43 +44,36 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::common;
 
-/** @brief contains tests related to tbuf */
 namespace test_ustr {
 
-  /** @test baseline for performance comparison */
   void string_baseline()
   {
     std::string b;
   }
 
-  /** @test baseline for performance comparison */
   inline void str_baseline()
   {
     ustr b;
   }
 
-  /** @test @todo */
   void string_hello()
   {
     std::string b;
     b = "Hello";
   }
 
-  /** @test @todo */
   void str_hello()
   {
     ustr b;
     b = "Hello";
   }
 
-  /** @test @todo */
   void string_concat()
   {
     std::string b;
     b = "Hello" + std::string("world");
   }
 
-  /** @test @todo */
   void str_concat()
   {
     ustr b;
@@ -95,7 +83,6 @@ namespace test_ustr {
     assert( b.nbytes() == 11 );
   }
 
-  /** @test @todo */
   void string_append()
   {
     std::string b;
@@ -104,7 +91,6 @@ namespace test_ustr {
     b += "world!";
   }
 
-  /** @test @todo */
   void str_append()
   {
     ustr b;
@@ -116,7 +102,6 @@ namespace test_ustr {
     assert( b.nbytes() == 13 );
   }
 
-  /** @test @todo */
   void str_opeq()
   {
     ustr b("Hello world");

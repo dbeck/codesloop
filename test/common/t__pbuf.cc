@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__pbuf.cc
-   @brief Tests to verify pbuf
- */
-
 #include "codesloop/common/pbuf.hh"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/common/zfile.hh"
@@ -37,13 +32,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using csl::common::pbuf;
 using csl::common::zfile;
 
-/** @brief contains tests related to pbuf */
 namespace test_pbuf {
 
-  /** @test baseline for performance comparison */
   void baseline() { pbuf pb; }
 
-  /** @test to allocate at least 13 buffer pages */
   void alloc_13()
   {
     pbuf pb;
@@ -78,7 +70,6 @@ namespace test_pbuf {
     assert( ck == sz );
   }
 
-  /** @test to check pbuf iterators */
   void test_iterator()
   {
     pbuf pb;
@@ -95,7 +86,6 @@ namespace test_pbuf {
     assert( end == pb.end() );
   }
 
-  /** @test to check pbuf constant iterators */
   void test_const_iterator()
   {
     pbuf pb;
@@ -114,7 +104,6 @@ namespace test_pbuf {
     assert( end == pbc.end() );
   }
 
-  /** @test copy operator and constructor */
   void test_copy()
   {
     /* hello world string */

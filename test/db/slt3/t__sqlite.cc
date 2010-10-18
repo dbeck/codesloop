@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__sqlite.cc
-   @brief Tests to check and measure various sqlite features
- */
-
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/db/slt3/sqlite3.h"
@@ -45,10 +40,8 @@ using csl::common::int64;
 using csl::common::dbl;
 using csl::common::binry;
 
-/** @brief contains tests related to sqlite */
 namespace test_sqlite {
 
-  /** @test open and close with sqlite3 api */
   void open_close()
   {
     sqlite3 * db = 0;
@@ -56,14 +49,12 @@ namespace test_sqlite {
     assert( sqlite3_close( db ) == SQLITE_OK );
   }
 
-  /** @test baseline for performance comparison */
   void conn_baseline()
   {
     slt3::conn c;
     assert( c.open("test.db") == true );
   }
 
-  /** @test tran test */
   void tran_query()
   {
     slt3::conn c;
@@ -76,7 +67,6 @@ namespace test_sqlite {
     }
   }
 
-  /** @test create and drop table */
   void crdrp_table()
   {
     slt3::conn c;
@@ -92,7 +82,6 @@ namespace test_sqlite {
     }
   }
 
-  /** @test insert value and query count() */
   void single_return()
   {
     slt3::conn c;
@@ -113,7 +102,6 @@ namespace test_sqlite {
     }
   }
 
-  /** @test insert value with parametrized query and query count() and sum() */
   void test_params()
   {
     slt3::conn c;
@@ -144,7 +132,6 @@ namespace test_sqlite {
     }
   }
 
-  /** @test insert multiple integer values w/ parametrized query */
   void int_param()
   {
     slt3::conn c;
@@ -219,7 +206,6 @@ namespace test_sqlite {
     assert( q.execute("DROP TABLE intp;") == true );
   }
 
-  /** @test insert multiple double values w/ parametrized query */
   void double_param()
   {
     slt3::conn c;
@@ -293,7 +279,6 @@ namespace test_sqlite {
     assert( q.execute("DROP TABLE doublep;") == true );
   }
 
-  /** @test insert multiple string values w/ parametrized query */
   void string_param()
   {
     slt3::conn c;
@@ -352,7 +337,6 @@ namespace test_sqlite {
     assert( q.execute("DROP TABLE textp;") == true );
   }
 
-  /** @test insert multiple blob values w/ parametrized query */
   void blob_param()
   {
     slt3::conn c;

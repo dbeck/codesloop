@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__pt_mutex.cc
-   @brief Tests to check pthread mutex behaviour
-*/
-
 #include "codesloop/common/test_timer.h"
 #include <stdio.h>
 #ifndef WIN32
@@ -36,10 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif /* WIN32 */
 #include <memory>
 
-/** @brief contains tests related to pthread mutexes */
 namespace test_pt_mutex
 {
-  /** @test init */
   void test_init()
   {
     pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
@@ -47,7 +40,6 @@ namespace test_pt_mutex
     pthread_mutex_destroy(&m);
   }
 
-  /** @test init w/ attributes */
   void test_init2()
   {
     pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
@@ -59,7 +51,6 @@ namespace test_pt_mutex
     pthread_mutex_destroy(&m);
   }
 
-  /** @test lock/unlock */
   void test_lock_unlock()
   {
     pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
@@ -73,7 +64,6 @@ namespace test_pt_mutex
     pthread_mutex_destroy(&m);
   }
 
-  /** @test lock/unlock */
   void test_lock_unlock2()
   {
     pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
@@ -86,7 +76,6 @@ namespace test_pt_mutex
     /* dummy: do nothing */
   }
 
-  /** @test lock/unlock and key create */
   void test_lck_key_create()
   {
     pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
@@ -103,7 +92,6 @@ namespace test_pt_mutex
     pthread_key_delete(k);
   }
 
-  /** @test lock/unlock and key create */
   void test_lck_key_create2()
   {
     pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
@@ -131,7 +119,6 @@ namespace test_pt_mutex
     void unlock() { pthread_mutex_unlock(&lock_); }
   };
 
-  /** @test test mtx1 */
   void test_mtx1()
   {
     mtx1 m;
@@ -141,7 +128,6 @@ namespace test_pt_mutex
 
   static mtx1 mtx1a__;
 
-  /** @test test mtx1 lock/unlock */
   void test_mtx1a()
   {
     mtx1a__.lock();
@@ -169,7 +155,6 @@ namespace test_pt_mutex
     void unlock() { impl_->unlock(); }
   };
 
-  /** @test test mtx2 */
   void test_mtx2()
   {
     mtx2 m;
@@ -179,7 +164,6 @@ namespace test_pt_mutex
 
   static mtx2 mtx2a__;
 
-  /** @test test mtx2a lock/unlock */
   void test_mtx2a()
   {
     mtx2a__.lock();

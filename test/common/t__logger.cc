@@ -25,11 +25,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // TODO : tovabbi tesztek kellenek
 
-/**
-   @file t__logger.cc
-   @brief Tests to verify logger
- */
-
 #ifndef DEBUG
 #define DEBUG
 #endif /* DEBUG */
@@ -48,17 +43,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using csl::common::exc;
 using csl::common::str;
 
-/**@brief test namespace for logger */
 namespace test_logger
 {
-  /**@brief test class for logging */
   class logtest : public csl::common::obj
   {
       CSL_OBJ( test_logger, logtest );
 
     public:
 
-      /**@test return value from RETURN_FUNCTION */
       int int_function(const wchar_t * sz)
       {
         ENTER_FUNCTION();
@@ -68,7 +60,6 @@ namespace test_logger
         RETURN_FUNCTION( 0x12345678 );
       }
 
-      /**@test return with exception from THROW_EXCEPTION */
       void exception()
       {
         ENTER_FUNCTION();

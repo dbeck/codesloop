@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__thrpool.cc
-   @brief Tests to check thrpool behaviour
- */
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/nthread/thrpool.hh"
 #include "codesloop/nthread/mutex.hh"
@@ -37,7 +32,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::nthread;
 
-/** @brief contains tests related to csl threads */
 namespace test_thrpool
 {
   class handler : public thread::callback

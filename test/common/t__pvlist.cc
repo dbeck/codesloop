@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__pvlist.cc
-   @brief Tests to verify pvlist
-*/
-
 #ifndef DEBUG
 #define DEBUG
 #endif /* DEBUG */
@@ -43,19 +38,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::common;
 
-/** @brief contains tests related to pvlist */
 namespace test_pvlist {
 
-  /** @test nop_destructor (reference for performance testing) */
   void test_nop_destructor_ref()
   {
     pvlist< 32,void,nop_destructor<void> > pv;
     pv.free_all();
   }
 
-  /**
-   @test to verify nop_destructor works with 100 pointers and does not free() them
-   */
   void test_nop_destructor_100p()
   {
     char t[100];
@@ -67,14 +57,12 @@ namespace test_pvlist {
     pv.free_all();
   }
 
-  /** @test free_destructor (reference for performance testing) */
   void test_free_destructor_ref()
   {
     pvlist< 32,void,free_destructor<void> > pv;
     pv.free_all();
   }
 
-  /** @test to verify free_destructor frees 100 malloced pointers */
   void test_free_destructor_100p()
   {
     pvlist< 32,void,free_destructor<void> > pv;
@@ -85,14 +73,12 @@ namespace test_pvlist {
     pv.free_all();
   }
 
-  /** @test delete_destructor (reference for performance testing) */
   void test_delete_destructor_ref()
   {
     pvlist< 32,char,delete_destructor<char> > pv;
     pv.free_all();
   }
 
-  /** @test to verify delete_destructor frees 100 new()-d pointers */
   void test_delete_destructor_100p()
   {
     pvlist< 32,char,delete_destructor<char> > pv;
@@ -103,14 +89,12 @@ namespace test_pvlist {
     pv.free_all();
   }
 
-  /** @test to verify bs() returns the right blocksize */
   void test_bs()
   {
     pvlist< 32,char,nop_destructor<char> > pv;
     assert( pv.bs() == 32 );
   }
 
-  /** @test get_at() */
   void test_get_at()
   {
     pvlist< 32,char,nop_destructor<char> > pv;
@@ -127,7 +111,6 @@ namespace test_pvlist {
     }
   }
 
-  /** @test set_at() and get_at() */
   void test_set_get_at()
   {
     pvlist< 32,char,nop_destructor<char> > pv;
@@ -151,7 +134,6 @@ namespace test_pvlist {
     }
   }
 
-  /** @test free() -- nop_destructor */
   void test_free_nop()
   {
     char t[2];
@@ -180,7 +162,6 @@ namespace test_pvlist {
     }
   }
 
-  /** @test free() -- free_destructor */
   void test_free_free()
   {
     char * t[2];
@@ -212,7 +193,6 @@ namespace test_pvlist {
     }
   }
 
-  /** @test free() -- delete_destructor */
   void test_free_delete()
   {
     char * t[2];
@@ -244,7 +224,6 @@ namespace test_pvlist {
     }
   }
 
-  /** @test free_one() -- nop_destructor */
   void test_free_one_nop()
   {
     char t[2];
@@ -277,7 +256,6 @@ namespace test_pvlist {
     }
   }
 
-  /** @test free_one() -- free_destructor */
   void test_free_one_free()
   {
     char * t[2];
@@ -313,7 +291,6 @@ namespace test_pvlist {
     }
   }
 
-  /** @est free_one() -- delete_destructor */
   void test_free_one_delete()
   {
     char * t[2];
@@ -349,7 +326,6 @@ namespace test_pvlist {
     }
   }
 
-  /** @test free_all() -- nop_destructor */
   void test_free_all_nop()
   {
     char t[2];
@@ -369,7 +345,6 @@ namespace test_pvlist {
     }
   }
 
-  /** @test free_all() -- free_destructor */
   void test_free_all_free()
   {
     pvlist< 32,char,free_destructor<char> > pv;
@@ -387,7 +362,6 @@ namespace test_pvlist {
     }
   }
 
-  /** @test free_all() -- delete_destructor */
   void test_free_all_delete()
   {
     pvlist< 32,char,delete_destructor<char> > pv;
@@ -405,7 +379,6 @@ namespace test_pvlist {
     }
   }
 
-  /** @test iterator */
   void test_iter()
   {
     pvlist< 3,char,nop_destructor<char> > pv;
@@ -433,7 +406,6 @@ namespace test_pvlist {
     assert( lk2 > 80 );
   }
 
-  /** @test iterator */
   void test_iter2()
   {
     pvlist< 32,char,nop_destructor<char> > pv;
@@ -458,45 +430,38 @@ namespace test_pvlist {
     assert( *(pv.last()) != 0 );
   }
 
-  /** @test perf baseline */
   void perf_baseline()
   {
   }
 
-  /** @test perf empty array */
   void perf_empty_pointer_arrray()
   {
     void * array[64];
   }
 
-  /** @test perf empty pointer vector */
   void perf_empty_pointer_vector()
   {
     std::vector<void *> array;
   }
 
-  /** @test perf empty pvlist */
   void perf_empty_pvlist()
   {
     pvlist< 64,void,nop_destructor<void> > array;
   }
 
 #ifdef TEST_BOOST_POOL
-  /** @test perf empty boost pool */
   void perf_empty_boost_pool()
   {
     boost::object_pool<void *> p;
   }
 #endif /*TEST_BOOST_POOL*/
 
-  /** @test perf add 64 pointers to array */
   void perf_add64_pointer_arrray()
   {
     void * array[64];
     for( unsigned int i=0;i<64;++i ) array[i] = 0;
   }
 
-  /** @test perf add 64 pointers to pointer vector */
   void perf_add64_pointer_vector_2()
   {
     std::vector<void *> array;
@@ -504,14 +469,12 @@ namespace test_pvlist {
     for( unsigned int i=0;i<64;++i ) array[i] = 0;
   }
 
-  /** @test perf add 64 pointers to pointer vector #2 */
   void perf_add64_pointer_vector()
   {
     std::vector<void *> array;
     for( unsigned int i=0;i<64;++i ) array.push_back(0);
   }
 
-  /** @test perf add 64 pointers to pvlist */
   void perf_add64_pvlist()
   {
     pvlist< 64,void,nop_destructor<void> > array;
@@ -519,7 +482,6 @@ namespace test_pvlist {
   }
 
 #ifdef TEST_BOOST_POOL
-  /** @test perf get 64 pointers from boost pool */
   void perf_add64_boost_pool()
   {
     boost::object_pool<void *> p;

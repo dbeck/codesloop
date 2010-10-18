@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__zfile.cc
-   @brief Tests to verify zfile
-*/
-
 #ifndef DEBUG
 #define DEBUG
 #endif /* DEBUG */
@@ -40,12 +35,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::common;
 
-/** @brief contains tests related to zfile */
 namespace test_zfile {
 
-/**
-   @test Simple test to see how zlib works
-*/
 void test_plain_zlib()
 {
   z_stream strm, strm2 ;
@@ -82,11 +73,6 @@ void test_plain_zlib()
   assert( memcmp( r2,p, strlen("Hello world")+1 ) == 0 );
 }
 
-/**
-   @test Read a file and check the read size
-
-   The calculation summs the used uncompressed buffer sizes.
-*/
 void test_simple_read()
 {
   zfile zf;
@@ -95,12 +81,6 @@ void test_simple_read()
 }
 
 
-/**
-   @test Read a file, compress and check the compressed size
-
-   The get_zsize() function enforces the compression of the read file.
-   Then it calculates the total size of the compressed buffers.
-*/
 void test_compressed_size()
 {
   zfile zf;
@@ -113,9 +93,6 @@ void test_compressed_size()
   assert( (zf.get_zsize() > 0 ) );
 }
 
-/**
-   @test Read a file and print debug infos
-*/
 void test_compressed_size_dbg()
 {
   zfile zf;
@@ -128,18 +105,6 @@ void test_compressed_size_dbg()
   printf("%ld [c]=> %ld \n", static_cast<unsigned long>(zf.get_size()), static_cast<unsigned long>(zf.get_zsize()) );
 }
 
-/**
-   @test Compress a memory buffer and do various checks
-
-   @li Put data into the uncompressed buffer
-   @li Checks the buffer size
-   @li Query the compressed size, which in turn compresses the data
-   @li Gets the compressed data
-   @li Put the compressed data into a different zfile
-   @li Check the uncompressed size of the second zfile, which uncompresses the data
-   @li Get the uncompressed data from the second zfile
-   @li Compare the uncompressed data w/ the original data
-*/
 void test_compressed_data1()
 {
   const char * p = "Hello world";
@@ -159,11 +124,6 @@ void test_compressed_data1()
   assert( ::memcmp( r2, p, static_cast<size_t>(zf.get_size()) ) == 0 );
 }
 
-/**
-   @test Test reading and writing uncompressed and compressed files
-
-   This tests the file sizes and the data too.
-*/
 void test_compressed_data2()
 {
   unsigned char t1[13000];
@@ -202,9 +162,6 @@ void test_compressed_data2()
   assert( ::memcmp( t1, t2, sizeof(t1) ) == 0 );
 }
 
-/**
-   @test Testing the zfile::read_file() function
-*/
 void test_fun__read_file()
 {
   zfile zf;
@@ -214,9 +171,6 @@ void test_fun__read_file()
   assert( zf.get_size() == 12296 );
 }
 
-/**
-   @test Testing the zfile::read_zfile() function
-*/
 void test_fun__read_zfile()
 {
   zfile zf;
@@ -226,9 +180,6 @@ void test_fun__read_zfile()
   assert( zf.get_zsize() == 6759 );
 }
 
-/**
-   @test Testing the zfile::write_file() function
-*/
 void test_fun__write_file()
 {
   zfile zf;
@@ -239,9 +190,6 @@ void test_fun__write_file()
   assert( zf.write_file(0) == false );
 }
 
-/**
-   @test Testing the zfile::write_zfile() function
-*/
 void test_fun__write_zfile()
 {
   zfile zf;
@@ -252,9 +200,6 @@ void test_fun__write_zfile()
   assert( zf.write_zfile(0) == false );
 }
 
-/**
-   @test Testing the zfile::get_size() function
-*/
 void test_fun__get_size()
 {
   zfile zf;
@@ -263,9 +208,6 @@ void test_fun__get_size()
   assert( zf.get_size() == 2 );
 }
 
-/**
-   @test Testing the zfile::get_data() function
-*/
 void test_fun__get_data()
 {
   zfile zf;
@@ -278,9 +220,6 @@ void test_fun__get_data()
   assert( t2[0] = 0xb && t2[1] == 0xd && t2[2] == 0xc );
 }
 
-/**
-   @test Testing the zfile::put_data() function
-*/
 void test_fun__put_data()
 {
   zfile zf;
@@ -291,9 +230,6 @@ void test_fun__put_data()
   assert( zf.put_data(t,2) == true );
 }
 
-/**
-   @test Testing the zfile::get_zsize() function
-*/
 void test_fun__get_zsize()
 {
   zfile zf;
@@ -303,9 +239,6 @@ void test_fun__get_zsize()
   assert( zf.get_zsize() > 0 );
 }
 
-/**
-   @test Testing the zfile::get_zdata() function
-*/
 void test_fun__get_zdata()
 {
   zfile zf;
@@ -318,9 +251,6 @@ void test_fun__get_zdata()
   assert( t2[0] = 0xb && t2[1] == 0xd && t2[2] == 0xc );
 }
 
-/**
-   @test Testing the zfile::put_zdata() function
-*/
 void test_fun__put_zdata()
 {
   zfile zf;
@@ -331,9 +261,6 @@ void test_fun__put_zdata()
   assert( zf.put_zdata(t,2) == true );
 }
 
-/**
-   @test Testing the zfile::get_buff() function
-*/
 void test_fun__get_buff()
 {
   zfile zf;
@@ -342,9 +269,6 @@ void test_fun__get_buff()
   assert( zf.get_buff() != 0 );
 }
 
-/**
-   @test Testing the zfile::get_zbuff() function
-*/
 void test_fun__get_zbuff()
 {
   zfile zf;
@@ -355,22 +279,18 @@ void test_fun__get_zbuff()
 
 void zfile_copy()
 {
-  /** @todo test zfile copy */
 }
 
 void zfile_const_ops()
 {
-  /** @todo test zfile constant operations */
 }
 
 void get_pbuf()
 {
-  /** @todo test zfile pbuf interworking */
 }
 
 void put_pbuf()
 {
-  /** @todo test zfile pbuf interworking */
 }
 
 } // end of namespace test_zfile

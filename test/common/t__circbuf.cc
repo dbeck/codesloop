@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__circbuf.cc
-   @brief Tests to verify circbuf
- */
-
 #include "codesloop/common/circbuf.hh"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/common/common.h"
@@ -36,10 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::common;
 
-/** @brief contains tests related to circbuf */
 namespace test_circbuf {
 
-  /** @test performance baseline */
   void baseline()
   {
     circbuf<int,40> cb;

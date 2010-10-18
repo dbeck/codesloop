@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__mpool.cc
-   @brief Tests to verify mpool
-*/
-
 #ifndef DEBUG
 #define DEBUG
 #endif /* DEBUG */
@@ -40,16 +35,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::common;
 
-/** @brief contains tests related to mpool */
 namespace test_mpool {
 
-  /** @test simple */
   void test_ref()
   {
     mpool <> mp;
   }
 
-  /** @test simple */
   void test_simple()
   {
     mpool<> p;

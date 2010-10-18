@@ -23,16 +23,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__event.cc
-   @brief Tests to check csl event behaviour
-*/
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/nthread/event.hh"
 #include "codesloop/nthread/thread.hh"
 #include <assert.h>
 #include <stdio.h>
+
+// TODO  : use common.h definitions here
 #ifndef WIN32
 # include <unistd.h>
 # define SleepSeconds(A) ::sleep(A)
@@ -43,10 +40,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::nthread;
 
-/** @brief contains tests related to csl events */
 namespace test_event
 {
-  /** @test baseline for timing */
   void test_init()
   {
     event e;
@@ -66,7 +61,6 @@ namespace test_event
     event * e_;
   };
 
-  /** @test creating 100 threads and see if event works */
   void test_notify1()
   {
     event e;
@@ -119,7 +113,6 @@ namespace test_event
     assert( e.available_count() == 0 );
   }
 
-  /** @test check the correctness of available_count */
   void test_available()
   {
     event e;
@@ -159,7 +152,6 @@ namespace test_event
     assert( e.wait(10) == false );
   }
 
-  /** @test check the correctness of waiting_count */
   void test_waiting()
   {
     event e;

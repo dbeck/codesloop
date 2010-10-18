@@ -24,11 +24,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-/**
-   @file t__obj.cc
-   @brief Tests to verify logger
- */
-
 #define DEBUG 
 
 #include "codesloop/common/common.h"

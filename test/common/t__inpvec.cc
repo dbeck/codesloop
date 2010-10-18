@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__inpvec.cc
-   @brief Tests to verify in-place vector
- */
-
 #if 0
 #ifndef DEBUG
 #define DEBUG
@@ -46,7 +41,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::common;
 
-/** @brief contains tests related to in-place vector */
 namespace test_inpvec {
 
   static inline const wchar_t * get_namespace()   { return L"test_inpvec"; }

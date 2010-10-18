@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__mutex.cc
-   @brief Tests to check csl mutex behaviour
-*/
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/nthread/mutex.hh"
 #include "codesloop/nthread/event.hh"
@@ -42,10 +37,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::nthread;
 
-/** @brief contains tests related to csl mutexes */
 namespace test_mutex
 {
-  /** @test baseline for timing */
   void test_init()
   {
     mutex m;
@@ -66,7 +59,6 @@ namespace test_mutex
     mutex * m_;
   };
 
-  /** @test concurrent locking test w/ 200 threads */
   void test_lock()
   {
     event e;

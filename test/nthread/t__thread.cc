@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
-   @file t__thread.cc
-   @brief Tests to check thread behaviour
-*/
-
 #include "codesloop/common/test_timer.h"
 #include "codesloop/nthread/thread.hh"
 #include "codesloop/nthread/mutex.hh"
@@ -37,10 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace csl::nthread;
 
-/** @brief contains tests related to csl threads */
 namespace test_thread
 {
-  /** @test baseline for timing */
   void test_ref()
   {
     thread t;
@@ -64,7 +57,6 @@ namespace test_thread
   int dummy_callback::i_ = 0;
   mutex dummy_callback::m_;
 
-  /** @test creating a dummy thread */
   void test_start()
   {
     thread t;
@@ -103,7 +95,6 @@ namespace test_thread
   int sleep_callback::i_ = 0;
   mutex sleep_callback::m_;
 
-  /** @test check if stop works with a sleeping thread */
   void test_stop()
   {
     thread t;
