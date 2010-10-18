@@ -98,9 +98,9 @@ namespace csl
       csl::common::pbuf pb;
       csl::common::archiver ar( csl::common::archiver::DESERIALIZE) ;
       pb.append( rr.data(), rr.bytes() );
-      arch.set_pbuf(pb);
+      ar.set_pbuf(pb);
 
-      decode_response(__handle, hdata->second.first, arch );
+      decode_response(__handle, hdata->second.first, ar );
 
       // TODO: cleanup memory
 
