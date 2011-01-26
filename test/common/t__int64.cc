@@ -145,19 +145,6 @@ namespace test_int64 {
     assert( ::memcmp( &o, vp, static_cast<size_t>(sz) ) == 0 );
   }
 
-  void to_xdr()
-  {
-    int64 v,v2;
-    pbuf p;
-    xdrbuf xb(p);
-    assert( v.from_integer(12345678LL) == true );
-    assert( v.to_xdr(xb) == true ); /**/
-    xb.rewind();
-    assert( v2.from_xdr(xb) == true );
-    assert( v.value() == v2.value() );
-    assert( v2.value() == 12345678LL );
-  }
-
   void to_var()
   {
     int64 v;
@@ -359,7 +346,6 @@ int main()
   csl_common_print_results( "to_binary_o      ", csl_common_test_timer_v0(to_binary_o),"" );
   csl_common_print_results( "to_binary_u      ", csl_common_test_timer_v0(to_binary_u),"" );
   csl_common_print_results( "to_binary_v      ", csl_common_test_timer_v0(to_binary_v),"" );
-  csl_common_print_results( "to_xdr           ", csl_common_test_timer_v0(to_xdr),"" );
   csl_common_print_results( "to_var           ", csl_common_test_timer_v0(to_var),"" );
   csl_common_print_results( "from_integer_o   ", csl_common_test_timer_v0(from_integer_o),"" );
   csl_common_print_results( "from_double_o    ", csl_common_test_timer_v0(from_double_o),"" );

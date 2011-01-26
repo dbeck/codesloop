@@ -31,10 +31,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/str.hh"
 #include "codesloop/common/exc.hh"
-#include "codesloop/common/arch.hh"
+#include "codesloop/common/ydr_archiver.hh"
 #include "codesloop/common/logger.hh"
-#include "codesloop/common/xdrbuf.hh"
-#include "codesloop/common/pbuf.hh"
+#include "codesloop/common/stream_buffer.hh"
+#include "codesloop/common/stream.hh"
 #include <assert.h>
 #include <sys/stat.h>
 
@@ -47,30 +47,26 @@ int main()
   try {
     str src = L"This is a test";
     str dst;
-    pbuf * buf;
+    stream_buffer<uint8_t> buf;
+    buffered_stream<> bs(buf);
 
     // Class types - direct
-    arch sar( arch::SERIALIZE );
+    ydr_archiver sar( archiver::SERIALIZE, bs );
     src.serialize( sar );
 
-    buf = sar.get_pbuf();
-
-    arch dar( arch::DESERIALIZE );
-    dar.set_pbuf( (*buf) );
+    ydr_archiver dar( archiver::DESERIALIZE, bs );
     dst.serialize( dar);
 
     assert( src == dst );
 
     // Elementary types
     unsigned int elementary = 0xDeadBabe;
-    arch sar2( arch::SERIALIZE );
+    ydr_archiver sar2( archiver::SERIALIZE, bs );
     sar2.serialize( elementary );
-    buf = sar2.get_pbuf();
 
     elementary = 0;
 
-    arch dar2( arch::DESERIALIZE );
-    dar2.set_pbuf( (*buf) );
+    ydr_archiver dar2( archiver::DESERIALIZE, bs );
     dar2.serialize( elementary );
 
     assert( elementary == 0xDeadBabe );

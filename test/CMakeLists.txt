@@ -32,6 +32,6 @@ SUBDIRS(
          nthread
          db
        #  sched
-         rpc
+       #  rpc
        )
 

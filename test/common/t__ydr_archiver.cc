@@ -32,6 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif /* DEBUG_BUILD */
 #endif
 
+#include "codesloop/common/stream.hh"
+#include "codesloop/common/stream_buffer.hh"
 #include "codesloop/common/ydr_archiver.hh"
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/ustr.hh"
@@ -49,7 +51,7 @@ namespace test_ydr_archiver
   static inline const wchar_t * get_namespace()   { return L"test_ydr_archiver"; }
   static inline const wchar_t * get_class_name()  { return L"test_ydr_archiver::noclass"; }
   static inline const wchar_t * get_class_short() { return L"noclass"; }
-  
+
   void if_serialize()
   {
     stream_buffer<uint8_t> buf;
@@ -62,7 +64,7 @@ namespace test_ydr_archiver
     yarch.serialize( x );
     arch.serialize( x );
   }
-  
+
   void if_push()
   {
     stream_buffer<uint8_t> buf;
@@ -75,7 +77,7 @@ namespace test_ydr_archiver
     yarch.push( yarch.get_stream(), s );
     arch.push( arch.get_stream(), s );
   }
-  
+
   void if_pop()
   {
     stream_buffer<uint8_t> buf;
@@ -87,7 +89,7 @@ namespace test_ydr_archiver
     str s(L"Hello world");
     yarch.push( yarch.get_stream(), s );
     arch.push( arch.get_stream(), s );
-    
+
     /* pop as ustr */
     ustr res;
     uint32_t timeout = 50;
@@ -105,9 +107,9 @@ int main()
   if_serialize();
   if_push();
   if_pop();
-  
+
   //csl_common_print_results( "dummy         ", csl_common_test_timer_v0(dummy),"" );
-  return 0;  
+  return 0;
 }
 
 /* EOF */

@@ -43,7 +43,7 @@ SUBDIRS(
          nthread
          db
          # sched
-         rpc
+         # rpc
          example
          test
        )

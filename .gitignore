@@ -272,3 +272,6 @@ test/comm/t__tcp_output_stream
 test/common/t__ydr_util
 test/common/t__ydr_archiver
 test/comm/t__evmgr
+csl.prj
+csl.zbox.dbeck.pui
+csl/
