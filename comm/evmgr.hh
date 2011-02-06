@@ -68,32 +68,20 @@ namespace csl
         bool shutdown();
 
         /* timer support */
-        bool add_timer( int tid,
-                        uint32_t timeout_ms,
-                        handler::flags_t fl,
-                        handler & h );
-
+        bool add_timer( int tid, uint32_t timeout_ms, handler::flags_t fl, handler & h );
         bool remove_timer( int tid );
 
         /* fd support */
-        bool add_fd( int fd,
-                     handler::flags_t fl,
-                     handler & h );
-
+        bool add_fd( int fd, handler::flags_t fl, handler & h );
         bool remove_fd( int fd );
 
         /* signal support */
-        bool add_signal( int sig,
-                         handler::flags_t fl,
-                         handler & h );
+        bool add_signal( int sig, handler::flags_t fl, handler & h );
 
         bool remove_signal( int sig );
 
         /* idle support */
-        bool add_idle( int iid,
-                       handler::flags_t fl,
-                       handler & h );
-
+        bool add_idle( int iid, handler::flags_t fl, handler & h );
         bool remove_idle( int iid );
 
         evmgr();

@@ -68,7 +68,8 @@ ADD_EXECUTABLE( t__evmgr               t__evmgr.cc )
 # ADD_EXECUTABLE( t__udp_data_server     t__udp_data_server.cc )
 
 ADD_TEST( comm_bfd               ${EXECUTABLE_OUTPUT_PATH}/t__bfd )
-ADD_TEST( comm_mt_udp            ${EXECUTABLE_OUTPUT_PATH}/t__mt_udp )
+# exclude from automatic testing because it takes very long
+# ADD_TEST( comm_mt_udp            ${EXECUTABLE_OUTPUT_PATH}/t__mt_udp )
 ADD_TEST( comm_tcp_stream_source ${EXECUTABLE_OUTPUT_PATH}/t__tcp_stream_source )
 ADD_TEST( comm_tcp_stream_target ${EXECUTABLE_OUTPUT_PATH}/t__tcp_stream_target )
 ADD_TEST( comm_tcp_input_stream  ${EXECUTABLE_OUTPUT_PATH}/t__tcp_input_stream )
@@ -79,6 +80,7 @@ ADD_TEST( comm_tcp_client_old0   ${EXECUTABLE_OUTPUT_PATH}/t__tcp_client_old0 )
 ADD_TEST( comm_tcp_lstnr_old0    ${EXECUTABLE_OUTPUT_PATH}/t__tcp_lstnr_old0 )
 ADD_TEST( comm_tcp_libev         ${EXECUTABLE_OUTPUT_PATH}/t__tcp_libev )
 ADD_TEST( comm_evmgr             ${EXECUTABLE_OUTPUT_PATH}/t__evmgr )
+
 # TODO : implement these after rewrite
 # ADD_TEST( comm_udp_auth_client   ${EXECUTABLE_OUTPUT_PATH}/t__udp_auth_client )
 # ADD_TEST( comm_udp_auth_server   ${EXECUTABLE_OUTPUT_PATH}/t__udp_auth_server )
