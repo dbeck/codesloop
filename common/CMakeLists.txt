@@ -29,14 +29,16 @@ ENDIF(NOT WIN32)
 
 INCLUDE_DIRECTORIES( ../.. ${ZLIB_INCLUDE_DIR} )
 
-#ADD_LIBRARY( csl_common STATIC
+ADD_LIBRARY( csl_common STATIC
+		common.h
+		)
 #             cexc.cc       cexc.hh
 #             exc.cc        exc.hh
 #             zfile.cc      zfile.hh
 #             pbuf.cc       pbuf.hh
 #             # xdrbuf.cc     xdrbuf.hh
 #             test_timer.c  test_timer.h
-#             common.h      pvlist.hh
+#             pvlist.hh
 #             circbuf.hh    queue.hh
 #             mpool.hh      tbuf.hh
 #             logger.cc     logger.hh
@@ -84,12 +86,12 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES "debug")
 
 # ADD_DEPENDENCIES( csl_common libev/config.h )
 
-#FILE(GLOB includes "${CMAKE_CURRENT_SOURCE_DIR}/*.h*")
-#INSTALL( FILES ${includes} DESTINATION include/codesloop/common ) 
-#INSTALL(TARGETS csl_common
-#  RUNTIME DESTINATION bin
-#  LIBRARY DESTINATION lib
-#  ARCHIVE DESTINATION lib
-#)
+FILE(GLOB includes "${CMAKE_CURRENT_SOURCE_DIR}/*.h*")
+INSTALL( FILES ${includes} DESTINATION include/codesloop/common ) 
+INSTALL(TARGETS csl_common
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+)
 
 # -- EOF --
