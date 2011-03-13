@@ -1,4 +1,4 @@
-# Copyright (c) 2008,2009,2010, CodeSloop Team
+# Copyright (c) 2008,2009,2010,2011 CodeSloop Team
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -26,12 +26,12 @@
 # -- test --
 
 SUBDIRS(
-         common
-         comm
-         sec
-         nthread
-         db
-       #  sched
-       #  rpc
+	common
+	# comm
+	# sec
+	# nthread
+	# db
+	# sched
+	# rpc
        )
 

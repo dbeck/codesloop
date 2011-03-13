@@ -1,4 +1,4 @@
-# Copyright (c) 2008,2009,2010,2011 CodeSloop Team
+# Copyright (c) 2008,2009,2010, CodeSLoop Team
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -21,31 +21,32 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-PROJECT(codesloop)
-ENABLE_TESTING()
+# -- example --
 
-# SET(CMAKE_VERBOSE_MAKEFILE ON)
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-INCLUDE(DefaultCompilerFlags)
-FIND_PACKAGE(MySQL)
-FIND_PACKAGE(ZLib)
-FIND_PACKAGE(Dlopen)
-FIND_PACKAGE(OPSSL)
-FIND_PACKAGE(Wsock32)
-FIND_PACKAGE(Pthread)
-FIND_PACKAGE(StdCXX)
+LINK_DIRECTORIES( ../common
+                  ../sec
+                  ../nthread
+                  ../db
+                  ../db/slt3 )
+		  
+INCLUDE_DIRECTORIES( ../.. ${ZLIB_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR} )
 
-SUBDIRS(
-         common
-         # comm
-         # sec
-         # nthread
-         # db
-         # sched
-         # rpc
-         example
-         test
-       )
+ADD_DEFINITIONS( ${PTHREAD_FLAGS} )
+
+LINK_LIBRARIES( csl_db_slt3
+                csl_db
+                csl_nthread
+                csl_common
+                ${PTHREAD_LIBRARY}
+                ${DLOPEN_LIBRARY}
+                ${ZLIB_LIBRARY}
+                ${WSOCK32_LIBRARY} )
+
+ADD_EXECUTABLE( ex_zfile1 ex_zfile1.cc )
+ADD_EXECUTABLE( ex_zfile2 ex_zfile2.cc )
+ADD_EXECUTABLE( ex_sql1 ex_sql1.cc )
+ADD_EXECUTABLE( ex_sql2 ex_sql2.cc )
+ADD_EXECUTABLE( ex_thread1 ex_thread1.cc )
+ADD_EXECUTABLE( ex_thrpool ex_thrpool.cc )
 
 # -- EOF --
