@@ -32,7 +32,7 @@ INCLUDE_DIRECTORIES( ../.. ${ZLIB_INCLUDE_DIR} )
 ADD_LIBRARY( csl_common STATIC
 		common_static_checks.cc
 		common.h
-		preallocated_array.hh preallocated_array_impl.hh
+		stpodary.hh stpodary_impl.hh
 		)
 #             cexc.cc       cexc.hh
 #             exc.cc        exc.hh
