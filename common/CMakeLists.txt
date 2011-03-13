@@ -30,7 +30,7 @@ ENDIF(NOT WIN32)
 INCLUDE_DIRECTORIES( ../.. ${ZLIB_INCLUDE_DIR} )
 
 ADD_LIBRARY( csl_common STATIC
-		common.h
+		common.c common.h
 		)
 #             cexc.cc       cexc.hh
 #             exc.cc        exc.hh
