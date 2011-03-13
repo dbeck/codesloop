@@ -31,6 +31,7 @@ INCLUDE_DIRECTORIES( ../.. ${ZLIB_INCLUDE_DIR} )
 
 ADD_LIBRARY( csl_common STATIC
 		common.c common.h
+		preallocated_array.hh preallocated_array_impl.hh
 		)
 #             cexc.cc       cexc.hh
 #             exc.cc        exc.hh
@@ -64,7 +65,6 @@ ADD_LIBRARY( csl_common STATIC
 #             stream.cc stream.hh stream_impl.hh
 #	     stream_part.hh stream_part_impl.hh
 #	     stream_flags.cc stream_flags.hh
-#             preallocated_array.hh preallocated_array_impl.hh )
 
 # ADD_DEFINITIONS( -DENABLE_LOGGER )
 # ADD_DEFINITIONS( -DENABLE_LOGGER -DDEBUG -DDEBUG_ENABLE_INDENT )
