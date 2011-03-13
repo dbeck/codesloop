@@ -1,4 +1,4 @@
-# Copyright (c) 2008,2009,2010, CodeSLoop Team
+# Copyright (c) 2008,2009,2010,2011 CodeSLoop Team
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -23,16 +23,16 @@
 
 # -- test / common --
 
-LINK_DIRECTORIES( ../../common
+LINK_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}../../common
                   ${ZLIB_LIBRARY_DIR} )
 
-INCLUDE_DIRECTORIES( ../../.. ${ZLIB_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../../.. ${ZLIB_INCLUDE_DIR} )
 
 LINK_LIBRARIES( csl_common
                 ${ZLIB_LIBRARY}
                 ${WSOCK32_LIBRARY} )
 
-SET_SOURCE_FILES_PROPERTIES( t__logger.cc PROPERTIES  COMPILE_FLAGS -DENABLE_LOGGER )
+# SET_SOURCE_FILES_PROPERTIES( t__logger.cc PROPERTIES  COMPILE_FLAGS -DENABLE_LOGGER )
 
 IF(CMAKE_BUILD_TYPE MATCHES "debug")
 
@@ -46,58 +46,59 @@ IF(CMAKE_BUILD_TYPE MATCHES "debug")
 
 ENDIF(CMAKE_BUILD_TYPE MATCHES "debug")
 
-ADD_EXECUTABLE( t__zfile t__zfile.cc )
-ADD_EXECUTABLE( t__circbuf t__circbuf.cc )
-ADD_EXECUTABLE( t__pvlist t__pvlist.cc )
-ADD_EXECUTABLE( t__mpool t__mpool.cc )
-ADD_EXECUTABLE( t__pbuf t__pbuf.cc )
-ADD_EXECUTABLE( t__preallocated_array t__preallocated_array.cc )
-ADD_EXECUTABLE( t__ydr_util t__ydr_util.cc )
-ADD_EXECUTABLE( t__ydr_archiver t__ydr_archiver.cc )
-ADD_EXECUTABLE( t__logger t__logger.cc )
-ADD_EXECUTABLE( t__str t__str.cc )
-ADD_EXECUTABLE( t__ustr t__ustr.cc )
-ADD_EXECUTABLE( t__int64 t__int64.cc )
-ADD_EXECUTABLE( t__dbl t__dbl.cc )
-ADD_EXECUTABLE( t__binry t__binry.cc )
-ADD_EXECUTABLE( t__serial t__serial.cc )
-ADD_EXECUTABLE( t__obj t__obj.cc )
-ADD_EXECUTABLE( t__inpvec t__inpvec.cc )
-ADD_EXECUTABLE( t__queue t__queue.cc )
-ADD_EXECUTABLE( t__auto_cloce t__auto_close.cc )
-ADD_EXECUTABLE( t__stream_buffer t__stream_buffer.cc )
-ADD_EXECUTABLE( t__stream_part t__stream_part.cc )
-ADD_EXECUTABLE( t__stream t__stream.cc )
-ADD_EXECUTABLE( t__input_stream t__input_stream.cc )
-ADD_EXECUTABLE( t__output_stream t__output_stream.cc )
+# ADD_EXECUTABLE( t__zfile t__zfile.cc )
+# ADD_EXECUTABLE( t__circbuf t__circbuf.cc )
+# ADD_EXECUTABLE( t__pvlist t__pvlist.cc )
+# ADD_EXECUTABLE( t__mpool t__mpool.cc )
+# ADD_EXECUTABLE( t__pbuf t__pbuf.cc )
+# ADD_EXECUTABLE( t__preallocated_array t__preallocated_array.cc )
+# ADD_EXECUTABLE( t__ydr_util t__ydr_util.cc )
+# ADD_EXECUTABLE( t__ydr_archiver t__ydr_archiver.cc )
+# ADD_EXECUTABLE( t__logger t__logger.cc )
+# ADD_EXECUTABLE( t__str t__str.cc )
+# ADD_EXECUTABLE( t__ustr t__ustr.cc )
+# ADD_EXECUTABLE( t__int64 t__int64.cc )
+# ADD_EXECUTABLE( t__dbl t__dbl.cc )
+# ADD_EXECUTABLE( t__binry t__binry.cc )
+# ADD_EXECUTABLE( t__serial t__serial.cc )
+# ADD_EXECUTABLE( t__obj t__obj.cc )
+# ADD_EXECUTABLE( t__inpvec t__inpvec.cc )
+# ADD_EXECUTABLE( t__queue t__queue.cc )
+# ADD_EXECUTABLE( t__auto_cloce t__auto_close.cc )
+# ADD_EXECUTABLE( t__stream_buffer t__stream_buffer.cc )
+# ADD_EXECUTABLE( t__stream_part t__stream_part.cc )
+# ADD_EXECUTABLE( t__stream t__stream.cc )
+# ADD_EXECUTABLE( t__input_stream t__input_stream.cc )
+# ADD_EXECUTABLE( t__output_stream t__output_stream.cc )
 
-ADD_TEST( common_auto_cloce ${EXECUTABLE_OUTPUT_PATH}/t__auto_cloce )
-ADD_TEST( common_binry ${EXECUTABLE_OUTPUT_PATH}/t__binry )
-ADD_TEST( common_circbuf ${EXECUTABLE_OUTPUT_PATH}/t__circbuf )
-ADD_TEST( common_dbl ${EXECUTABLE_OUTPUT_PATH}/t__dbl )
-ADD_TEST( common_inpvec ${EXECUTABLE_OUTPUT_PATH}/t__inpvec )
-ADD_TEST( common_int64 ${EXECUTABLE_OUTPUT_PATH}/t__int64 )
-ADD_TEST( common_logger ${EXECUTABLE_OUTPUT_PATH}/t__logger )
-ADD_TEST( common_mpool ${EXECUTABLE_OUTPUT_PATH}/t__mpool )
-ADD_TEST( common_obj ${EXECUTABLE_OUTPUT_PATH}/t__obj )
-ADD_TEST( common_pbuf ${EXECUTABLE_OUTPUT_PATH}/t__pbuf )
-ADD_TEST( common_pvlist ${EXECUTABLE_OUTPUT_PATH}/t__pvlist )
-ADD_TEST( common_queue ${EXECUTABLE_OUTPUT_PATH}/t__queue )
-ADD_TEST( common_stream_buffer ${EXECUTABLE_OUTPUT_PATH}/t__stream_buffer )
-ADD_TEST( common_stream_part ${EXECUTABLE_OUTPUT_PATH}/t__stream_part )
-ADD_TEST( common_serial ${EXECUTABLE_OUTPUT_PATH}/t__serial )
-ADD_TEST( common_str ${EXECUTABLE_OUTPUT_PATH}/t__str )
-ADD_TEST( common_preallocated_array ${EXECUTABLE_OUTPUT_PATH}/t__preallocated_array )
-ADD_TEST( common_ustr ${EXECUTABLE_OUTPUT_PATH}/t__ustr )
-ADD_TEST( common_ydr_util ${EXECUTABLE_OUTPUT_PATH}/t__ydr_util )
-ADD_TEST( common_ydr_archiver ${EXECUTABLE_OUTPUT_PATH}/t__ydr_archiver )
-ADD_TEST( common_zfile ${EXECUTABLE_OUTPUT_PATH}/t__zfile )
-ADD_TEST( common_stream ${EXECUTABLE_OUTPUT_PATH}/t__stream )
-ADD_TEST( common_input_stream ${EXECUTABLE_OUTPUT_PATH}/t__input_stream )
-ADD_TEST( common_output_stream ${EXECUTABLE_OUTPUT_PATH}/t__output_stream )
+# ADD_TEST( common_auto_cloce ${EXECUTABLE_OUTPUT_PATH}/t__auto_cloce )
+# ADD_TEST( common_binry ${EXECUTABLE_OUTPUT_PATH}/t__binry )
+# ADD_TEST( common_circbuf ${EXECUTABLE_OUTPUT_PATH}/t__circbuf )
+# ADD_TEST( common_dbl ${EXECUTABLE_OUTPUT_PATH}/t__dbl )
+# ADD_TEST( common_inpvec ${EXECUTABLE_OUTPUT_PATH}/t__inpvec )
+# ADD_TEST( common_int64 ${EXECUTABLE_OUTPUT_PATH}/t__int64 )
+# ADD_TEST( common_logger ${EXECUTABLE_OUTPUT_PATH}/t__logger )
+# ADD_TEST( common_mpool ${EXECUTABLE_OUTPUT_PATH}/t__mpool )
+# ADD_TEST( common_obj ${EXECUTABLE_OUTPUT_PATH}/t__obj )
+# ADD_TEST( common_pbuf ${EXECUTABLE_OUTPUT_PATH}/t__pbuf )
+# ADD_TEST( common_pvlist ${EXECUTABLE_OUTPUT_PATH}/t__pvlist )
+# ADD_TEST( common_queue ${EXECUTABLE_OUTPUT_PATH}/t__queue )
+# ADD_TEST( common_stream_buffer ${EXECUTABLE_OUTPUT_PATH}/t__stream_buffer )
+# ADD_TEST( common_stream_part ${EXECUTABLE_OUTPUT_PATH}/t__stream_part )
+# ADD_TEST( common_serial ${EXECUTABLE_OUTPUT_PATH}/t__serial )
+# ADD_TEST( common_str ${EXECUTABLE_OUTPUT_PATH}/t__str )
+# ADD_TEST( common_preallocated_array ${EXECUTABLE_OUTPUT_PATH}/t__preallocated_array )
+# ADD_TEST( common_ustr ${EXECUTABLE_OUTPUT_PATH}/t__ustr )
+# ADD_TEST( common_ydr_util ${EXECUTABLE_OUTPUT_PATH}/t__ydr_util )
+# ADD_TEST( common_ydr_archiver ${EXECUTABLE_OUTPUT_PATH}/t__ydr_archiver )
+# ADD_TEST( common_zfile ${EXECUTABLE_OUTPUT_PATH}/t__zfile )
+# ADD_TEST( common_stream ${EXECUTABLE_OUTPUT_PATH}/t__stream )
+# ADD_TEST( common_input_stream ${EXECUTABLE_OUTPUT_PATH}/t__input_stream )
+# ADD_TEST( common_output_stream ${EXECUTABLE_OUTPUT_PATH}/t__output_stream )
 
 #ADD_EXECUTABLE( t__hash_macros   t__hash_macros.cc )
 #SET_TARGET_PROPERTIES( t__hash PROPERTIES LINK_FLAGS -pg )
 #SET_TARGET_PROPERTIES( t__inpvec PROPERTIES LINK_FLAGS -pg )
 
 # -- EOF --
+
