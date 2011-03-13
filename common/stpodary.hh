@@ -23,11 +23,9 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_common_preallocated_array_hh_included_
-#define _csl_common_preallocated_array_hh_included_
+#ifndef _csl_common_stpodary_hh_included_
+#define _csl_common_stpodary_hh_included_
 
-
-#include "codesloop/common/obj.hh"
 #include "codesloop/common/common.h"
 #ifdef __cplusplus
 
@@ -35,20 +33,20 @@ namespace csl
 {
   namespace common
   {
-    template <typename T, size_t SZ> class preallocated_array
+    template <typename T, size_t SZ> class stpodary
     {
       public:
         static const size_t  preallocated_size_ = SZ;
         static const size_t  item_size_         = sizeof(T);
 
-        ~preallocated_array();
-        preallocated_array();
-        preallocated_array(const preallocated_array & other);
-        explicit preallocated_array(const T & c);
-        explicit preallocated_array(const T * other);
+        ~stpodary();
+        stpodary();
+        stpodary(const stpodary & other);
+        explicit stpodary(const T & c);
+        explicit stpodary(const T * other);
 
-        bool operator==(const preallocated_array & other) const;
-        preallocated_array & operator=(const preallocated_array & other);
+        bool operator==(const stpodary & other) const;
+        stpodary & operator=(const stpodary & other);
 
         void reset();
         bool get(T * dta) const;
@@ -59,7 +57,7 @@ namespace csl
         
         void append(const T & c);
         bool append(const T * dta, size_t sz);
-        bool append(const preallocated_array & other);
+        bool append(const stpodary & other);
         void set_at(size_t pos,const T & c);
 
         /* inline functions */
@@ -82,5 +80,5 @@ namespace csl
 }
 
 #endif /* __cplusplus */
-#include "codesloop/common/preallocated_array_impl.hh"
-#endif /* _csl_common_preallocated_array_hh_included_ */
+#include "codesloop/common/stpodary_impl.hh"
+#endif /* _csl_common_stpodary_hh_included_ */

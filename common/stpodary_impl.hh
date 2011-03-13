@@ -23,8 +23,8 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_common_preallocated_array_impl_hh_included_
-#define _csl_common_preallocated_array_impl_hh_included_
+#ifndef _csl_common_stpodary_impl_hh_included_
+#define _csl_common_stpodary_impl_hh_included_
 #ifdef __cplusplus
 
 namespace csl
@@ -32,7 +32,7 @@ namespace csl
   namespace common
   {
     template <typename T,size_t SZ>
-    T * preallocated_array<T,SZ>::allocate(size_t sz)
+    T * stpodary<T,SZ>::allocate(size_t sz)
     {
       T * ret = data_;
 
@@ -77,7 +77,7 @@ namespace csl
     }
 
     template <typename T,size_t SZ>
-    void preallocated_array<T,SZ>::reset()
+    void stpodary<T,SZ>::reset()
     {
       if( is_dynamic() )
       {
@@ -88,40 +88,40 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
-    preallocated_array<T,SZ>::~preallocated_array()
+    stpodary<T,SZ>::~stpodary()
     {
       reset();
     }
 
     template <typename T, size_t SZ>
-    preallocated_array<T,SZ>::preallocated_array()
+    stpodary<T,SZ>::stpodary()
         : data_(preallocated_), size_(0)
     {
     }
 
     template <typename T, size_t SZ>
-    preallocated_array<T,SZ>::preallocated_array(const T & c)
+    stpodary<T,SZ>::stpodary(const T & c)
         : data_(preallocated_), size_(1)
     {
       preallocated_[0] = c;
     }
 
     template <typename T, size_t SZ>
-    preallocated_array<T,SZ>::preallocated_array(const preallocated_array & other)
+    stpodary<T,SZ>::stpodary(const stpodary & other)
         : data_(preallocated_), size_(0)
     {
       *this = other;
     }
 
     template <typename T, size_t SZ>
-    preallocated_array<T,SZ>::preallocated_array(const T * other)
+    stpodary<T,SZ>::stpodary(const T * other)
         : data_(preallocated_), size_(0)
     {
       *this = other;
     }
 
     template <typename T, size_t SZ>
-    bool preallocated_array<T,SZ>::set(const T * dta, size_t sz)
+    bool stpodary<T,SZ>::set(const T * dta, size_t sz)
     {
       /* if no data on the other side we are done */
       if( !sz )  { reset(); return true; }
@@ -142,7 +142,7 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
-    T * preallocated_array<T,SZ>::allocate_nocopy(size_t sz)
+    T * stpodary<T,SZ>::allocate_nocopy(size_t sz)
     {
       if( !sz ) { reset(); return data_; }
 
@@ -179,8 +179,8 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
-    preallocated_array<T,SZ> &
-    preallocated_array<T,SZ>::operator=(const preallocated_array & other)
+    stpodary<T,SZ> &
+    stpodary<T,SZ>::operator=(const stpodary & other)
     {
       /* return immediately if they are the same */
       if( &other == this || other.data_ == data_ )
@@ -201,7 +201,7 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
-    bool preallocated_array<T,SZ>::operator==(const preallocated_array & other) const
+    bool stpodary<T,SZ>::operator==(const stpodary & other) const
     {
       if( other.size_ != size_ ) return false;
       if( size_ == 0 )           return true;
@@ -211,7 +211,7 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
-    bool preallocated_array<T,SZ>::preallocated_array<T,SZ>::get(T * dta) const
+    bool stpodary<T,SZ>::stpodary<T,SZ>::get(T * dta) const
     {
       if( !dta || !size_ || !data_ ) { return false; }
       ::memcpy( dta,data_,size_*item_size_ );
@@ -219,13 +219,13 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
-    void preallocated_array<T,SZ>::append(const T & c)
+    void stpodary<T,SZ>::append(const T & c)
     {
       set_at(size_,c);
     }
 
     template <typename T, size_t SZ>
-    bool preallocated_array<T,SZ>::append(const T * dta, size_t sz)
+    bool stpodary<T,SZ>::append(const T * dta, size_t sz)
     {
       /* if no data on the other side we are done */
       if( !sz )  { return true; }
@@ -246,13 +246,13 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
-    bool preallocated_array<T,SZ>::append(const preallocated_array & other)
+    bool stpodary<T,SZ>::append(const stpodary & other)
     {
       return append( other.data(), other.size() );
     }
 
     template <typename T, size_t SZ>
-    void preallocated_array<T,SZ>::set_at(size_t pos,const T & c)
+    void stpodary<T,SZ>::set_at(size_t pos,const T & c)
     {
       T * t = data_;
       if( pos >= size_ ) t = allocate( pos+1 );
@@ -262,4 +262,4 @@ namespace csl
 }
 
 #endif /* __cplusplus */
-#endif /* _csl_common_preallocated_array_impl_hh_included_ */
+#endif /* _csl_common_stpodary_impl_hh_included_ */
