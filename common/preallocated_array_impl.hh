@@ -180,14 +180,6 @@ namespace csl
 
     template <typename T, size_t SZ>
     preallocated_array<T,SZ> &
-    preallocated_array<T,SZ>::operator=(const char * other)
-    {
-      if( other ) set( other, (::strlen(other)+1) );
-      return *this;
-    }
-
-    template <typename T, size_t SZ>
-    preallocated_array<T,SZ> &
     preallocated_array<T,SZ>::operator=(const preallocated_array & other)
     {
       /* return immediately if they are the same */
@@ -216,22 +208,6 @@ namespace csl
       if( data_ == 0 )           return false;
       if( other.data_ == 0 )     return false;
       return (::memcmp( other.data_, data_, size_*item_size_ ) == 0);
-    }
-
-    template <typename T, size_t SZ>
-    preallocated_array<T,SZ> &
-    preallocated_array<T,SZ>::operator=(const pbuf & other)
-    {
-      size_t sz = other.size();
-
-      /* quick return if empty */
-      if( !sz ) { reset(); return *this; }
-
-      T * tmp = allocate(sz);
-
-      if( tmp ) other.copy_to(tmp);
-
-      return *this;
     }
 
     template <typename T, size_t SZ>

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2008,2009,2010, CodeSLoop Team
+Copyright (c) 2008,2009,2010,2011 CodeSLoop Team
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
@@ -27,8 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_common_preallocated_array_hh_included_
 
 
-#include "codesloop/common/pbuf.hh"
-#include "codesloop/common/hlprs.hh"
 #include "codesloop/common/obj.hh"
 #include "codesloop/common/common.h"
 #ifdef __cplusplus
@@ -45,14 +43,11 @@ namespace csl
 
         ~preallocated_array();
         preallocated_array();
-        explicit preallocated_array(const T & c);
         preallocated_array(const preallocated_array & other);
+        explicit preallocated_array(const T & c);
         explicit preallocated_array(const T * other);
 
         bool operator==(const preallocated_array & other) const;
-
-        preallocated_array & operator=(const char * other);
-        preallocated_array & operator=(const pbuf & other);
         preallocated_array & operator=(const preallocated_array & other);
 
         void reset();
