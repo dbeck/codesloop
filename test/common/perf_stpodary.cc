@@ -62,7 +62,7 @@ namespace test_stpodary {
 
   void vector_hello()
   {
-    std::vector b;
+    std::vector<char> b;
     b.assign( hello, hello+6 );
   }
 

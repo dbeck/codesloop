@@ -33,13 +33,13 @@ ADD_LIBRARY( csl_common STATIC
 		common_static_checks.cc
 		common.h
 		stpodary.hh stpodary_impl.hh
+		test_timer.c  test_timer.h
 		)
 #             cexc.cc       cexc.hh
 #             exc.cc        exc.hh
 #             zfile.cc      zfile.hh
 #             pbuf.cc       pbuf.hh
 #             # xdrbuf.cc     xdrbuf.hh
-#             test_timer.c  test_timer.h
 #             pvlist.hh
 #             circbuf.hh    queue.hh
 #             mpool.hh      tbuf.hh

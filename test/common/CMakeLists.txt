@@ -47,7 +47,8 @@ IF(CMAKE_BUILD_TYPE MATCHES "debug")
 ENDIF(CMAKE_BUILD_TYPE MATCHES "debug")
 
 ADD_EXECUTABLE( perf_stpodary perf_stpodary.cc )
-ADD_TEST( perf_common_stpodary ${EXECUTABLE_OUTPUT_PATH}/perf_stpodary )
+ADD_EXECUTABLE( func_stpodary func_stpodary.cc )
+ADD_TEST( func_common_stpodary ${EXECUTABLE_OUTPUT_PATH}/func_stpodary )
 
 # ADD_EXECUTABLE( t__zfile t__zfile.cc )
 # ADD_EXECUTABLE( t__circbuf t__circbuf.cc )

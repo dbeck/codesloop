@@ -280,3 +280,5 @@ test/db/slt3/registry.db
 test/db/slt3/test_mapper.db
 test/db/slt3/test_var.db
 SN
+test/common/perf_stpodary
+test/common/func_stpodary
