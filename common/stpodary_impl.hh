@@ -27,6 +27,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_common_stpodary_impl_hh_included_
 #ifdef __cplusplus
 
+#include <new>
+
 namespace csl
 {
   namespace common
@@ -50,7 +52,7 @@ namespace csl
       }
       else
       {
-        T * tmp = reinterpret_cast<T *>( ::malloc( item_size_*sz ) );
+        T * tmp = new (std::nothrow) T[sz]; 
 
         if( !tmp )
         {
@@ -61,11 +63,7 @@ namespace csl
           if( size_ > 0 )
           {
             ::memcpy( tmp, data_, size_ );
-
-            if( is_dynamic() )
-            {
-              ::free( data_ );
-            }
+            if( is_dynamic() ) delete [] data_;
           }
 
           data_ = tmp;
@@ -81,7 +79,7 @@ namespace csl
     {
       if( is_dynamic() )
       {
-        ::free( data_ );
+        delete [] data_;
         data_ = preallocated_;
       }
       size_ = 0;
@@ -108,13 +106,6 @@ namespace csl
 
     template <typename T, size_t SZ>
     stpodary<T,SZ>::stpodary(const stpodary & other)
-        : data_(preallocated_), size_(0)
-    {
-      *this = other;
-    }
-
-    template <typename T, size_t SZ>
-    stpodary<T,SZ>::stpodary(const T * other)
         : data_(preallocated_), size_(0)
     {
       *this = other;
@@ -155,7 +146,7 @@ namespace csl
       else if( sz <= SZ )
       {
         /* data fits into preallocated size */
-        if( size_ > 0 && is_dynamic() ) ::free( data_ );
+        if( size_ > 0 && is_dynamic() ) delete [] data_;
 
         data_ = preallocated_;
         size_ = sz;
@@ -164,13 +155,11 @@ namespace csl
       else
       {
         /* cannot use the preallocated space */
-        T * tmp =
-            reinterpret_cast<T *>(::malloc( item_size_*sz ));
-
+        T * tmp = new (std::nothrow) T[sz];
         if( !tmp ) return 0;
 
         /* already have data ? */
-        if( size_ > 0 && is_dynamic() ) ::free( data_ );
+        if( size_ > 0 && is_dynamic() ) delete [] data_; 
 
         data_ = tmp;
         size_ = sz;

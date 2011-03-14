@@ -39,11 +39,10 @@ namespace csl
         static const size_t  preallocated_size_ = SZ;
         static const size_t  item_size_         = sizeof(T);
 
-        ~stpodary();
+        virtual ~stpodary();
         stpodary();
         stpodary(const stpodary & other);
         explicit stpodary(const T & c);
-        explicit stpodary(const T * other);
 
         bool operator==(const stpodary & other) const;
         stpodary & operator=(const stpodary & other);
@@ -61,15 +60,15 @@ namespace csl
         void set_at(size_t pos,const T & c);
 
         /* inline functions */
-        inline bool is_empty() const        { return (size_ == 0); }
-        inline bool has_data() const        { return (size_ > 0); }
-        inline bool is_static() const       { return (data_ == preallocated_); }
-        inline bool is_dynamic() const      { return (data_ && data_ != preallocated_); }
+        inline bool is_empty() const     { return (size_ == 0); }
+        inline bool has_data() const     { return (size_ > 0); }
+        inline bool is_static() const    { return (data_ == preallocated_); }
+        inline bool is_dynamic() const   { return (data_ && data_ != preallocated_); }
 
-        inline size_t size() const      { return size_; }
-        inline size_t nbytes() const    { return size_*item_size_; }
-        inline const T * data() const   { return data_; }
-        inline T * private_data() const { return data_; }
+        inline size_t size() const       { return size_; }
+        inline size_t nbytes() const     { return size_*item_size_; }
+        inline const T * data() const    { return data_; }
+        inline T * private_data() const  { return data_; }
 
       private:
         T            preallocated_[SZ];
