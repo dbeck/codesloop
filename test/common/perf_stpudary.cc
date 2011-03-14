@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2008,2009,2010, CodeSLoop Team
+Copyright (c) 2008,2009,2010,2011 CodeSLoop Team
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
@@ -31,83 +31,47 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif /* DEBUG */
 // #endif
 
-#include "codesloop/common/pbuf.hh"
-#include "codesloop/common/preallocated_array.hh"
-#include "codesloop/common/str.hh"
+#include "codesloop/common/stpodary.hh"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/common/common.h"
 #include <assert.h>
 #include <string>
+#include <vector>
 
-using csl::common::pbuf;
-using csl::common::preallocated_array;
-using csl::common::str;
+using csl::common::stpodary;
 
-namespace test_preallocated_array {
+namespace test_stpodary {
 
-  void preallocated_array_baseline()
+  static const char * hello = "Hello";
+
+  void stpodary_baseline() { stpodary<char,128> b; }
+  void string_baseline()   { std::string b; }
+  void vector_baseline()   { std::vector<char> b; }
+
+  void stpodary_hello()
   {
-    preallocated_array<char,128> b;
-  }
-  
-  void pbuf_baseline()
-  {
-    pbuf b;
-  }
-
-  void string_baseline()
-  {
-    std::string b;
-  }
-
-  void str_baseline()
-  {
-    str b;
-  }
-
-  void preallocated_array_hello()
-  {
-    preallocated_array<char,128> b;
-    b.set( "Hello", 6 );
-  }
-
-  void pbuf_hello()
-  {
-    pbuf b;
-    b.append( reinterpret_cast<const unsigned char *>("Hello"),6);
+    stpodary<char,128> b;
+    b.set( hello, 6 );
   }
 
   void string_hello()
   {
     std::string b;
-    b = "Hello";
+    b = hello;
   }
 
-  void str_hello()
+  void vector_hello()
   {
-    str b;
-    b = L"Hello";
+    std::vector b;
+    b.assign( hello, hello+6 );
   }
 
-  void test_selfequal()
-  {
-    preallocated_array<char, 10> t;
-    t = t;
-  }
-
-  void baseline_1()
-  {
-    preallocated_array<char, 1> t;
-  }
-      
-  void baseline_10()
-  {
-    preallocated_array<char, 10> t;
-  }
+  void baseline_1()  { stpodary<char, 1> t; }
+  void baseline_10() { stpodary<char, 10> t; }
   
   void alloc_10_static()
   {
-    preallocated_array<char, 10> t;
+    stpodary<char, 10> t;
     for(size_t i=0;i<10;++i)
     {
       assert(t.allocate(i) != 0);
@@ -116,7 +80,7 @@ namespace test_preallocated_array {
   
   void alloc_10_static_of_20()
   {
-    preallocated_array<char, 10> t;
+    stpodary<char, 10> t;
     for(size_t i=0;i<20;++i)
     {
       assert(t.allocate(i) != 0);
@@ -125,13 +89,13 @@ namespace test_preallocated_array {
   
   void reset_1()
   {
-    preallocated_array<char, 10> t;
+    stpodary<char, 10> t;
     t.reset();
   }
 
   void reset_10()
   {
-    preallocated_array<char, 10> t;
+    stpodary<char, 10> t;
     for(size_t i=0;i<10;++i)
     {
       t.reset();
@@ -140,7 +104,7 @@ namespace test_preallocated_array {
 
   void set_get_1()
   {
-    preallocated_array<char, 10> t;
+    stpodary<char, 10> t;
     char tx = '0';
     t.set(&tx,1);
     tx = 'x';
@@ -157,21 +121,21 @@ namespace test_preallocated_array {
   
   void append_t()
   {
-    preallocated_array<char, 10> t;
+    stpodary<char, 10> t;
     char tx = '0';
     t.append(tx);
   }
   
   void append_ptr()
   {
-    preallocated_array<char, 10> t;
+    stpodary<char, 10> t;
     char tx[] = { 'h','e','l','l','o' };
     t.append(tx,sizeof(tx));
   }
   
   void append_pa()
   {
-    preallocated_array<char, 10> t,t2;
+    stpodary<char, 10> t,t2;
     char tx[] = { 'h','e','l','l','o' };
     t.append(tx,sizeof(tx));
     t2.append(t);
@@ -201,7 +165,7 @@ namespace test_preallocated_array {
     
   void assign_10()
   {
-    preallocated_array<char, 10> t,t2;
+    stpodary<char, 10> t,t2;
     char tx[] = { 'h','e','l','l','o' };
     t.append(tx,sizeof(tx));
     for(int i=0;i<10;++i) t2 = t;
@@ -217,7 +181,7 @@ namespace test_preallocated_array {
 
   void equal_10()
   {
-    preallocated_array<char, 10> t,t2;
+    stpodary<char, 10> t,t2;
     char tx[] = { 'h','e','l','l','o' };
     t.append(tx,sizeof(tx));
     bool eq = false;
@@ -239,7 +203,7 @@ namespace test_preallocated_array {
     void append(char c) { pa10_.append(c); }
     size_t size()       { return pa10_.size(); }
   private:
-    preallocated_array<char, 10> pa10_;
+    stpodary<char, 10> pa10_;
   };
   
   void test_direct()
@@ -270,7 +234,7 @@ namespace test_preallocated_array {
     void append(char c) { pa10_.append(c); }
     size_t size()       { return pa10_.size(); }
   private:
-    preallocated_array<char, 10> pa10_;
+    stpodary<char, 10> pa10_;
   };
   
   void test_virtual()
@@ -289,13 +253,18 @@ namespace test_preallocated_array {
     bp->append('a');
   }
 
-} // end of test_preallocated_array
+} // end of test_stpodary
 
-using namespace test_preallocated_array;
+using namespace test_stpodary;
 
 int main()
 {
-  test_selfequal();
+  csl_common_print_results( "PA_baseline        ", csl_common_test_timer_v0(stpodary_baseline),"" );
+  csl_common_print_results( "string_baseline    ", csl_common_test_timer_v0(string_baseline),"" );
+  csl_common_print_results( "vector_baseline    ", csl_common_test_timer_v0(vector_baseline),"" );
+  csl_common_print_results( "PA_hello           ", csl_common_test_timer_v0(stpodary_hello),"" );
+  csl_common_print_results( "string_hello       ", csl_common_test_timer_v0(string_hello),"" );
+  csl_common_print_results( "vector_hello       ", csl_common_test_timer_v0(vector_hello),"" );
 
   csl_common_print_results( "direct0            ", csl_common_test_timer_v0(test_direct0),"" );
   csl_common_print_results( "virtual0           ", csl_common_test_timer_v0(test_virtual0),"" );
@@ -320,15 +289,6 @@ int main()
   csl_common_print_results( "equal_10           ", csl_common_test_timer_v0(equal_10),"" );
   csl_common_print_results( "equal_10_str       ", csl_common_test_timer_v0(equal_10_str),"" );
 
-  csl_common_print_results( "PA_baseline        ", csl_common_test_timer_v0(preallocated_array_baseline),"" );
-  csl_common_print_results( "pbuf_baseline      ", csl_common_test_timer_v0(pbuf_baseline),"" );
-  csl_common_print_results( "str_baseline       ", csl_common_test_timer_v0(str_baseline),"" );
-  csl_common_print_results( "string_baseline    ", csl_common_test_timer_v0(string_baseline),"" );
-
-  csl_common_print_results( "PA_hello           ", csl_common_test_timer_v0(preallocated_array_hello),"" );
-  csl_common_print_results( "pbuf_hello         ", csl_common_test_timer_v0(pbuf_hello),"" );
-  csl_common_print_results( "str_hello          ", csl_common_test_timer_v0(str_hello),"" );
-  csl_common_print_results( "string_hello       ", csl_common_test_timer_v0(string_hello),"" );
   
   return 0;
 }
