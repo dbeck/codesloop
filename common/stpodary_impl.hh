@@ -200,6 +200,18 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
+    T & stpodary<T,SZ>::operator[](size_t at)
+    {
+       return data_[at];
+    }
+
+    template <typename T, size_t SZ>
+    const T & stpodary<T,SZ>::operator[](size_t at) const
+    {
+      return data_[at];
+    }
+
+    template <typename T, size_t SZ>
     bool stpodary<T,SZ>::stpodary<T,SZ>::get(T * dta) const
     {
       if( !dta || !size_ || !data_ ) { return false; }

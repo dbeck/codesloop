@@ -51,6 +51,8 @@ namespace csl
 
         bool operator==(const stpodary & other) const;
         stpodary & operator=(const stpodary & other);
+        T & operator[](size_t at);
+        const T & operator[](size_t at) const;
 
         void reset();
         bool get(T * dta) const;

@@ -52,9 +52,56 @@ namespace test_stpodary
     assert( t.private_data() != 0 );
   }
 
-  void copy_checks() { }
+  void setter_checks()
+  {
+    stpodary<float,3> t1(1.1f), t2, t3;
+    assert( t1.has_data() == true );
+    assert( t1.is_dynamic() == false );
+    assert( t1.is_static() == true );
+    assert( t1.size() == 1 );
+    assert( t1.nbytes() == sizeof(float) );
+    assert( t1.data() != 0 );
+    assert( t1.private_data() != 0 );
+    assert( t1[0] == 1.1f );
+
+    float ft[] = { 1.2f, 2.3f };
+    t2.set( ft, 2 );
+    assert( t2.has_data() == true );
+    assert( t2.is_dynamic() == false );
+    assert( t2.is_static() == true );
+    assert( t2.size() == 2 );
+    assert( t2.nbytes() == 2*sizeof(float) );
+    assert( t2.data() != 0 );
+    assert( t2.private_data() != 0 );
+    assert( t2[0] == 1.2f );
+    assert( t2[1] == 2.3f );
+
+    t2.append( ft, 2 );
+    assert( t2.has_data() == true );
+    assert( t2.is_dynamic() == true );
+    assert( t2.is_static() == false );
+    assert( t2.size() == 4 );
+    assert( t2.nbytes() == 4*sizeof(float) );
+    assert( t2.data() != 0 );
+    assert( t2.private_data() != 0 );
+    assert( t2[0] == 1.2f );
+    assert( t2[1] == 2.3f );
+    assert( t2[2] == 1.2f );
+    assert( t2[3] == 2.3f );
+
+  }
+
+  void copy_checks()
+  {
+    double d[] = {1.1,2.2};
+    stpodary<double,2> t1(3.3), sta, dyn;
+    sta.set( d, 2 );
+    dyn.set( d, 2 );
+    dyn.append( d, 2 );
+   
+  }
+
   void append_checks() { }
-  void setter_checks() { }
   void getter_checks() { }
   void equality_checks() { }
   void allocate_checks() { }
