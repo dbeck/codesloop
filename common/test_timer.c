@@ -42,7 +42,7 @@ static double calc_elapsed( const struct timeval * tv )
 
   sec_diff    = tv_new.tv_sec  - tv->tv_sec;
   usec_diff   = tv_new.tv_usec - tv->tv_usec;
-  ms_diff = (sec_diff*1000000.0 + usec_diff*1.0)/1000.0;
+  ms_diff     = ((double)sec_diff*1000000.0 + (double)usec_diff*1.0)/1000.0;
 
   return ms_diff;
 }
@@ -73,7 +73,7 @@ csl_common_test_timer_v0( void (*test_function)(void) )
   rs.n_loops = nl;
   rs.total_ms = ela;
   rs.ms_per_call = ela/(double)nl;
-  rs.call_per_sec = nl*1000.0/ela;
+  rs.call_per_sec = (double)nl*1000.0/ela;
   return rs;
 }
 
@@ -102,7 +102,7 @@ csl_common_test_timer_i1( void (*test_function)(int), int param )
   rs.n_loops = nl;
   rs.total_ms = ela;
   rs.ms_per_call = ela/(double)nl;
-  rs.call_per_sec = nl*1000.0/ela;
+  rs.call_per_sec = (double)nl*1000.0/ela;
   return rs;
 }
 

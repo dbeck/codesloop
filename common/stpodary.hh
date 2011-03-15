@@ -28,6 +28,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/common.h"
 #ifdef __cplusplus
+#include <type_traits>
 
 namespace csl
 {
@@ -36,6 +37,10 @@ namespace csl
     template <typename T, size_t SZ> class stpodary
     {
       public:
+        static_assert( std::is_pod<T>::value, "T must be a POD type" );
+        static_assert( SZ>0, "SZ must be greater then zero" );
+        static_assert( std::is_void<T>::value == false, "T must not be void" );
+
         static const size_t  preallocated_size_ = SZ;
         static const size_t  item_size_         = sizeof(T);
 

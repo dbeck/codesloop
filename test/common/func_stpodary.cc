@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2008,2009,2010, CodeSLoop Team
+Copyright (c) 2008,2009,2010,2011 CodeSLoop Team
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
@@ -38,7 +38,28 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using csl::common::stpodary;
 
-namespace test_stpodary {
+namespace test_stpodary
+{
+  void empty_checks()
+  {
+    stpodary<char,10> t;
+    assert( t.has_data() == false );
+    assert( t.is_dynamic() == false );
+    assert( t.size() == 0 );
+    assert( t.nbytes() == 0 );
+    // should always have some stack based space allocated
+    assert( t.data() != 0 );
+    assert( t.private_data() != 0 );
+  }
+
+  void copy_checks() { }
+  void append_checks() { }
+  void setter_checks() { }
+  void getter_checks() { }
+  void equality_checks() { }
+  void allocate_checks() { }
+  void reset_checks() { }
+
 
 } // end of test_stpodary
 
@@ -46,6 +67,15 @@ using namespace test_stpodary;
 
 int main()
 {
+  empty_checks();
+  copy_checks();
+  append_checks();
+  setter_checks();
+  getter_checks();
+  equality_checks();
+  allocate_checks();
+  reset_checks();
+
   return 0;
 }
 
