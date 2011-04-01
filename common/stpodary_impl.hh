@@ -33,6 +33,17 @@ namespace csl
 {
   namespace common
   {
+
+#ifdef DEBUG
+    template <typename T,size_t SZ>
+    bool stpodary<T,SZ>::csl_invariant() const
+    {
+      if( size_ > SZ && data_ == preallocated_ ) return false;
+      if( data_ == NULL ) return false;
+      return true;
+    }
+#endif /*DEBUG*/
+
     template <typename T,size_t SZ>
     T * stpodary<T,SZ>::allocate(size_t sz)
     {
@@ -41,18 +52,19 @@ namespace csl
       if( !sz )
       {
         reset();
+        ret = data_;
       }
-      else if( sz <= size_ )
-      {
-        size_ = sz;
-      }
-      else if( sz <= SZ && is_static() )
+      /* the second part will will work becuse if it is (or was) dynamic
+         then the allocated size is > SZ if static then SZ elements
+         are akready allocated dynamically
+       */
+      else if( sz <= size_ || sz <= SZ )
       {
         size_ = sz;
       }
       else
       {
-        T * tmp = new (std::nothrow) T[sz]; 
+        T * tmp = new (std::nothrow) T[sz];
 
         if( !tmp )
         {
@@ -62,7 +74,7 @@ namespace csl
         {
           if( size_ > 0 )
           {
-            ::memcpy( tmp, data_, size_ );
+            ::memcpy(tmp,data_,(size_*item_size_));
             if( is_dynamic() ) delete [] data_;
           }
 
@@ -71,6 +83,53 @@ namespace csl
           ret = data_;
         }
       }
+      CSL_CHECK_INVARIANT();
+      return ( ret );
+    }
+
+    template <typename T, size_t SZ>
+    T * stpodary<T,SZ>::allocate_nocopy(size_t sz)
+    {
+      T * ret = data_;
+      
+      if( !sz )
+      {
+        reset();
+        ret = data_;
+      }
+      else if( sz <= size_ )
+      {
+        /* the requested data is smaller than the allocated */
+        size_ = sz;
+        ret = data_;
+      }
+      else if( sz <= SZ )
+      {
+        /* data fits into preallocated size */
+        if( size_ > 0 && is_dynamic() ) delete [] data_;
+
+        ret = data_ = preallocated_;
+        size_ = sz;
+      }
+      else
+      {
+        /* cannot use the preallocated space */
+        T * tmp = new (std::nothrow) T[sz];
+        if( !tmp )
+        {
+          ret = 0;
+        }
+        else
+        {
+          /* already have data ? */
+          if( size_ > 0 && is_dynamic() ) delete [] data_; 
+
+          ret = data_ = tmp;
+          size_ = sz;
+        }
+      }
+
+      CSL_CHECK_INVARIANT();
       return ( ret );
     }
 
@@ -83,6 +142,7 @@ namespace csl
         data_ = preallocated_;
       }
       size_ = 0;
+      CSL_CHECK_INVARIANT();
     }
 
     template <typename T, size_t SZ>
@@ -117,13 +177,15 @@ namespace csl
       /* if no data on the other side we are done */
       if( !sz )  { reset(); return true; }
 
+      CSL_REQUIRE( dta != NULL );
+
       /* if sz is not zero than dta must not be null */
       if( !dta ) { return false; }
 
       if( allocate(sz) )
       {
         /* copy in the data */
-        ::memcpy( data_, dta, item_size_ * sz );
+        ::memcpy(data_,dta,(item_size_*sz));
         return true;
       }
       else
@@ -133,44 +195,11 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
-    T * stpodary<T,SZ>::allocate_nocopy(size_t sz)
-    {
-      if( !sz ) { reset(); return data_; }
-
-      if( sz <= size_ )
-      {
-        /* the requested data is smaller than the allocated */
-        size_ = sz;
-        return data_;
-      }
-      else if( sz <= SZ )
-      {
-        /* data fits into preallocated size */
-        if( size_ > 0 && is_dynamic() ) delete [] data_;
-
-        data_ = preallocated_;
-        size_ = sz;
-        return data_;
-      }
-      else
-      {
-        /* cannot use the preallocated space */
-        T * tmp = new (std::nothrow) T[sz];
-        if( !tmp ) return 0;
-
-        /* already have data ? */
-        if( size_ > 0 && is_dynamic() ) delete [] data_; 
-
-        data_ = tmp;
-        size_ = sz;
-        return data_;
-      }
-    }
-
-    template <typename T, size_t SZ>
     stpodary<T,SZ> &
     stpodary<T,SZ>::operator=(const stpodary & other)
     {
+      CSL_REQUIRE( &other != this && other.data_ != data_ );
+    
       /* return immediately if they are the same */
       if( &other == this || other.data_ == data_ )
       {
@@ -181,10 +210,12 @@ namespace csl
       if( other.is_empty() ) { reset(); return *this; }
 
       T * tmp = allocate_nocopy( other.size_ );
+      
+      // TODO : this swallows the error here
 
       if( tmp )
       {
-        ::memcpy( tmp, other.data_, other.size_*item_size_ );
+        ::memcpy(tmp,other.data_,(other.size_*item_size_));
       }
       return *this;
     }
@@ -192,7 +223,12 @@ namespace csl
     template <typename T, size_t SZ>
     bool stpodary<T,SZ>::operator==(const stpodary & other) const
     {
+      CSL_REQUIRE( other.data_ != NULL );
+      CSL_REQUIRE( data_ != NULL );
+
+      if( &other == this )       return true;
       if( other.size_ != size_ ) return false;
+      if( other.data_ == data_ ) return true;
       if( size_ == 0 )           return true;
       if( data_ == 0 )           return false;
       if( other.data_ == 0 )     return false;
@@ -202,20 +238,24 @@ namespace csl
     template <typename T, size_t SZ>
     T & stpodary<T,SZ>::operator[](size_t at)
     {
-       return data_[at];
+      CSL_REQUIRE( at < size_ );
+      return data_[at];
     }
 
     template <typename T, size_t SZ>
     const T & stpodary<T,SZ>::operator[](size_t at) const
     {
+      CSL_REQUIRE( at < size_ );
       return data_[at];
     }
 
     template <typename T, size_t SZ>
     bool stpodary<T,SZ>::stpodary<T,SZ>::get(T * dta) const
     {
+      CSL_REQUIRE( dta != NULL );
+
       if( !dta || !size_ || !data_ ) { return false; }
-      ::memcpy( dta,data_,size_*item_size_ );
+      ::memcpy(dta,data_,(size_*item_size_));
       return true;
     }
 
@@ -230,6 +270,8 @@ namespace csl
     {
       /* if no data on the other side we are done */
       if( !sz )  { return true; }
+      
+      CSL_REQUIRE( dta != NULL );
 
       /* if sz is not zero than dta must not be null */
       if( !dta ) { return false; }
@@ -237,7 +279,7 @@ namespace csl
       if( allocate(size_+sz) )
       {
         /* copy in the data */
-        ::memcpy( data_+size_-sz, dta, sz*item_size_ );
+        ::memcpy(data_+size_-sz,dta,(sz*item_size_));
         return true;
       }
       else
@@ -253,11 +295,13 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
-    void stpodary<T,SZ>::set_at(size_t pos,const T & c)
+    void stpodary<T,SZ>::set_at(size_t pos, const T & c)
     {
       T * t = data_;
       if( pos >= size_ ) t = allocate( pos+1 );
+      if( !t ) return;
       t[pos] = c;
+      CSL_CHECK_INVARIANT();
     }
   }
 }

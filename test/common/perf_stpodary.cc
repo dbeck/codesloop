@@ -260,34 +260,34 @@ using namespace test_stpodary;
 int main()
 {
   csl_common_print_results( "PA_baseline        ", csl_common_test_timer_v0(stpodary_baseline),"" );
-  csl_common_print_results( "string_baseline    ", csl_common_test_timer_v0(string_baseline),"" );
-  csl_common_print_results( "vector_baseline    ", csl_common_test_timer_v0(vector_baseline),"" );
+  //csl_common_print_results( "string_baseline    ", csl_common_test_timer_v0(string_baseline),"" );
+  //csl_common_print_results( "vector_baseline    ", csl_common_test_timer_v0(vector_baseline),"" );
   csl_common_print_results( "PA_hello           ", csl_common_test_timer_v0(stpodary_hello),"" );
-  csl_common_print_results( "string_hello       ", csl_common_test_timer_v0(string_hello),"" );
-  csl_common_print_results( "vector_hello       ", csl_common_test_timer_v0(vector_hello),"" );
+  //csl_common_print_results( "string_hello       ", csl_common_test_timer_v0(string_hello),"" );
+  //csl_common_print_results( "vector_hello       ", csl_common_test_timer_v0(vector_hello),"" );
 
-  csl_common_print_results( "direct0            ", csl_common_test_timer_v0(test_direct0),"" );
-  csl_common_print_results( "virtual0           ", csl_common_test_timer_v0(test_virtual0),"" );
-  csl_common_print_results( "direct             ", csl_common_test_timer_v0(test_direct),"" );
-  csl_common_print_results( "virtual            ", csl_common_test_timer_v0(test_virtual),"" );
-  csl_common_print_results( "baseline_1         ", csl_common_test_timer_v0(baseline_1),"" );
-  csl_common_print_results( "baseline_10        ", csl_common_test_timer_v0(baseline_10),"" );  
+  //csl_common_print_results( "direct0            ", csl_common_test_timer_v0(test_direct0),"" );
+  //csl_common_print_results( "virtual0           ", csl_common_test_timer_v0(test_virtual0),"" );
+  //csl_common_print_results( "direct             ", csl_common_test_timer_v0(test_direct),"" );
+  //csl_common_print_results( "virtual            ", csl_common_test_timer_v0(test_virtual),"" );
+  //csl_common_print_results( "baseline_1         ", csl_common_test_timer_v0(baseline_1),"" );
+  //csl_common_print_results( "baseline_10        ", csl_common_test_timer_v0(baseline_10),"" );  
   csl_common_print_results( "alloc_10_static    ", csl_common_test_timer_v0(alloc_10_static),"" );
   csl_common_print_results( "10/20 alloc        ", csl_common_test_timer_v0(alloc_10_static_of_20),"" );
   csl_common_print_results( "reset_1            ", csl_common_test_timer_v0(reset_1),"" );
   csl_common_print_results( "reset_10           ", csl_common_test_timer_v0(reset_10),"" );
   csl_common_print_results( "set_get_1          ", csl_common_test_timer_v0(set_get_1),"" );
-  csl_common_print_results( "set_get_1_str      ", csl_common_test_timer_v0(set_get_1_str),"" );
-  csl_common_print_results( "append_t           ", csl_common_test_timer_v0(append_t),"" );
-  csl_common_print_results( "append_ptr         ", csl_common_test_timer_v0(append_ptr),"" );
+  //csl_common_print_results( "set_get_1_str      ", csl_common_test_timer_v0(set_get_1_str),"" );
+  //csl_common_print_results( "append_t           ", csl_common_test_timer_v0(append_t),"" );
+  //csl_common_print_results( "append_ptr         ", csl_common_test_timer_v0(append_ptr),"" );
   csl_common_print_results( "append_pa          ", csl_common_test_timer_v0(append_pa),"" );
-  csl_common_print_results( "append_t_str       ", csl_common_test_timer_v0(append_t_str),"" );
-  csl_common_print_results( "append_ptr_str     ", csl_common_test_timer_v0(append_ptr_str),"" );
+  //csl_common_print_results( "append_t_str       ", csl_common_test_timer_v0(append_t_str),"" );
+  //csl_common_print_results( "append_ptr_str     ", csl_common_test_timer_v0(append_ptr_str),"" );
   csl_common_print_results( "append_pa_str      ", csl_common_test_timer_v0(append_pa_str),"" );
   csl_common_print_results( "assign_10          ", csl_common_test_timer_v0(assign_10),"" );
-  csl_common_print_results( "assign_10_str      ", csl_common_test_timer_v0(assign_10_str),"" );
+  //csl_common_print_results( "assign_10_str      ", csl_common_test_timer_v0(assign_10_str),"" );
   csl_common_print_results( "equal_10           ", csl_common_test_timer_v0(equal_10),"" );
-  csl_common_print_results( "equal_10_str       ", csl_common_test_timer_v0(equal_10_str),"" );
+  //csl_common_print_results( "equal_10_str       ", csl_common_test_timer_v0(equal_10_str),"" );
 
   
   return 0;
