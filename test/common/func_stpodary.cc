@@ -23,13 +23,10 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if 0
-#ifndef DEBUG
-#define DEBUG
+#ifdef DEBUG
 #define DEBUG_ENABLE_INDENT
-//#define DEBUG_VERBOSE
+#define DEBUG_VERBOSE
 #endif /* DEBUG */
-#endif
 
 #include "codesloop/common/stpodary.hh"
 #include "codesloop/common/test_timer.h"
@@ -43,11 +40,8 @@ namespace test_stpodary
   void empty_checks()
   {
     stpodary<char,10> t;
-    assert( t.has_data() == false );
-    assert( t.is_dynamic() == false );
-    assert( t.size() == 0 );
-    assert( t.nbytes() == 0 );
     // should always have some stack based space allocated
+    // all other checks are done in dbc statements
     assert( t.data() != 0 );
     assert( t.private_data() != 0 );
   }
@@ -55,34 +49,20 @@ namespace test_stpodary
   void setter_checks()
   {
     stpodary<float,3> t1(1.1f), t2, t3;
-    assert( t1.has_data() == true );
-    assert( t1.is_dynamic() == false );
-    assert( t1.is_static() == true );
-    assert( t1.size() == 1 );
-    assert( t1.nbytes() == sizeof(float) );
     assert( t1[0] == 1.1f );
 
     float ft[] = { 1.2f, 2.3f };
     t2.set( ft, 2 );
-    assert( t2.has_data() == true );
-    assert( t2.is_dynamic() == false );
-    assert( t2.is_static() == true );
     assert( t2.size() == 2 );
     assert( t2.nbytes() == 2*sizeof(float) );
     assert( t2[0] == 1.2f );
     assert( t2[1] == 2.3f );
 
     t2.append( ft, 2 );
-    assert( t2.has_data() == true );
-    assert( t2.is_dynamic() == true );
-    assert( t2.is_static() == false );
-    assert( t2.size() == 4 );
-    assert( t2.nbytes() == 4*sizeof(float) );
     assert( t2[0] == 1.2f );
     assert( t2[1] == 2.3f );
     assert( t2[2] == 1.2f );
     assert( t2[3] == 2.3f );
-
   }
 
   void copy_checks()
@@ -92,14 +72,55 @@ namespace test_stpodary
     sta.set( d, 2 );
     dyn.set( d, 2 );
     dyn.append( d, 2 );
-   
+    stpodary<double,2> t2(t1),t3(dyn),t4(sta);
+    
+    assert( t1 == t1 && t1 == t2 );
+    assert( t3 == t3 && t3 == dyn );
+    assert( t4 == t4 && t4 == sta );
+    assert( t3 != sta && t4 != dyn );
   }
 
-  void append_checks() { }
-  void getter_checks() { }
-  void equality_checks() { }
-  void allocate_checks() { }
-  void reset_checks() { }
+  void getter_checks()
+  {
+    double d[] = {1.1,2.2};
+    stpodary<double,2> sta, dyn;
+    sta.set( d, 2 );
+    dyn.set( d, 2 );
+    dyn.append( d, 2 );
+    
+    double x[4];
+    assert( sta.get(x) == true );
+    assert( x[0] == 1.1 && x[1] == 2.2 );
+
+    ::memset( x,0,sizeof(x) );
+    assert( dyn.get(x) == true );
+    assert( x[0] == 1.1 && x[1] == 2.2 && x[2] == 1.1 && x[3] == 2.2 );
+  }
+
+  void equality_checks()
+  {
+    stpodary<double,2> t1(3.3), t2;
+    assert( t1 == t1 );
+    assert( t1 != t2 );
+  }
+
+  void allocate_checks()
+  {
+    stpodary<double,2> t1;
+    double * dp = t1.allocate( 0xFFFFFFFFFFFFFFFFULL );
+    assert( dp == NULL );
+    dp = t1.allocate( 10 );
+    assert( dp != NULL );    
+  }
+  
+  void reset_checks()
+  {
+    stpodary<double,2> t1(3.3);
+    t1.reset();
+    assert( t1.is_empty() == true );
+    assert( t1.is_static() == true );
+    assert( t1.size() == 0 );
+  }
 
 
 } // end of test_stpodary
@@ -109,9 +130,8 @@ using namespace test_stpodary;
 int main()
 {
   empty_checks();
-  copy_checks();
-  append_checks();
   setter_checks();
+  copy_checks();
   getter_checks();
   equality_checks();
   allocate_checks();

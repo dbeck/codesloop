@@ -63,10 +63,10 @@ namespace csl
         T * allocate(size_t sz);
         T * allocate_nocopy(size_t sz);
         
-        void append(const T & c);
+        bool append(const T & c);
         bool append(const T * dta, size_t sz);
         bool append(const stpodary & other);
-        void set_at(size_t pos,const T & c);
+        bool set_at(size_t pos,const T & c);
 
         /* inline functions */
         inline bool is_empty() const     { return (size_ == 0); }
@@ -78,6 +78,8 @@ namespace csl
         inline size_t nbytes() const     { return size_*item_size_; }
         inline const T * data() const    { return data_; }
         inline T * private_data() const  { return data_; }
+        
+        inline bool operator!=(const stpodary & other) const { return !(*this == other); }
 
       private:
         T            preallocated_[SZ];
