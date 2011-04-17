@@ -26,8 +26,8 @@ Credits: some techniques and code pieces are borrowed from Christian
          Stigen Larsen http://csl.sublevel3.org/programming/my_str/
 */
 
-#ifndef _csl_common_str_hh_included_
-#define _csl_common_str_hh_included_
+#ifndef _csl_common_simpstr_hh_included_
+#define _csl_common_simpstr_hh_included_
 
 #include "codesloop/common/common.h"
 #include "codesloop/common/obj.hh"
@@ -279,4 +279,4 @@ namespace csl
 }
 
 #endif /* __cplusplus */
-#endif /* _csl_common_str_hh_included_ */
+#endif /* _csl_common_simpstr_hh_included_ */
