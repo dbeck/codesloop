@@ -25,6 +25,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <codesloop/common/common.h>
 #include <codesloop/common/stpodary.hh>
+#include <codesloop/common/simpstr.hh>
 
 
 /* EOF */
+

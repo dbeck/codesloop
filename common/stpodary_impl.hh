@@ -42,7 +42,7 @@ namespace csl
       if( data_ == NULL ) return false;
       return true;
     }
-#endif /*DEBUG*/
+#endif //DEBUG
 
     template <typename T,size_t SZ>
     T * stpodary<T,SZ>::allocate(size_t sz)
@@ -54,10 +54,11 @@ namespace csl
         reset();
         ret = data_;
       }
-      /* the second part will will work becuse if it is (or was) dynamic
-         then the allocated size is > SZ if static then SZ elements
-         are akready allocated dynamically
-       */
+      //
+      // the second part will will work becuse if it is (or was) dynamic
+      // then the allocated size is > SZ if static then SZ elements
+      // are akready allocated dynamically
+      //
       else if( sz <= size_ || sz <= SZ )
       {
         size_ = sz;
@@ -101,13 +102,13 @@ namespace csl
       }
       else if( sz <= size_ )
       {
-        /* the requested data is smaller than the allocated */
+        // the requested data is smaller than the allocated
         size_ = sz;
         ret = data_;
       }
       else if( sz <= SZ )
       {
-        /* data fits into preallocated size */
+        // data fits into preallocated size
         if( size_ > 0 && is_dynamic() ) delete [] data_;
 
         ret = data_ = preallocated_;
@@ -115,7 +116,7 @@ namespace csl
       }
       else
       {
-        /* cannot use the preallocated space */
+        // cannot use the preallocated space
         T * tmp = new (std::nothrow) T[sz];
         if( !tmp )
         {
@@ -123,7 +124,7 @@ namespace csl
         }
         else
         {
-          /* already have data ? */
+          // already have data ?
           if( size_ > 0 && is_dynamic() ) delete [] data_; 
 
           ret = data_ = tmp;
@@ -197,19 +198,19 @@ namespace csl
     template <typename T, size_t SZ>
     bool stpodary<T,SZ>::set(const T * dta, size_t sz)
     {
-      /* if no data on the other side we are done */
+      // if no data on the other side we are done
       if( !sz )  { reset(); return true; }
 
       CSL_REQUIRE( dta != NULL );
 
-      /* if sz is not zero than dta must not be null */
+      // if sz is not zero than dta must not be null
       if( !dta ) { return false; }
 
       bool ret = (allocate(sz) != NULL);
       
       if( ret )
       {
-        /* copy in the data */
+        // copy in the data
         ::memcpy(data_,dta,(item_size_*sz));
       }
       
@@ -223,13 +224,13 @@ namespace csl
     {
       CSL_REQUIRE( &other != this && other.data_ != data_ );
     
-      /* return immediately if they are the same */
+      // return immediately if they are the same
       if( &other == this || other.data_ == data_ )
       {
         return *this;
       }
 
-      /* quick return if empty */
+      // quick return if empty
       if( other.is_empty() ) { reset(); return *this; }
 
       T * tmp = allocate_nocopy( other.size_ );
@@ -237,6 +238,10 @@ namespace csl
       if( tmp )
       {
         ::memcpy(tmp,other.data_,(other.size_*item_size_));
+      }
+      else
+      {
+        CSL_THROW( out_of_memory );
       }
 
       CSL_CHECK_INVARIANT();
@@ -255,6 +260,7 @@ namespace csl
       if( size_ == 0 )           return true;
       if( data_ == 0 )           return false;
       if( other.data_ == 0 )     return false;
+
       return (::memcmp( other.data_, data_, size_*item_size_ ) == 0);
     }
 
@@ -278,7 +284,9 @@ namespace csl
       CSL_REQUIRE( dta != NULL );
 
       if( !dta || !size_ || !data_ ) { return false; }
+
       ::memcpy(dta,data_,(size_*item_size_));
+      
       CSL_CHECK_INVARIANT();
       return true;
     }
@@ -287,6 +295,7 @@ namespace csl
     bool stpodary<T,SZ>::append(const T & c)
     {
       bool ret = set_at(size_,c);
+
       CSL_ENSURE( is_empty() == false );
       CSL_ENSURE( has_data() == true );
       CSL_CHECK_INVARIANT();
@@ -296,19 +305,19 @@ namespace csl
     template <typename T, size_t SZ>
     bool stpodary<T,SZ>::append(const T * dta, size_t sz)
     {
-      /* if no data on the other side we are done */
+      // if no data on the other side we are done
       if( !sz )  { return true; }
       
       CSL_REQUIRE( dta != NULL );
 
-      /* if sz is not zero than dta must not be null */
+      // if sz is not zero than dta must not be null
       if( !dta ) { return false; }
       
       bool ret = (allocate(size_+sz) != NULL);
 
       if( ret )
       {
-        /* copy in the data */
+        // copy in the data
         ::memcpy(data_+size_-sz,dta,(sz*item_size_));
       }
       

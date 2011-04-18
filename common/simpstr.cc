@@ -55,61 +55,18 @@ namespace csl
         return 0;
       }
     }
-
-    str::str(const ustr & other) : csl::common::var(), buf_( L'\0' )
+    
+#ifdef DEBUG
+    bool simpstr::csl_invariant() const
     {
-      size_t sz = other.size();
-
-      wchar_t * b = buf_.allocate( sz );
-
-      if( sz && b )
-      {
-        size_t szz = ::mbstowcs( b, other.data(), sz );
-        // fix length, because utf-8 may occupy more then one character that may be converted
-        // to a single wchar_t, for this reason we may need to shrink the buffer
-        buf_.allocate( szz );
-      }
-
-      ensure_trailing_zero();
+      // ?? return false
+      return true;
     }
+#endif /*DEBUG*/
 
-    str& str::operator+=(const ustr& other)
+    void simpstr::ensure_trailing_zero()
     {
-      *this += str(other);
-      return *this;
-    }
-
-    str & str::operator=(const ustr & other)
-    {
-      size_t sz = other.size();
-
-      wchar_t * b = buf_.allocate( sz );
-
-      if( sz && b )
-      {
-        size_t szz = ::mbstowcs( b, other.data(), sz );
-
-        // fix length, because utf-8 may occupy more then one character that may be converted
-        // to a single wchar_t, for this reason we may need to shrink the buffer
-
-        if( szz == static_cast<size_t>(-1) )
-        {
-          buf_.reset();
-        }
-        else
-        {
-          buf_.allocate( szz );
-        }
-      }
-
-      ensure_trailing_zero();
-
-      return *this;
-    }
-
-    void str::ensure_trailing_zero()
-    {
-      wchar_t  c = 0;
+      wchar_t c = 0;
 
       if( buf_.size() == 0 )
       {
@@ -121,7 +78,7 @@ namespace csl
       }
     }
 
-    str& str::operator+=(const str& s)
+    simpstr& simpstr::operator+=(const simpstr& s)
     {
       size_t sz = buf_.size();
 
@@ -137,7 +94,7 @@ namespace csl
       return *this;
     }
 
-    str& str::operator+=(const wchar_t * s)
+    simpstr& simpstr::operator+=(const wchar_t * s)
     {
       size_t sz = buf_.size();
 
@@ -154,28 +111,28 @@ namespace csl
       return *this;
     }
 
-    str str::substr(const size_t start, const size_t length) const
+    simpstr simpstr::substr(const size_t start, const size_t length) const
     {
-      str s;
+      simpstr s;
       size_t len = length;
       size_t sz = size();
-
-      if ( start > sz )
-      {
-        THRR(exc::rs_invalid_param,L"out of range",s);
-      }
+      
+      CSL_REQUIRE( (start+length) <= sz );
+      CSL_REQUIRE( start <= sz );
 
       // shrink length to fit in
-      if ( sz < length + start ) len = sz - start;
-
-      // copy string
-      s.buf_.set( data()+start,len );
-      s.ensure_trailing_zero();
+      if ( sz < (length + start) ) len = sz - start;
+      if ( len > 0 )
+      {
+        // copy string
+        s.buf_.set( data()+start,len );
+        s.ensure_trailing_zero();
+      }
 
       return s;
     }
 
-    str::str(const char * st) : csl::common::var(), buf_( L'\0' )
+    simpstr::simpstr(const char * st) : buf_( L'\0' )
     {
       if( !st ) return;
 
@@ -194,11 +151,11 @@ namespace csl
       {
         buf_.reset();
         ensure_trailing_zero();
-        THRNORET(exc::rs_conv_error);
+        CSL_THROW( conversion_error );
       }
     }
 
-    str& str::operator=(const char * st)
+    simpstr& simpstr::operator=(const char * st)
     {
       if( !st ) return *this;
 
@@ -217,12 +174,12 @@ namespace csl
       {
         buf_.reset();
         ensure_trailing_zero();
-        THRC(exc::rs_conv_error,*this);
+        CSL_THROW( conversion_error );
       }
       return *this;
     }
 
-    size_t str::find(wchar_t c) const
+    size_t simpstr::find(wchar_t c) const
     {
       size_t ret = npos;
       size_t len = size();
@@ -238,7 +195,7 @@ namespace csl
       return ret;
     }
 
-    size_t str::rfind(wchar_t c) const
+    size_t simpstr::rfind(wchar_t c) const
     {
       size_t ret = npos;
       size_t len = size();
@@ -254,7 +211,7 @@ namespace csl
       return ret;
     }
 
-    size_t str::find(const str & s) const
+    size_t simpstr::find(const simpstr & s) const
     {
       const wchar_t * p = ::wcsstr( data(), s.data() );
       size_t ret = npos;
@@ -266,7 +223,7 @@ namespace csl
       return ret;
     }
 
-    size_t str::find(const wchar_t * strv) const
+    size_t simpstr::find(const wchar_t * strv) const
     {
       if( empty() )  return npos;
       if( !strv )    return npos;
@@ -278,38 +235,18 @@ namespace csl
       return (res-data());
     }
 
-    wchar_t str::at(const size_t n) const
+    wchar_t simpstr::at(const size_t n) const
     {
-      if ( n > ::wcslen( data() ) )
-      {
-        THR(exc::rs_invalid_param,0);
-      }
-
-      return data()[n];
+     
+      size_t l = ::wcslen( data() );
+      CSL_REQUIRE( n <= l );
+      
+      if( n <= l ) return data()[n];
+      else         return 0;
     }
 
-    /* conversions to other types */
-    bool str::to_integer(int64_t & v) const
-    {
-      wchar_t * endp = 0;
-      v = WCSTOLL( data(), &endp, 0 );
-      return (endp != 0);
-    }
-
-    bool str::to_double(double & v) const
-    {
-      wchar_t * endp = 0;
-      v = WCSTOD( data(), &endp );
-      return true;
-    }
-
-    bool str::to_string(ustr & v) const
-    {
-      v = *this;
-      return true;
-    }
-
-    bool str::to_string(std::string & v) const
+    /*
+    bool simpstr::to_string(std::string & v) const
     {
       if( nbytes() == 1 )
       {
@@ -320,92 +257,31 @@ namespace csl
       v = us.c_str();
       return true;
     }
+    */
 
-    bool str::to_binary(unsigned char * v, size_t & sz) const
-    {
-      if( !v ) { sz = 0; return false; }
-      ::memcpy( v, data(), nbytes() );
-      sz = nbytes();
-      return true;
-    }
-
-    bool str::to_binary(void * v, size_t & sz) const
-    {
-      if( !v ) { sz = 0; return false; }
-      ::memcpy( v, data(), nbytes() );
-      sz = nbytes();
-      return true;
-    }
-
-    /* conversions from other types */
-    bool str::from_integer(int64_t v)
-    {
-      wchar_t * p = buf_.allocate( buf_items );
-      int ret = SWPRINTF(p,(buf_size-1),L"%lld",v);
-      return (buf_.allocate( ret+1 ) != 0);
-    }
-
-    bool str::from_double(double v)
-    {
-      wchar_t * p = buf_.allocate( buf_items-1 );
-      int ret = SWPRINTF(p,(buf_size-1),L"%.12f",v);
-      return (buf_.allocate( ret+1 ) != 0);
-    }
-
-    bool str::from_string(const std::string & v)
+    bool simpstr::from_string(const std::string & v)
     {
       if( !v.size() ) { reset(); }
       else            { *this = v; }
       return true;
     }
 
-    bool str::from_string(const char * v)
+    bool simpstr::from_string(const char * v)
     {
       if( !v ) { reset(); }
       else     { *this = v; }
       return true;
     }
 
-    bool str::from_string(const wchar_t * v)
+    bool simpstr::from_string(const wchar_t * v)
     {
       if( !v ) { reset(); }
       else     { *this = v; }
       return true;
     }
 
-    bool str::from_binary(const unsigned char * v, size_t sz)
-    {
-      if( !v || !sz )
-      {
-        reset();
-      }
-      else
-      {
-        size_t my_size = (sz+sizeof(wchar_t)-1)/sizeof(wchar_t);
-        wchar_t * b = buf_.allocate( my_size );
-        ::memcpy( b,v,sz );
-        ensure_trailing_zero();
-      }
-      return true;
-    }
-
-    bool str::from_binary(const void * v, size_t sz)
-    {
-      if( !v || !sz )
-      {
-        reset();
-      }
-      else
-      {
-        size_t my_size = (sz+sizeof(wchar_t)-1)/sizeof(wchar_t);
-        wchar_t * b = buf_.allocate( my_size );
-        ::memcpy( b,v,sz );
-        ensure_trailing_zero();
-      }
-      return true;
-    }
-
-    int64 str::crc64() const
+/*
+    int64 simpstr::crc64() const
     {
       int64 ret;
       uint64_t crc = 0x0000000000000000ULL;
@@ -416,8 +292,9 @@ namespace csl
 
       return int64(static_cast<int64_t>(crc));
     }
+  */
     
-    str str::trim()
+    simpstr simpstr::trim()
     {
       size_t start = npos, length = 0;
 
@@ -431,14 +308,14 @@ namespace csl
       return substr(start,length);
     }
     
-    str::str(const wchar_t * wcs) : csl::common::var(), buf_(L'\0')
+    simpstr::simpstr(const wchar_t * wcs) : buf_(L'\0')
     {
       if( !wcs ) return;
       // wcslen only cares about trailing zero, so combining characters will not confuse here
       buf_.set( wcs, ::wcslen(wcs)+1 );
     }
 
-    str& str::operator=(const wchar_t * wcs)
+    simpstr& simpstr::operator=(const wchar_t * wcs)
     {
       if( !wcs ) return *this;
       // wcslen only cares about trailing zero, so combining characters will not confuse here
@@ -446,41 +323,35 @@ namespace csl
       return *this;
     }
     
-    str & str::assign(const wchar_t * start, const wchar_t * end)
+    simpstr& simpstr::assign(const wchar_t * start, const wchar_t * end)
     {
       buf_.set( start, end-start );
       return *this;
     }
 
-    void str::reset()
+    void simpstr::reset()
     {
       buf_.reset();
       buf_.set( L"\0",1 );
     }
     
-    str::str() : csl::common::var(), buf_( L'\0' )
+    simpstr::simpstr() : buf_( L'\0' )
     {
     }
     
-    str::str(const str& s) : csl::common::var(), buf_( L'\0' )
+    simpstr::simpstr(const simpstr& s) : buf_( L'\0' )
     {
       buf_ = s.buf_;
     }
 
-    str& str::operator=(const str& s)
+    simpstr& simpstr::operator=(const simpstr& s)
     {
       buf_ = s.buf_;
       return *this;
     }
-    
-    const unsigned char * str::ucharp_data() const
-    {
-      return reinterpret_cast<const unsigned char*>(buf_.data());
-    }
-
   };
 };
 
 AUTOEXEC( csl, common, initalize_crc_table, initalize_CRCTable );
+// EOF
 
-/* EOF */

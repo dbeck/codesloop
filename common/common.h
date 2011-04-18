@@ -158,6 +158,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CSL_TYPE_BIN 5
 #endif /*CSL_TYPE_BIN*/
 
+/* class helpers */
+#ifndef CSL_CLASS
+#define CSL_CLASS(NAME) static inline const char * class_name() { return (#NAME); }
+#endif /*CSL_CLASS*/
+
+#ifndef AUTOEXEC
 #define AUTOEXEC( NAMESPACE1, NAMESPACE2, TASK, FUNCTION ) \
   namespace NAMESPACE1 { \
      namespace NAMESPACE2 { \
@@ -166,5 +172,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        } /* end of anonymous namespace */ \
      } /* end of NAMESPACE2 */ \
    } /* end od NAMESPACE1 */
+#endif /*AUTOEXEC*/
 
 #endif /* _csl_common_common_h_included_ */

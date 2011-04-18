@@ -25,46 +25,59 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_common_dbc_hh_included_
 #define _csl_common_dbc_hh_included_
-
 #include "codesloop/common/common.h"
+#include "codesloop/common/excbase.hh"
 #ifdef __cplusplus
 
 namespace csl
 {
   namespace common
   {
-    class dbcexc
+    class dbcexc : public csl::common::excbase
     {
     private:
-      const char *  file_;
-      unsigned int  line_;
-      const char *  func_;
       const char *  expr_;
       const char *  dbctype_;
       
-      dbcexc() {}
+      dbcexc() :
+        csl::common::excbase(__FILE__,__LINE__,__func__,"",""),
+        expr_(""),
+        dbctype_("") {}
 
     public:
-      dbcexc( const char * file,
-              unsigned int line,
-              const char * func,
-              const char * expr,
-              const char * dbctype
-            )
-        : file_(file),
-          line_(line),
-          func_(func),
-          expr_(expr),
-          dbctype_(dbctype) {}
+      dbcexc( const char * fil,
+              unsigned int lin,
+              const char * fun,
+              const char * reas,
+              const char * cls,
+              const char * exp,
+              const char * dbctyp
+            ) : 
+        csl::common::excbase(fil,lin,fun,reas,cls),
+        expr_(exp),
+        dbctype_(dbctyp) {}
         
-      ~dbcexc() {}
+      virtual ~dbcexc() {}
+      
+      const char * expr()    const { return expr_;    }
+      const char * dbctype() const { return dbctype_; }
     };
   }
 }
 
 #ifndef CSL_ASSERT_THROW
 # ifdef DEBUG
-#  define CSL_ASSERT_THROW(EXPR,TYPE) if( !(EXPR) ) throw dbcexc(__FILE__,__LINE__,__func__,#EXPR,TYPE);
+#  define CSL_ASSERT_THROW(EXPR,TYPE)                        \
+      if( !(EXPR) )                                          \
+      {                                                      \
+        throw dbcexc( __FILE__,                              \
+                      __LINE__,                              \
+                      __func__,                              \
+                      "DBC Failure",                         \
+                      class_name(),                          \
+                      #EXPR,                                 \
+                      TYPE);                                 \
+      }
 # else /*DEBUG*/
 #  define CSL_ASSERT_THROW(EXPR,TYPE)
 # endif /*DEBUG*/
