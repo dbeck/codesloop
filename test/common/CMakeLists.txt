@@ -48,7 +48,11 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES "debug")
 
 ADD_EXECUTABLE( perf_stpodary perf_stpodary.cc )
 ADD_EXECUTABLE( func_stpodary func_stpodary.cc )
+ADD_EXECUTABLE( func_simpstr  func_simpstr.cc )
+ADD_EXECUTABLE( func_exc      func_exc.cc )
 ADD_TEST( func_common_stpodary ${EXECUTABLE_OUTPUT_PATH}/func_stpodary )
+ADD_TEST( func_common_simpstr  ${EXECUTABLE_OUTPUT_PATH}/func_simpstr )
+ADD_TEST( func_common_exc      ${EXECUTABLE_OUTPUT_PATH}/func_exc )
 
 # ADD_EXECUTABLE( t__zfile t__zfile.cc )
 # ADD_EXECUTABLE( t__circbuf t__circbuf.cc )

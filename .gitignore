@@ -283,3 +283,5 @@ SN
 test/common/perf_stpodary
 test/common/func_stpodary
 Testing
+test/common/func_exc
+test/common/func_simpstr
