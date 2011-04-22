@@ -29,8 +29,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif /* DEBUG */
 
 #include "codesloop/common/stpodary.hh"
-#include "codesloop/common/test_timer.h"
-#include "codesloop/common/common.h"
 #include <assert.h>
 
 using csl::common::stpodary;
@@ -140,4 +138,4 @@ int main()
   return 0;
 }
 
-/* EOF */
+// EOF
