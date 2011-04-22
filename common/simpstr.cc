@@ -59,7 +59,9 @@ namespace csl
 #ifdef DEBUG
     bool simpstr::csl_invariant() const
     {
-      // ?? return false
+      // check for trailing zero
+      if( buf_.size() == 0 ) return false;
+      if( buf_[buf_.len()-1] != 0 ) return false;
       return true;
     }
 #endif /*DEBUG*/
@@ -76,10 +78,13 @@ namespace csl
       {
         buf_.append( &c,1 );
       }
+      CSL_CHECK_INVARIANT();
     }
 
     simpstr& simpstr::operator+=(const simpstr& s)
-    {
+    {    
+      if( s.empty() ) return *this;
+
       size_t sz = buf_.size();
 
       if( sz > 0 && data()[sz-1] == 0 )
@@ -90,12 +95,18 @@ namespace csl
 
       buf_.append( s.buffer() );
       ensure_trailing_zero();
+      
+      CSL_CHECK_INVARIANT();
 
       return *this;
     }
 
     simpstr& simpstr::operator+=(const wchar_t * s)
     {
+      CSL_REQUIRE( s != 0 );
+      
+      if( !s ) return *this;
+      
       size_t sz = buf_.size();
 
       if( sz > 0 && data()[sz-1] == 0 )
@@ -107,6 +118,8 @@ namespace csl
       buf_.append( s, (::wcslen(s)+1) );
       // I presume, this is not needed because of wcslen+1
       // ensure_trailing_zero();
+      
+      CSL_CHECK_INVARIANT();
 
       return *this;
     }
@@ -121,27 +134,39 @@ namespace csl
       CSL_REQUIRE( start <= sz );
 
       // shrink length to fit in
-      if ( sz < (length + start) ) len = sz - start;
+      if ( sz < (length + start) )
+      {
+        len = sz - start;
+      }
+
       if ( len > 0 )
       {
         // copy string
         s.buf_.set( data()+start,len );
         s.ensure_trailing_zero();
       }
+      
+      CSL_CHECK_INVARIANT();
 
       return s;
     }
 
     simpstr::simpstr(const char * st) : buf_( L'\0' )
     {
+      CSL_REQUIRE( st != 0 );
+      
       if( !st ) return;
 
       size_t len = ::strlen(st)+1;
       size_t ssz = 0;
 
       wchar_t * nptr = buf_.allocate( len );
-
-      if ( (ssz = ::mbstowcs( nptr, st, len )) != size_t(-1) )
+      
+      if( !nptr )
+      {
+        CSL_THROW( out_of_memory );    
+      }
+      else if ( (ssz = ::mbstowcs( nptr, st, len )) != size_t(-1) )
       {
         // may need to shrink, when utf-8 chars occupy more than one character
         buf_.allocate( ssz );
@@ -149,22 +174,29 @@ namespace csl
       }
       else
       {
-        buf_.reset();
-        ensure_trailing_zero();
+        reset();
         CSL_THROW( conversion_error );
       }
+      
+      CSL_CHECK_INVARIANT();
     }
 
     simpstr& simpstr::operator=(const char * st)
     {
+      CSL_REQUIRE( st != 0 );
+
       if( !st ) return *this;
 
       size_t len =  strlen(st)+1;
       size_t ssz = 0;
 
       wchar_t * nptr = buf_.allocate( len );
-
-      if ( (ssz = ::mbstowcs( nptr, st, len )) != size_t(-1) )
+      
+      if( !nptr )
+      {
+        CSL_THROW( out_of_memory );    
+      }
+      else if ( (ssz = ::mbstowcs( nptr, st, len )) != size_t(-1) )
       {
         // may need to shrink, when utf-8 chars occupy more than one character
         buf_.allocate( ssz );
@@ -172,11 +204,29 @@ namespace csl
       }
       else
       {
-        buf_.reset();
-        ensure_trailing_zero();
+        reset();
         CSL_THROW( conversion_error );
       }
+      
+      CSL_CHECK_INVARIANT();
+      
       return *this;
+    }
+
+    bool simpstr::operator==(const wchar_t * s) const
+    {
+      CSL_REQUIRE( s != 0 );
+      if( !s ) { return false; }
+      int ret = wcscmp( data(), s );
+      return (ret == 0);
+    }
+    
+    bool simpstr::operator==(const simpstr& s) const
+    {
+      if( size() != s.size() ) return false;
+      if( empty() ) return true;
+      int ret = wcscmp( data(), s.data() );
+      return (ret == 0);
     }
 
     size_t simpstr::find(wchar_t c) const
@@ -213,20 +263,19 @@ namespace csl
 
     size_t simpstr::find(const simpstr & s) const
     {
+      CSL_REQUIRE( s.empty() == false );
       const wchar_t * p = ::wcsstr( data(), s.data() );
       size_t ret = npos;
-
-      if ( p != NULL ) {
-        ret = p - data();
-      }
-
+      if ( p != NULL ) { ret = p - data(); }
       return ret;
     }
 
     size_t simpstr::find(const wchar_t * strv) const
     {
-      if( empty() )  return npos;
+      CSL_REQUIRE( strv != 0 );
+      
       if( !strv )    return npos;
+      if( empty() )  return npos;
 
       const wchar_t * res = 0;
 
@@ -245,38 +294,29 @@ namespace csl
       else         return 0;
     }
 
-    /*
-    bool simpstr::to_string(std::string & v) const
-    {
-      if( nbytes() == 1 )
-      {
-        v.clear();
-        return true;
-      }
-      ustr us(*this);
-      v = us.c_str();
-      return true;
-    }
-    */
-
     bool simpstr::from_string(const std::string & v)
     {
       if( !v.size() ) { reset(); }
       else            { *this = v; }
+      CSL_CHECK_INVARIANT();
       return true;
     }
 
     bool simpstr::from_string(const char * v)
     {
+      CSL_REQUIRE( v != 0 );
       if( !v ) { reset(); }
       else     { *this = v; }
+      CSL_CHECK_INVARIANT();
       return true;
     }
 
     bool simpstr::from_string(const wchar_t * v)
     {
+      CSL_REQUIRE( v != 0 );
       if( !v ) { reset(); }
       else     { *this = v; }
+      CSL_CHECK_INVARIANT();
       return true;
     }
 
@@ -305,6 +345,7 @@ namespace csl
         else if ( start != npos && !iswspace( (*this)[pos] ) )
                 length = pos - start + 1;
       }
+      CSL_CHECK_INVARIANT();
       return substr(start,length);
     }
     
@@ -326,6 +367,8 @@ namespace csl
     simpstr& simpstr::assign(const wchar_t * start, const wchar_t * end)
     {
       buf_.set( start, end-start );
+      ensure_trailing_zero();
+      CSL_CHECK_INVARIANT();
       return *this;
     }
 
@@ -333,20 +376,36 @@ namespace csl
     {
       buf_.reset();
       buf_.set( L"\0",1 );
+      CSL_ENSURE( empty() == true );
+      CSL_ENSURE( nbytes() > 0 );
+      CSL_ENSURE( nchars() == 1 );
+      CSL_CHECK_INVARIANT();
     }
     
     simpstr::simpstr() : buf_( L'\0' )
     {
+      CSL_ENSURE( empty() == true );
+      CSL_ENSURE( nbytes() > 0 );
+      CSL_ENSURE( nchars() == 1 );
+      CSL_CHECK_INVARIANT();
     }
     
     simpstr::simpstr(const simpstr& s) : buf_( L'\0' )
     {
       buf_ = s.buf_;
+      CSL_ENSURE( empty() == s.empty() );
+      CSL_ENSURE( nbytes() == s.nbytes() );
+      CSL_ENSURE( nchars() == s.nchars() );
+      CSL_CHECK_INVARIANT();
     }
 
     simpstr& simpstr::operator=(const simpstr& s)
     {
       buf_ = s.buf_;
+      CSL_ENSURE( empty() == s.empty() );
+      CSL_ENSURE( nbytes() == s.nbytes() );
+      CSL_ENSURE( nchars() == s.nchars() );
+      CSL_CHECK_INVARIANT();
       return *this;
     }
   };

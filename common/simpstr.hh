@@ -47,6 +47,7 @@ namespace csl
         CSL_CLASS( csl::common::simpstr );
         CSL_INVARIANT();
         CSL_DECLARE_EXCEPTION( conversion_error );
+        CSL_DECLARE_EXCEPTION( out_of_memory );
 
         typedef wchar_t           elem_t;
         typedef const elem_t *    value_t;
@@ -72,12 +73,7 @@ namespace csl
           return simpstr(lhs) += rhs;
         }
 
-        inline bool operator==(const simpstr& s) const
-        {
-          int ret = wcscmp( data(), s.data() );
-          return (ret == 0);
-        }
-
+        bool operator==(const simpstr& s) const;
         size_t find(const simpstr & s) const;
         simpstr substr(const size_t start, const size_t length) const;
         simpstr trim();
@@ -111,11 +107,7 @@ namespace csl
           return simpstr(lhs) += rhs;
         }
 
-        inline bool operator==(const wchar_t * s) const
-        {
-          int ret = wcscmp( data(), s );
-          return (ret == 0);
-        }
+        bool operator==(const wchar_t * s) const;
 
         inline const wchar_t * c_str() const
         {
