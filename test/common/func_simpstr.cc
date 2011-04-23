@@ -29,15 +29,92 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif /* DEBUG */
 
 #include "codesloop/common/simpstr.hh"
+#include "codesloop/common/excbase.hh"
 #include <assert.h>
 
 using csl::common::simpstr;
+using csl::common::excbase;
 
 namespace test_simpstr
 {
+  void print_exc_caught(const csl::common::excbase & e)
+  {
+    printf("[%s:%d] %s :: %s (%s) caught\n",
+        e.file(),
+        e.line(),
+        e.clazz(),
+        e.func(),
+        e.reason()); 
+  }
+
   void empty_checks()
   {
     simpstr s;
+    assert( s.empty() == true );
+    assert( s.size() == 0 );
+  }
+  
+  void empty_comparisons()
+  {
+    simpstr s1,s2;
+    assert( s1 == s2 );
+    assert( s1 == "" );
+    assert( s1 == static_cast<char *>(0) );
+    assert( s1 == static_cast<wchar_t *>(0) );
+  }
+  
+  void str_copy()
+  {
+    simpstr s1(L"Hello world");
+    simpstr s2;
+    assert( !(s1 == s2) );
+    simpstr s3(s1);
+    assert( s3 == s1 );
+    s2 = s1;
+    assert( s2 == s1 );
+    assert( s2.size() > 0 && s2.size() == s3.size() && s3.size() == s1.size() );
+    assert( s1[3] == s2[3] && s2[4] == s3[4] && s3[5] == s1[5] );
+  }
+  
+  void str_append()
+  {
+    simpstr s1(L"Hello ");
+    simpstr s2(L"world");
+    simpstr s3(L"Hello world");
+    simpstr s4(s1+s2);
+    assert( s1 == L"Hello ");
+    assert( !(s1 == L"He") );
+    s1 += s2;
+    assert( s1 == s3 );
+    assert( s1 == s4 );
+  }
+  
+  void str_substr()
+  {
+    simpstr s1(L"Hello world");
+    simpstr s2(s1.substr(2,3));
+    assert( s2 == L"llo" );
+    assert( s1 == L"Hello world");
+  }
+  
+  void str_trim()
+  {
+    simpstr s1(L" \t Hello world \t \r\n");
+    simpstr s2(s1.trim());
+    assert( s2 == L"Hello world");
+    assert( s1 == L" \t Hello world \t \r\n");
+  }
+  
+  void charptr_copy()
+  {
+    simpstr s1("Hello world");
+    simpstr s2(L"Hello world");
+    assert( s1 == s2 );
+    simpstr s3;
+    s3 = "Hello world";
+    assert( s1 == s3 && s3 == s2 );
+    simpstr s4 = s1;
+    assert( s1 == s4 && s4 == s2 );
   }
   
 } // end of test_simpstr
@@ -46,7 +123,20 @@ using namespace test_simpstr;
 
 int main()
 {
-  empty_checks();
+  try
+  {
+    empty_checks();
+    empty_comparisons();
+    str_copy();
+    str_append();
+    str_substr();
+    str_trim();
+    charptr_copy();
+  }
+  catch( csl::common::excbase & e )
+  {
+    print_exc_caught( e );
+  }
   return 0;
 }
 

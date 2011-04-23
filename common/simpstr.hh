@@ -49,8 +49,8 @@ namespace csl
         CSL_DECLARE_EXCEPTION( conversion_error );
         CSL_DECLARE_EXCEPTION( out_of_memory );
 
-        typedef wchar_t           elem_t;
-        typedef const elem_t *    value_t;
+        typedef wchar_t         elem_t;
+        typedef const elem_t *  value_t;
         
         static const size_t buf_items = 128;
         static const size_t buf_size  = buf_items * sizeof(elem_t);
@@ -76,19 +76,14 @@ namespace csl
         bool operator==(const simpstr& s) const;
         size_t find(const simpstr & s) const;
         simpstr substr(const size_t start, const size_t length) const;
-        simpstr trim();
+        simpstr trim() const;
 
         // ------------------------------------------------------------------------
         //    char * operations
 
         explicit simpstr(const char *);
         simpstr& operator=(const char *);
-        inline bool operator==(const char * s) const
-        {
-          simpstr rhs(s);
-          return (*this == rhs);
-        }
-        bool from_string(const char * v);
+        bool operator==(const char * s) const;
 
         // ------------------------------------------------------------------------
         //    wchar_t * operations
@@ -117,17 +112,12 @@ namespace csl
         simpstr & assign(const wchar_t * start, const wchar_t * end);
         size_t find(const wchar_t * s) const;
         inline const wchar_t * data() const { return buf_.data(); }
-        bool from_string(const wchar_t * v);
 
         // ------------------------------------------------------------------------
         //    std::string operations
 
-        simpstr& operator=(const std::string & s)
-        {
-          return operator=(s.c_str());
-        }
-        bool to_string(std::string & v) const;
-        bool from_string(const std::string & v);
+        simpstr(const std::string & s);
+        simpstr& operator=(const std::string & s);
 
         // ------------------------------------------------------------------------
         //    wchar_t operations
@@ -152,26 +142,17 @@ namespace csl
           return (empty() ? 0 : (buf_.size()-1));
         }
 
-        inline size_t nbytes() const
-        {
-          return buf_.nbytes();
-        }
+        inline size_t nbytes() const { return buf_.nbytes();}
 
         inline size_t nchars() const
         {
-          // wcstombs should take care of 'combining characters' too
+          // wcstombs should take care of 'combining characters' too  
           return empty() ? 0 : ::wcstombs(NULL, data(), 0);
         }
 
-        inline bool empty() const
-        {
-          return (buf_.size() <= 1);
-        }
+        inline bool empty() const { return (buf_.size() <= 1); }
 
-        inline const buf_t & buffer() const
-        {
-          return buf_;
-        }
+        inline const buf_t & buffer() const { return buf_; }
 
         void ensure_trailing_zero();
 

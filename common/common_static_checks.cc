@@ -27,6 +27,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <codesloop/common/stpodary.hh>
 #include <codesloop/common/simpstr.hh>
 
+namespace
+{
+  static void static_check_simpstr()
+  {
+    csl::common::simpstr s;
+  }
+}
+
 
 /* EOF */
 

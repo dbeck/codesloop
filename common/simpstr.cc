@@ -56,15 +56,15 @@ namespace csl
       }
     }
     
-#ifdef DEBUG
+#ifdef CSL_DEBUG
     bool simpstr::csl_invariant() const
     {
       // check for trailing zero
       if( buf_.size() == 0 ) return false;
-      if( buf_[buf_.len()-1] != 0 ) return false;
+      if( buf_[buf_.size()-1] != 0 ) return false;
       return true;
     }
-#endif /*DEBUG*/
+#endif //CSL_DEBUG
 
     void simpstr::ensure_trailing_zero()
     {
@@ -122,33 +122,6 @@ namespace csl
       CSL_CHECK_INVARIANT();
 
       return *this;
-    }
-
-    simpstr simpstr::substr(const size_t start, const size_t length) const
-    {
-      simpstr s;
-      size_t len = length;
-      size_t sz = size();
-      
-      CSL_REQUIRE( (start+length) <= sz );
-      CSL_REQUIRE( start <= sz );
-
-      // shrink length to fit in
-      if ( sz < (length + start) )
-      {
-        len = sz - start;
-      }
-
-      if ( len > 0 )
-      {
-        // copy string
-        s.buf_.set( data()+start,len );
-        s.ensure_trailing_zero();
-      }
-      
-      CSL_CHECK_INVARIANT();
-
-      return s;
     }
 
     simpstr::simpstr(const char * st) : buf_( L'\0' )
@@ -215,10 +188,16 @@ namespace csl
 
     bool simpstr::operator==(const wchar_t * s) const
     {
-      CSL_REQUIRE( s != 0 );
-      if( !s ) { return false; }
+      if( !s ) { return empty(); }
       int ret = wcscmp( data(), s );
       return (ret == 0);
+    }
+    
+    bool simpstr::operator==(const char * s) const
+    {
+      if( !s ) { return empty(); }
+      simpstr rhs(s);
+      return (*this == rhs);
     }
     
     bool simpstr::operator==(const simpstr& s) const
@@ -294,30 +273,15 @@ namespace csl
       else         return 0;
     }
 
-    bool simpstr::from_string(const std::string & v)
+    simpstr::simpstr(const std::string & s)
     {
-      if( !v.size() ) { reset(); }
-      else            { *this = v; }
+      *this = s;      
       CSL_CHECK_INVARIANT();
-      return true;
     }
 
-    bool simpstr::from_string(const char * v)
+    simpstr& simpstr::operator=(const std::string & s)
     {
-      CSL_REQUIRE( v != 0 );
-      if( !v ) { reset(); }
-      else     { *this = v; }
-      CSL_CHECK_INVARIANT();
-      return true;
-    }
-
-    bool simpstr::from_string(const wchar_t * v)
-    {
-      CSL_REQUIRE( v != 0 );
-      if( !v ) { reset(); }
-      else     { *this = v; }
-      CSL_CHECK_INVARIANT();
-      return true;
+      return operator=(s.c_str());
     }
 
 /*
@@ -333,8 +297,35 @@ namespace csl
       return int64(static_cast<int64_t>(crc));
     }
   */
-    
-    simpstr simpstr::trim()
+  
+    simpstr simpstr::substr(const size_t start, const size_t length) const
+    {
+      simpstr s;
+      size_t len = length;
+      size_t sz = size();
+      
+      CSL_REQUIRE( (start+length) <= sz );
+      CSL_REQUIRE( start <= sz );
+
+      // shrink length to fit in
+      if ( sz < (length + start) )
+      {
+        len = sz - start;
+      }
+
+      if ( len > 0 )
+      {
+        // copy string
+        s.buf_.set( data()+start,len );
+        s.ensure_trailing_zero();
+      }
+      
+      CSL_CHECK_INVARIANT();
+
+      return s;
+    }
+
+    simpstr simpstr::trim() const
     {
       size_t start = npos, length = 0;
 
@@ -351,16 +342,18 @@ namespace csl
     
     simpstr::simpstr(const wchar_t * wcs) : buf_(L'\0')
     {
-      if( !wcs ) return;
-      // wcslen only cares about trailing zero, so combining characters will not confuse here
-      buf_.set( wcs, ::wcslen(wcs)+1 );
+      CSL_REQUIRE( wcs != 0 );
+      *this = wcs;
+      CSL_CHECK_INVARIANT();
     }
 
     simpstr& simpstr::operator=(const wchar_t * wcs)
     {
+      CSL_REQUIRE( wcs != 0 );
       if( !wcs ) return *this;
       // wcslen only cares about trailing zero, so combining characters will not confuse here
       buf_.set( wcs, ::wcslen(wcs)+1 );
+      CSL_CHECK_INVARIANT();
       return *this;
     }
     
@@ -378,7 +371,7 @@ namespace csl
       buf_.set( L"\0",1 );
       CSL_ENSURE( empty() == true );
       CSL_ENSURE( nbytes() > 0 );
-      CSL_ENSURE( nchars() == 1 );
+      CSL_ENSURE( nchars() == 0 );
       CSL_CHECK_INVARIANT();
     }
     
@@ -386,7 +379,7 @@ namespace csl
     {
       CSL_ENSURE( empty() == true );
       CSL_ENSURE( nbytes() > 0 );
-      CSL_ENSURE( nchars() == 1 );
+      CSL_ENSURE( nchars() == 0 );
       CSL_CHECK_INVARIANT();
     }
     

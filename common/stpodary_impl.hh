@@ -34,7 +34,7 @@ namespace csl
   namespace common
   {
 
-#ifdef DEBUG
+#ifdef CSL_DEBUG
     template <typename T,size_t SZ>
     bool stpodary<T,SZ>::csl_invariant() const
     {
@@ -42,7 +42,7 @@ namespace csl
       if( data_ == NULL ) return false;
       return true;
     }
-#endif //DEBUG
+#endif //CSL_DEBUG
 
     template <typename T,size_t SZ>
     T * stpodary<T,SZ>::allocate(size_t sz)

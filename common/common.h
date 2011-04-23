@@ -91,12 +91,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef CSL_DEBUG_ASSERT
-# ifdef DEBUG
+# ifdef CSL_DEBUG
 #  include <assert.h>
 #  define CSL_DEBUG_ASSERT(EXPR) assert( (EXPR) );
 # else
 #  define CSL_DEBUG_ASSERT(EXPR)
-# endif /*DEBUG*/
+# endif /*CSL_DEBUG*/
 #endif /*CSL_DEBUG_ASSERT*/
 
 #ifndef CSL_STDIO_H_INCLUDED

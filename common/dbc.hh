@@ -66,21 +66,21 @@ namespace csl
 }
 
 #ifndef CSL_ASSERT_THROW
-# ifdef DEBUG
+# ifdef CSL_DEBUG
 #  define CSL_ASSERT_THROW(EXPR,TYPE)                        \
       if( !(EXPR) )                                          \
       {                                                      \
         throw dbcexc( __FILE__,                              \
                       __LINE__,                              \
                       __func__,                              \
-                      "DBC Failure",                         \
+                      "DBC {" TYPE "} failed: " #EXPR,       \
                       class_name(),                          \
                       #EXPR,                                 \
                       TYPE);                                 \
       }
-# else /*DEBUG*/
+# else /*CSL_DEBUG*/
 #  define CSL_ASSERT_THROW(EXPR,TYPE)
-# endif /*DEBUG*/
+# endif /*CSL_DEBUG*/
 #endif /*CSL_ASSERT_THROW*/
 
 
@@ -89,19 +89,19 @@ namespace csl
 #define CSL_CHECK_INVARIANT() CSL_ASSERT_THROW( (this->csl_invariant()),"INVARIANT" );
 
 #ifndef CSL_INVARIANT
-# ifdef DEBUG
+# ifdef CSL_DEBUG
 #  define CSL_INVARIANT() bool csl_invariant() const
-# else /*DEBUG*/
+# else /*CSL_DEBUG*/
 #  define CSL_INVARIANT()
-# endif /*DEBUG*/
+# endif /*CSL_DEBUG*/
 #endif /*CSL_INVARIANT*/
 
 #ifndef CSL_VIRTUAL_INVARIANT
-# ifdef DEBUG
+# ifdef CSL_DEBUG
 #  define CSL_VIRTUAL_INVARIANT() virtual bool csl_invariant() const
-# else /*DEBUG*/
+# else /*CSL_DEBUG*/
 #  define CSL_VIRTUAL_INVARIANT()
-# endif /*DEBUG*/
+# endif /*CSL_DEBUG*/
 #endif /*CSL_VIRTUAL_INVARIANT*/
 
 #endif /*__cplusplus*/
