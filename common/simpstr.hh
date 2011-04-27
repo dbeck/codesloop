@@ -58,102 +58,73 @@ namespace csl
         
         typedef stpodary<elem_t,buf_items>  buf_t;
 
-        simpstr();
         virtual ~simpstr() {}
 
-        // ------------------------------------------------------------------------
-        //    str operations
-
+        // constructors
+        simpstr();
         simpstr(const simpstr& s);
-        simpstr& operator=(const simpstr& s);
-        simpstr& operator+=(const simpstr&);
-
-        inline friend simpstr operator+(const simpstr& lhs, const simpstr& rhs)
-        {
-          return simpstr(lhs) += rhs;
-        }
-
-        bool operator==(const simpstr& s) const;
-        size_t find(const simpstr & s) const;
-        simpstr substr(const size_t start, const size_t length) const;
-        simpstr trim() const;
-
-        // ------------------------------------------------------------------------
-        //    char * operations
-
         explicit simpstr(const char *);
+        explicit simpstr(const wchar_t * wcs);
+        explicit simpstr(const std::string & s);
+        
+        // operators
+        simpstr& operator=(const simpstr& s);
         simpstr& operator=(const char *);
-        bool operator==(const char * s) const;
-
-        // ------------------------------------------------------------------------
-        //    wchar_t * operations
-
-        simpstr(const wchar_t * wcs);
         simpstr& operator=(const wchar_t * wcs);
+        simpstr& operator=(const std::string & s);
+        
+        simpstr& operator+=(const simpstr&);
         simpstr& operator+=(const wchar_t * str);
+        
+        inline friend simpstr operator+(const simpstr& lhs, const simpstr& rhs)
+          { return simpstr(lhs) += rhs; }
 
         inline friend simpstr operator+(const wchar_t * lhs, const simpstr& rhs)
-        {
-          return simpstr(lhs) += rhs;
-        }
+          { return simpstr(lhs) += rhs; }
 
         inline friend simpstr operator+(const simpstr& lhs, const wchar_t * rhs)
-        {
-          return simpstr(lhs) += rhs;
-        }
+          { return simpstr(lhs) += rhs; }
 
+        bool operator==(const simpstr& s) const;
+        bool operator==(const char * s) const;
         bool operator==(const wchar_t * s) const;
 
-        inline const wchar_t * c_str() const
-        {
-          return( data() ); // TODO: have a char * version
-        }
-
-        simpstr & assign(const wchar_t * start, const wchar_t * end);
-        size_t find(const wchar_t * s) const;
-        inline const wchar_t * data() const { return buf_.data(); }
-
-        // ------------------------------------------------------------------------
-        //    std::string operations
-
-        simpstr(const std::string & s);
-        simpstr& operator=(const std::string & s);
-
-        // ------------------------------------------------------------------------
-        //    wchar_t operations
-
         inline wchar_t operator[](const size_t n) const
-        {
-          return (data())[n];
-        }
+          { return (data())[n]; }
 
+        // others
         wchar_t at(const size_t n) const;
+
+        simpstr substr(const size_t start, const size_t length) const;
+        simpstr trim() const;
+                                                                                                                                                                                                
+        size_t find(const simpstr & s) const;
         size_t find(wchar_t w) const;
+        size_t find(const wchar_t * s) const;
+                
         size_t rfind(wchar_t w) const;
 
-        // ------------------------------------------------------------------------
+        simpstr & assign(const wchar_t * start, const wchar_t * end);
+
+        inline const wchar_t * c_str() const
+          { return( data() ); } // TODO: have a char * version
+
+        inline const wchar_t * data() const { return buf_.data(); }
 
         inline void clear() { reset(); }
         void reset();
 
         inline size_t size() const
-        {
+          { return (empty() ? 0 : (buf_.size()-1)); }
           // I presume the trailing zero is already there
-          return (empty() ? 0 : (buf_.size()-1));
-        }
 
         inline size_t nbytes() const { return buf_.nbytes();}
-
         inline size_t nchars() const
-        {
+          {  return empty() ? 0 : ::wcstombs(NULL, data(), 0); }
           // wcstombs should take care of 'combining characters' too  
-          return empty() ? 0 : ::wcstombs(NULL, data(), 0);
-        }
 
         inline bool empty() const { return (buf_.size() <= 1); }
-
         inline const buf_t & buffer() const { return buf_; }
-
         void ensure_trailing_zero();
 
       private:
