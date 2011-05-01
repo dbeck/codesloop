@@ -44,6 +44,7 @@ namespace csl
         static_assert( std::is_pod<T>::value, "T must be a POD type" );
         static_assert( SZ>0, "SZ must be greater then zero" );
         static_assert( std::is_void<T>::value == false, "T must not be void" );
+        typedef T elem_t;
 
         static const size_t  preallocated_size_ = SZ;
         static const size_t  item_size_         = sizeof(T);

@@ -24,7 +24,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "codesloop/common/simpstr.hh"
-#include "codesloop/common/common.h"
+#include "codesloop/common/trailing_zero.hh"
 
 namespace csl
 {
@@ -66,21 +66,6 @@ namespace csl
     }
 #endif //CSL_DEBUG
 
-    void simpstr::ensure_trailing_zero()
-    {
-      wchar_t c = 0;
-
-      if( buf_.size() == 0 )
-      {
-        buf_.append( &c,1 );
-      }
-      else if( data()[buf_.size()-1] != c )
-      {
-        buf_.append( &c,1 );
-      }
-      CSL_CHECK_INVARIANT();
-    }
-
     simpstr& simpstr::operator+=(const simpstr& s)
     {    
       if( s.empty() ) return *this;
@@ -94,8 +79,7 @@ namespace csl
       }
 
       buf_.append( s.buffer() );
-      ensure_trailing_zero();
-      
+      trailing_zero<buf_t>::ensure(buf_);
       CSL_CHECK_INVARIANT();
 
       return *this;
@@ -116,9 +100,7 @@ namespace csl
       }
 
       buf_.append( s, (::wcslen(s)+1) );
-      // I presume, this is not needed because of wcslen+1
-      // ensure_trailing_zero();
-      
+      // I presume, this is not needed because of wcslen+1      
       CSL_CHECK_INVARIANT();
 
       return *this;
@@ -143,7 +125,7 @@ namespace csl
       {
         // may need to shrink, when utf-8 chars occupy more than one character
         buf_.allocate( ssz );
-        ensure_trailing_zero();
+        trailing_zero<buf_t>::ensure(buf_);
       }
       else
       {
@@ -173,7 +155,7 @@ namespace csl
       {
         // may need to shrink, when utf-8 chars occupy more than one character
         buf_.allocate( ssz );
-        ensure_trailing_zero();
+        trailing_zero<buf_t>::ensure(buf_);
       }
       else
       {
@@ -317,7 +299,7 @@ namespace csl
       {
         // copy string
         s.buf_.set( data()+start,len );
-        s.ensure_trailing_zero();
+        trailing_zero<buf_t>::ensure(s.buf_);
       }
       
       CSL_CHECK_INVARIANT();
@@ -359,8 +341,9 @@ namespace csl
     
     simpstr& simpstr::assign(const wchar_t * start, const wchar_t * end)
     {
+      CSL_REQUIRE( (end-start) >= 0 );
       buf_.set( start, end-start );
-      ensure_trailing_zero();
+      trailing_zero<buf_t>::ensure(buf_);
       CSL_CHECK_INVARIANT();
       return *this;
     }

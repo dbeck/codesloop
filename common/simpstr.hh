@@ -125,7 +125,6 @@ namespace csl
 
         inline bool empty() const { return (buf_.size() <= 1); }
         inline const buf_t & buffer() const { return buf_; }
-        void ensure_trailing_zero();
 
       private:
         buf_t buf_;

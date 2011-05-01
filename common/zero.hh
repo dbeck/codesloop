@@ -23,40 +23,21 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <codesloop/common/common.h>
-#include <codesloop/common/stpodary.hh>
-#include <codesloop/common/simpstr.hh>
-#include <codesloop/common/zero.hh>
+#ifndef _csl_common_zero_hh_included_
+#define _csl_common_zero_hh_included_
+#ifdef __cplusplus
 
-namespace
+namespace csl
 {
-  static void static_check_simpstr()
+  namespace common
   {
-    csl::common::simpstr s;
-  }
-    
-  class static_check_init
-  {
-  public:
-    static_check_init()
+    template <typename T> struct zero
     {
-      static_check_simpstr();
-    }
-    
-    csl::common::zero<char>       char_zero_;
-    csl::common::zero<wchar_t>    wchar_zero_;
-    csl::common::zero<int>        int_zero_;
-    csl::common::zero<int64_t>    int64_zero_;
-    csl::common::zero<float>      float_zero_;
-    csl::common::zero<double>     double_zero_;
-    csl::common::zero<long>       long_zero_;
-    csl::common::zero<long long>  llong_zero_;
-  
-  };
-  
-  static static_check_init _static_check_init__;
+      static const T val_;
+    };
+  }
 }
 
-
-// EOF
+#endif /* __cplusplus */
+#endif /* _csl_common_zero_hh_included_ */
 

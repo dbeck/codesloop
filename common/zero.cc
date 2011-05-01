@@ -23,40 +23,29 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <codesloop/common/common.h>
-#include <codesloop/common/stpodary.hh>
-#include <codesloop/common/simpstr.hh>
-#include <codesloop/common/zero.hh>
+#include "codesloop/common/common.h"
+#include "codesloop/common/zero.hh"
 
-namespace
+namespace csl
 {
-  static void static_check_simpstr()
+  namespace common
   {
-    csl::common::simpstr s;
+    template <> const char                zero<char>::val_                = 0;
+    template <> const wchar_t             zero<wchar_t>::val_             = 0;
+    template <> const unsigned char       zero<unsigned char>::val_       = 0;
+    template <> const short               zero<short>::val_               = 0;
+    template <> const unsigned short      zero<unsigned short>::val_      = 0;
+    template <> const int                 zero<int>::val_                 = 0;
+    template <> const unsigned int        zero<unsigned int>::val_        = 0;
+    template <> const long                zero<long>::val_                = 0;
+    template <> const unsigned long       zero<unsigned long>::val_       = 0;
+    template <> const long long           zero<long long>::val_           = 0;
+    template <> const unsigned long long  zero<unsigned long long>::val_  = 0;
+    template <> const float               zero<float>::val_               = 0.0;
+    template <> const double              zero<double>::val_              = 0.0;
+    template <> const long double         zero<long double>::val_         = 0.0;
   }
-    
-  class static_check_init
-  {
-  public:
-    static_check_init()
-    {
-      static_check_simpstr();
-    }
-    
-    csl::common::zero<char>       char_zero_;
-    csl::common::zero<wchar_t>    wchar_zero_;
-    csl::common::zero<int>        int_zero_;
-    csl::common::zero<int64_t>    int64_zero_;
-    csl::common::zero<float>      float_zero_;
-    csl::common::zero<double>     double_zero_;
-    csl::common::zero<long>       long_zero_;
-    csl::common::zero<long long>  llong_zero_;
-  
-  };
-  
-  static static_check_init _static_check_init__;
 }
-
 
 // EOF
 
