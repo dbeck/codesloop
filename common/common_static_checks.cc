@@ -23,16 +23,33 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <codesloop/common/common.h>
-#include <codesloop/common/stpodary.hh>
-#include <codesloop/common/simpstr.hh>
-#include <codesloop/common/zero.hh>
+#include "codesloop/common/common.h"
+#include "codesloop/common/stpodary.hh"
+#include "codesloop/common/simpstr.hh"
+#include "codesloop/common/zero.hh"
+#include "codesloop/common/strlength.hh"
 
 namespace
 {
   static void static_check_simpstr()
   {
     csl::common::simpstr s;
+  }
+  
+  static bool static_check_strlength()
+  {
+    const char    * c = "Hello world";
+    const wchar_t * w = L"Hello world";
+    
+    csl::common::strlength<char>     charlen;
+    csl::common::strlength<wchar_t>  wcharlen;
+    
+    size_t lc1 = csl::common::strlength<char>::execute(c);
+    size_t lc2 = charlen(c);
+    size_t lw1 = csl::common::strlength<wchar_t>::execute(w);
+    size_t lw2 = wcharlen(w);
+    
+    return (lc1 == lc2 && lw1 == lw2);
   }
     
   class static_check_init
@@ -41,6 +58,7 @@ namespace
     static_check_init()
     {
       static_check_simpstr();
+      static_check_strlength();
     }
     
     csl::common::zero<char>       char_zero_;

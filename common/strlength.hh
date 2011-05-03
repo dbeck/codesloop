@@ -23,15 +23,60 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef _csl_common_strlength_hh_included_
+#define _csl_common_strlength_hh_included_
 #include "codesloop/common/common.h"
-#include "codesloop/common/strconcat.hh"
+#include "codesloop/common/zero.hh"
+#include "codesloop/common/dbc.hh"
+#include "codesloop/common/excbase.hh"
+#ifdef __cplusplus
 
 namespace csl
 {
   namespace common
-  {  
+  {
+    template <typename T> struct strlength
+    {
+    };
+
+    template <> struct strlength<char>
+    {
+      CSL_CLASS( csl::common::strlength );
+      CSL_DECLARE_EXCEPTION( invalid_parameter );
+      
+      static size_t execute(const char * s)
+      {
+        CSL_REQUIRE( s != NULL );
+        if( s == NULL ) { CSL_THROW( invalid_parameter ); }
+        return ::strlen(s);
+      }
+
+      size_t operator()(const char * s) const
+      {
+        return execute(s);
+      }
+    };
+
+    template <> struct strlength<wchar_t>
+    {
+      CSL_CLASS( csl::common::strlength );
+      CSL_DECLARE_EXCEPTION( invalid_parameter );
+      
+      static size_t execute(const wchar_t * s)
+      {
+        CSL_REQUIRE( s != NULL );
+        if( s == NULL ) { CSL_THROW( invalid_parameter ); }
+        return ::wcslen(s);
+      }
+
+      size_t operator()(const wchar_t * s) const
+      {
+        return execute(s);
+      }
+    };
   }
 }
 
-// EOF
+#endif /* __cplusplus */
+#endif /* _csl_common_strlength_hh_included_ */
 
