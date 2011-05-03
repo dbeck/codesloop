@@ -25,6 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/simpstr.hh"
 #include "codesloop/common/trailing_zero.hh"
+#include "codesloop/common/strconcat.hh"
 
 namespace csl
 {
@@ -67,22 +68,10 @@ namespace csl
 #endif //CSL_DEBUG
 
     simpstr& simpstr::operator+=(const simpstr& s)
-    {    
-      if( s.empty() ) return *this;
-
-      size_t sz = buf_.size();
-
-      if( sz > 0 && data()[sz-1] == 0 )
-      {
-        // exclude the trailing zero character
-        buf_.allocate( sz-1 );
-      }
-
-      buf_.append( s.buffer() );
-      trailing_zero<buf_t>::ensure(buf_);
+    {
+      strconcat<buf_t>::execute(buf_,s.buf_);
       CSL_CHECK_INVARIANT();
-
-      return *this;
+      return *this;      
     }
 
     simpstr& simpstr::operator+=(const wchar_t * s)

@@ -38,6 +38,7 @@ ADD_LIBRARY( csl_common STATIC
 		stpodary.hh stpodary_impl.hh
     zero.cc zero.hh
     trailing_zero.hh
+    strconcat.cc strconcat.hh
     simpstr.cc simpstr.hh
 		)
 #             cexc.cc       cexc.hh
