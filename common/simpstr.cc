@@ -77,22 +77,38 @@ namespace csl
     simpstr& simpstr::operator+=(const wchar_t * s)
     {
       CSL_REQUIRE( s != 0 );
-      
-      if( !s ) return *this;
-      
-      size_t sz = buf_.size();
-
-      if( sz > 0 && data()[sz-1] == 0 )
-      {
-        // exclude the trailing zero character
-        buf_.allocate( sz-1 );
-      }
-
-      buf_.append( s, (::wcslen(s)+1) );
-      // I presume, this is not needed because of wcslen+1      
+      strconcat<buf_t>::execute(buf_,s);
       CSL_CHECK_INVARIANT();
-
-      return *this;
+      return *this;      
+    }
+    
+    simpstr& simpstr::operator+=(const char * s)
+    {
+      CSL_REQUIRE( s != 0 );
+      strconcat<buf_t>::execute(buf_,s);
+      CSL_CHECK_INVARIANT();
+      return *this;      
+    }
+    
+    simpstr& simpstr::operator+=(const std::string & s)
+    {
+      strconcat<buf_t>::execute(buf_,s.c_str());
+      CSL_CHECK_INVARIANT();
+      return *this;      
+    }
+    
+    simpstr& simpstr::operator+=(const char c)
+    {
+      strconcat<buf_t>::execute(buf_,c);
+      CSL_CHECK_INVARIANT();
+      return *this;      
+    }
+    
+    simpstr& simpstr::operator+=(const wchar_t w)
+    {
+      strconcat<buf_t>::execute(buf_,w);
+      CSL_CHECK_INVARIANT();
+      return *this;      
     }
 
     simpstr::simpstr(const char * st) : buf_( L'\0' )
@@ -130,30 +146,9 @@ namespace csl
       CSL_REQUIRE( st != 0 );
 
       if( !st ) return *this;
-
-      size_t len =  strlen(st)+1;
-      size_t ssz = 0;
-
-      wchar_t * nptr = buf_.allocate( len );
-      
-      if( !nptr )
-      {
-        CSL_THROW( out_of_memory );    
-      }
-      else if ( (ssz = ::mbstowcs( nptr, st, len )) != size_t(-1) )
-      {
-        // may need to shrink, when utf-8 chars occupy more than one character
-        buf_.allocate( ssz );
-        trailing_zero<buf_t>::ensure(buf_);
-      }
-      else
-      {
-        reset();
-        CSL_THROW( conversion_error );
-      }
-      
+      reset();
+      if( *st ) { strconcat<buf_t>::execute(buf_,st); }
       CSL_CHECK_INVARIANT();
-      
       return *this;
     }
 

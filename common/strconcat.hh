@@ -38,8 +38,86 @@ namespace csl
     namespace strconcat_internal
     {
       template <typename T> struct sibling_type {};
-      template <> struct sibling_type<char>     { typedef wchar_t sibling_t; };
-      template <> struct sibling_type<wchar_t>  { typedef char sibling_t; }; 
+      
+      // convert functions are unchecked by intention, expecting
+      // that strconcat do the neccesary checks instead
+
+      template <> struct sibling_type<char>
+      {
+        CSL_CLASS( csl::common::strconcat_internal::sibling_type );
+        CSL_DECLARE_EXCEPTION( out_of_memory );
+        CSL_DECLARE_EXCEPTION( conversion_error );
+
+        typedef wchar_t sibling_t;
+
+        template <typename CollectionT>
+        static CollectionT & convert( CollectionT & lhs, const wchar_t * rhs )
+        {
+          // over allocating takes care of combining charachters too
+          size_t rlen = strlength<wchar_t>::execute( rhs );
+          size_t allocd = 1+4*rlen;
+          
+          char * b = lhs.allocate( allocd );
+          
+          if( b == NULL )
+          {
+            CSL_THROW( out_of_memory );
+          }
+          
+          size_t ssz = ::wcstombs( b, rhs, rlen );
+          
+          if( ssz == static_cast<size_t>(-1) )
+          {
+            lhs.reset();
+            CSL_THROW( conversion_error );
+          }
+          else if( ssz != (allocd-1) )
+          {
+            lhs.allocate( ssz );
+          }
+          
+          trailing_zero<CollectionT>::ensure( lhs );
+          return lhs;
+        }        
+      };
+      
+      template <> struct sibling_type<wchar_t>
+      {
+        CSL_CLASS( csl::common::strconcat_internal::sibling_type );
+        CSL_DECLARE_EXCEPTION( out_of_memory );
+        CSL_DECLARE_EXCEPTION( conversion_error );
+
+        typedef char sibling_t;
+        
+        template <typename CollectionT>
+        static CollectionT & convert( CollectionT & lhs, const char * rhs )
+        {
+          // over allocating may happend due to the combining chars
+          size_t rlen = strlength<char>::execute( rhs );
+          
+          wchar_t * b = lhs.allocate( 1+rlen );
+          
+          if( b == NULL )
+          {
+            CSL_THROW( out_of_memory );
+          }
+          
+          size_t ssz = ::mbstowcs( b, rhs, rlen );
+          
+          if( ssz == static_cast<size_t>(-1) )
+          {
+            lhs.reset();
+            CSL_THROW( conversion_error );
+          }
+          else if( ssz != rlen )
+          {
+            lhs.allocate( ssz );
+          }
+          
+          trailing_zero<CollectionT>::ensure( lhs );
+          return lhs;
+        }
+      }; 
     }
     
     template <typename CollectionT> struct strconcat
@@ -48,18 +126,19 @@ namespace csl
       CSL_DECLARE_EXCEPTION( out_of_memory );
       CSL_DECLARE_EXCEPTION( invalid_parameter );
       
-      typedef typename CollectionT::elem_t value_t;
-      typedef typename strconcat_internal::sibling_type<value_t>::sibling_t sibling_t;
+      typedef typename CollectionT::elem_t                        value_t;
+      typedef typename strconcat_internal::sibling_type<value_t>  sibling_type_t;
+      typedef typename sibling_type_t::sibling_t                  sibling_t;
       
       static CollectionT & execute(CollectionT & lhs, const CollectionT & rhs)
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(lhs) == true );
         CSL_REQUIRE( trailing_zero<CollectionT>::check(rhs) == true );
-        
+                
         // parameter checks
         if( lhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
         if( rhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
-        
+                
         // empty rhs
         if( rhs.size() == 1 ) return lhs;
 
@@ -69,6 +148,12 @@ namespace csl
         if( p == NULL ) { CSL_THROW( out_of_memory ); }
         
         lhs.append( rhs );
+        
+        if( &lhs == &rhs )
+        {
+          trailing_zero<CollectionT>::ensure( lhs );
+        }
+
         CSL_ENSURE( trailing_zero<CollectionT>::check(lhs) == true );
         return lhs;
       }
@@ -101,7 +186,6 @@ namespace csl
          
         lhs.append( rhs, (rlen+1) );
         CSL_ENSURE( trailing_zero<CollectionT>::check(lhs) == true );
-
         return lhs;
       }
 
@@ -128,7 +212,6 @@ namespace csl
 
         lhs.append( rstr, 2 );
         CSL_ENSURE( trailing_zero<CollectionT>::check(lhs) == true );
-
         return lhs;
       }
 
@@ -136,43 +219,126 @@ namespace csl
       {
         return execute(lhs,rhs);
       }
-      
-      // -------------------
                   
       static CollectionT & execute(CollectionT & lhs, const sibling_t * rhs)
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(lhs) == true );
         CSL_REQUIRE( rhs != NULL );
 
-        // TODO
+        // parameter checks
+        if( lhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
+        if( rhs == NULL )     { CSL_THROW( invalid_parameter ); }
+
+        // empty string on rhs
+        if( *rhs == zero<sibling_t>::val_ ) return lhs;
+        
+        // remove trailing zero
+        value_t * p = lhs.allocate(lhs.size()-1);
+
+        if( p == NULL ) { CSL_THROW( out_of_memory ); }
+
+        // convert rhs to value_t collection        
+        CollectionT tmp;
+        sibling_type_t::convert( tmp, rhs );
+        
+        lhs.append( tmp );
+        
+        CSL_ENSURE( trailing_zero<CollectionT>::check(lhs) == true );
         return lhs;
+      }
+      
+      CollectionT & operator()(CollectionT & lhs, const sibling_t * rhs) const
+      {
+        return execute(lhs,rhs);
       }
 
       static CollectionT & execute(CollectionT & lhs, const sibling_t rhs)
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(lhs) == true );
+
+        if( lhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
+
+        // terminator on rhs
+        if( rhs == zero<sibling_t>::val_ ) return lhs;
+
+        sibling_t rstr[2] = { rhs, zero<sibling_t>::val_ };
         
-        // TODO
+        // remove trailing zero
+        value_t * p = lhs.allocate(lhs.size()-1);
+
+        if( p == NULL ) { CSL_THROW( out_of_memory ); }
+
+        // convert rhs to value_t collection        
+        CollectionT tmp;
+        sibling_type_t::convert( tmp, rstr );
+        
+        lhs.append( tmp );
+        
+        CSL_ENSURE( trailing_zero<CollectionT>::check(lhs) == true );
         return lhs;
       }
-      
-      // -------------------
+
+      CollectionT & operator()(CollectionT & lhs, const sibling_t rhs) const
+      {
+        return execute(lhs,rhs);
+      }
 
       static CollectionT execute(const value_t * lhs, const CollectionT & rhs)
       {
         CSL_REQUIRE( lhs != NULL );
         CSL_REQUIRE( trailing_zero<CollectionT>::check(rhs) == true );
         
-        // TODO
-        return CollectionT();
+        if( lhs == NULL )     { CSL_THROW( invalid_parameter ); }
+        if( rhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
+        
+        CollectionT ret;
+        
+        if( *lhs == zero<value_t>::val_ )
+        {
+          ret = rhs;
+        }
+        else
+        {        
+          trailing_zero<CollectionT>::ensure(ret);
+          execute( ret, lhs );        
+          execute( ret, rhs );
+        }
+
+        CSL_ENSURE( trailing_zero<CollectionT>::check(ret) == true );                        
+        return ret;
+      }
+      
+      CollectionT operator()(const value_t * lhs, const CollectionT & rhs) const
+      {
+        return execute(lhs,rhs);
       }
 
       static CollectionT execute(const value_t lhs, const CollectionT & rhs)
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(rhs) == true );
 
-        // TODO
-        return CollectionT();
+        if( rhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
+
+        CollectionT ret;
+        
+        if( lhs == zero<value_t>::val_ )
+        {
+          ret = rhs;
+        }
+        else
+        {
+          value_t lstr[2] = { lhs, zero<value_t>::val_ };
+          ret.append( lstr, 2 );
+          execute( ret, rhs );
+        }
+        
+        CSL_ENSURE( trailing_zero<CollectionT>::check(ret) == true );                        
+        return ret;
+      }
+
+      CollectionT operator()(const value_t lhs, const CollectionT & rhs) const
+      {
+        return execute(lhs,rhs);
       }
 
       static CollectionT execute(const sibling_t * lhs, const CollectionT & rhs)
@@ -180,17 +346,59 @@ namespace csl
         CSL_REQUIRE( lhs != NULL );
         CSL_REQUIRE( trailing_zero<CollectionT>::check(rhs) == true );
         
-        // TODO
-        return CollectionT();
+        if( lhs == NULL )     { CSL_THROW( invalid_parameter ); }
+        if( rhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
+        
+        CollectionT ret;
+        
+        if( *lhs == zero<sibling_t>::val_ )
+        {
+          ret = rhs;
+        }
+        else
+        {        
+          trailing_zero<CollectionT>::ensure(ret);
+          execute( ret, lhs );
+          execute( ret, rhs );
+        }
+
+        CSL_ENSURE( trailing_zero<CollectionT>::check(ret) == true );                        
+        return ret;
+      }
+      
+      CollectionT operator()(const sibling_t * lhs, const CollectionT & rhs) const
+      {
+        return execute(lhs,rhs);
       }
 
       static CollectionT execute(const sibling_t lhs, const CollectionT & rhs)
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(rhs) == true );
 
-        // TODO
-        return CollectionT();
-      }                         
+        if( rhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
+
+        CollectionT ret;
+        
+        if( lhs == zero<sibling_t>::val_ )
+        {
+          ret = rhs;
+        }
+        else
+        {
+          trailing_zero<CollectionT>::ensure(ret);
+          sibling_t lstr[2] = { lhs, zero<sibling_t>::val_ };
+          execute( ret, lstr );
+          execute( ret, rhs );
+        }
+        
+        CSL_ENSURE( trailing_zero<CollectionT>::check(ret) == true );                        
+        return ret;
+      }
+      
+      CollectionT operator()(const sibling_t lhs, const CollectionT & rhs) const
+      {
+        return execute(lhs,rhs);
+      }      
     };
   }
 }

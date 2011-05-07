@@ -56,7 +56,8 @@ namespace csl
       
       static void ensure(CollectionT & collection)
       {
-        value_t last_item = 1+zero<value_t>::val_;
+        value_t last_item = zero<value_t>::val_;
+        ++last_item;
         if( collection.size() > 0 )
         {
           last_item = collection[collection.size()-1];

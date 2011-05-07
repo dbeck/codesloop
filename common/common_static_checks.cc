@@ -28,6 +28,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/simpstr.hh"
 #include "codesloop/common/zero.hh"
 #include "codesloop/common/strlength.hh"
+#include "codesloop/common/strconcat.hh"
 
 namespace
 {
@@ -51,6 +52,42 @@ namespace
     
     return (lc1 == lc2 && lw1 == lw2);
   }
+  
+  static void static_check_strconcat()
+  {
+    typedef csl::common::stpodary<char,128> c_t;
+    typedef csl::common::stpodary<wchar_t,128> w_t;
+    
+    c_t cs;
+    w_t ws;
+    
+    const char    * cp = "Hello";
+    const wchar_t * wp = L"World";
+
+    csl::common::strconcat<c_t>::execute( cs, cs );
+    
+    csl::common::strconcat<c_t>::execute( cs, cp );
+    csl::common::strconcat<c_t>::execute( cs, cp[0] );
+    csl::common::strconcat<c_t>::execute( cp, cs );
+    csl::common::strconcat<c_t>::execute( cp[0], cs );
+    
+    csl::common::strconcat<c_t>::execute( cs, wp );
+    csl::common::strconcat<c_t>::execute( cs, wp[0] );
+    csl::common::strconcat<c_t>::execute( wp, cs );
+    csl::common::strconcat<c_t>::execute( wp[0], cs );
+
+    csl::common::strconcat<w_t>::execute( ws, ws );
+    
+    csl::common::strconcat<w_t>::execute( ws, wp );
+    csl::common::strconcat<w_t>::execute( ws, wp[0] );
+    csl::common::strconcat<w_t>::execute( ws, cp );
+    csl::common::strconcat<w_t>::execute( ws, cp[0] );
+    
+    csl::common::strconcat<w_t>::execute( wp, ws );
+    csl::common::strconcat<w_t>::execute( wp[0], ws );
+    csl::common::strconcat<w_t>::execute( cp, ws );
+    csl::common::strconcat<w_t>::execute( cp[0], ws );
+  }
     
   class static_check_init
   {
@@ -59,6 +96,7 @@ namespace
     {
       static_check_simpstr();
       static_check_strlength();
+      static_check_strconcat();
     }
     
     csl::common::zero<char>       char_zero_;

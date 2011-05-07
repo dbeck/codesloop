@@ -33,6 +33,7 @@ Credits: some techniques and code pieces are borrowed from Christian
 #include "codesloop/common/stpodary.hh"
 #include "codesloop/common/dbc.hh"
 #include "codesloop/common/excbase.hh"
+#include "codesloop/common/strconcat.hh"
 #include <wctype.h>
 #ifdef __cplusplus
 #include <string>
@@ -73,8 +74,12 @@ namespace csl
         simpstr& operator=(const wchar_t * wcs);
         simpstr& operator=(const std::string & s);
         
-        simpstr& operator+=(const simpstr&);
+        simpstr& operator+=(const simpstr& s);
         simpstr& operator+=(const wchar_t * str);
+        simpstr& operator+=(const char * str);
+        simpstr& operator+=(const std::string & s);
+        simpstr& operator+=(const char c);
+        simpstr& operator+=(const wchar_t w);
         
         inline friend simpstr operator+(const simpstr& lhs, const simpstr& rhs)
           { return simpstr(lhs) += rhs; }
