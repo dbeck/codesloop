@@ -81,18 +81,26 @@ namespace csl
         simpstr& operator+=(const char c);
         simpstr& operator+=(const wchar_t w);
         
-        inline friend simpstr operator+(const simpstr& lhs, const simpstr& rhs)
+        friend simpstr operator+(const simpstr& lhs, const simpstr& rhs)
           { return simpstr(lhs) += rhs; }
 
-        inline friend simpstr operator+(const wchar_t * lhs, const simpstr& rhs)
+        friend simpstr operator+(const wchar_t * lhs, const simpstr& rhs)
           { return simpstr(lhs) += rhs; }
 
-        inline friend simpstr operator+(const simpstr& lhs, const wchar_t * rhs)
+        friend simpstr operator+(const simpstr& lhs, const wchar_t * rhs)
           { return simpstr(lhs) += rhs; }
 
         bool operator==(const simpstr& s) const;
         bool operator==(const char * s) const;
         bool operator==(const wchar_t * s) const;
+
+        template <typename Other>
+        inline bool operator!=(const Other* s) const
+          { return !(*this == s); }
+                        
+        template <typename Other>
+        inline bool operator!=(const Other& s) const
+          { return !(*this == s); }
 
         inline wchar_t operator[](const size_t n) const
           { return (data())[n]; }

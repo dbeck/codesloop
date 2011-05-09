@@ -64,18 +64,18 @@ namespace csl
             CSL_THROW( out_of_memory );
           }
           
-          size_t ssz = ::wcstombs( b, rhs, rlen );
+          size_t ssz = ::wcstombs( b, rhs, rlen+1 );
           
           if( ssz == static_cast<size_t>(-1) )
           {
             lhs.reset();
             CSL_THROW( conversion_error );
           }
-          else if( ssz != (allocd-1) )
+          else if( ssz != rlen )
           {
             lhs.allocate( ssz );
           }
-          
+                    
           trailing_zero<CollectionT>::ensure( lhs );
           return lhs;
         }        
@@ -102,7 +102,7 @@ namespace csl
             CSL_THROW( out_of_memory );
           }
           
-          size_t ssz = ::mbstowcs( b, rhs, rlen );
+          size_t ssz = ::mbstowcs( b, rhs, rlen+1 );
           
           if( ssz == static_cast<size_t>(-1) )
           {
@@ -113,7 +113,7 @@ namespace csl
           {
             lhs.allocate( ssz );
           }
-          
+                    
           trailing_zero<CollectionT>::ensure( lhs );
           return lhs;
         }
@@ -124,7 +124,6 @@ namespace csl
     {
       CSL_CLASS( csl::common::strconcat );
       CSL_DECLARE_EXCEPTION( out_of_memory );
-      CSL_DECLARE_EXCEPTION( invalid_parameter );
       
       typedef typename CollectionT::elem_t                        value_t;
       typedef typename strconcat_internal::sibling_type<value_t>  sibling_type_t;
@@ -134,13 +133,14 @@ namespace csl
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(lhs) == true );
         CSL_REQUIRE( trailing_zero<CollectionT>::check(rhs) == true );
+        CSL_REQUIRE( lhs.size() != 0 );
+        CSL_REQUIRE( rhs.size() != 0 );
                 
         // parameter checks
-        if( lhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
-        if( rhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
+        if( lhs.size() == 0 ) { trailing_zero<CollectionT>::ensure(lhs); }
                 
         // empty rhs
-        if( rhs.size() == 1 ) return lhs;
+        if( rhs.size() <= 1 ) return lhs;
 
         // remove trailing zero
         value_t * p = lhs.allocate(lhs.size()-1);
@@ -167,10 +167,11 @@ namespace csl
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(lhs) == true );
         CSL_REQUIRE( rhs != NULL );
+        CSL_REQUIRE( lhs.size() != 0 );
 
         // parameter checks
-        if( lhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
-        if( rhs == NULL )     { CSL_THROW( invalid_parameter ); }
+        if( lhs.size() == 0 ) { trailing_zero<CollectionT>::ensure(lhs); }
+        if( rhs == NULL )     { return lhs; }
         
         // empty string on rhs
         if( *rhs == zero<value_t>::val_ ) return lhs;
@@ -197,8 +198,9 @@ namespace csl
       static CollectionT & execute(CollectionT & lhs, const value_t rhs)
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(lhs) == true );
+        CSL_REQUIRE( lhs.size() > 0 );
        
-        if( lhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
+        if( lhs.size() == 0 ) { trailing_zero<CollectionT>::ensure(lhs); }
 
         // terminator on rhs
         if( rhs == zero<value_t>::val_ ) return lhs;
@@ -224,10 +226,11 @@ namespace csl
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(lhs) == true );
         CSL_REQUIRE( rhs != NULL );
+        CSL_REQUIRE( lhs.size() > 0 );
 
         // parameter checks
-        if( lhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
-        if( rhs == NULL )     { CSL_THROW( invalid_parameter ); }
+        if( lhs.size() == 0 ) { trailing_zero<CollectionT>::ensure(lhs); }
+        if( rhs == NULL )     { return lhs; }
 
         // empty string on rhs
         if( *rhs == zero<sibling_t>::val_ ) return lhs;
@@ -255,8 +258,9 @@ namespace csl
       static CollectionT & execute(CollectionT & lhs, const sibling_t rhs)
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(lhs) == true );
+        CSL_REQUIRE( lhs.size() > 0 );
 
-        if( lhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
+        if( lhs.size() == 0 ) { trailing_zero<CollectionT>::ensure(lhs); }
 
         // terminator on rhs
         if( rhs == zero<sibling_t>::val_ ) return lhs;
@@ -287,21 +291,26 @@ namespace csl
       {
         CSL_REQUIRE( lhs != NULL );
         CSL_REQUIRE( trailing_zero<CollectionT>::check(rhs) == true );
+        CSL_REQUIRE( rhs.size() > 0 );
         
-        if( lhs == NULL )     { CSL_THROW( invalid_parameter ); }
-        if( rhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
+        CollectionT ret, rtmp;
+        const CollectionT * rtmpp = &rhs;
         
-        CollectionT ret;
-        
-        if( *lhs == zero<value_t>::val_ )
+        if( rhs.size() == 0 )
         {
-          ret = rhs;
+          trailing_zero<CollectionT>::ensure(rtmp);
+          rtmpp = &rtmp;
+        }
+          
+        if( lhs == NULL || *lhs == zero<value_t>::val_ )
+        {
+          ret = *rtmpp;
         }
         else
         {        
           trailing_zero<CollectionT>::ensure(ret);
           execute( ret, lhs );        
-          execute( ret, rhs );
+          execute( ret, *rtmpp );
         }
 
         CSL_ENSURE( trailing_zero<CollectionT>::check(ret) == true );                        
@@ -316,20 +325,25 @@ namespace csl
       static CollectionT execute(const value_t lhs, const CollectionT & rhs)
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(rhs) == true );
-
-        if( rhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
-
-        CollectionT ret;
+        CSL_REQUIRE( rhs.size() > 0 );
+        
+        CollectionT ret, rtmp;
+        const CollectionT * rtmpp = &rhs;
+        
+        if( rhs.size() == 0 )
+        {
+          trailing_zero<CollectionT>::ensure(rtmp);
+          rtmpp = &rtmp;
+        }        
         
         if( lhs == zero<value_t>::val_ )
         {
-          ret = rhs;
+          ret = *rtmpp;
         }
         else
         {
-          value_t lstr[2] = { lhs, zero<value_t>::val_ };
-          ret.append( lstr, 2 );
-          execute( ret, rhs );
+          ret.append( &lhs, 1 );
+          ret.append( *rtmpp );
         }
         
         CSL_ENSURE( trailing_zero<CollectionT>::check(ret) == true );                        
@@ -346,20 +360,24 @@ namespace csl
         CSL_REQUIRE( lhs != NULL );
         CSL_REQUIRE( trailing_zero<CollectionT>::check(rhs) == true );
         
-        if( lhs == NULL )     { CSL_THROW( invalid_parameter ); }
-        if( rhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
+        CollectionT ret, rtmp;
+        const CollectionT * rtmpp = &rhs;
         
-        CollectionT ret;
-        
-        if( *lhs == zero<sibling_t>::val_ )
+        if( rhs.size() == 0 )
         {
-          ret = rhs;
+          trailing_zero<CollectionT>::ensure(rtmp);
+          rtmpp = &rtmp;
+        }
+          
+        if( lhs == NULL || *lhs == zero<sibling_t>::val_ )
+        {
+          ret = *rtmpp;
         }
         else
         {        
           trailing_zero<CollectionT>::ensure(ret);
-          execute( ret, lhs );
-          execute( ret, rhs );
+          execute( ret, lhs );        
+          execute( ret, *rtmpp );
         }
 
         CSL_ENSURE( trailing_zero<CollectionT>::check(ret) == true );                        
@@ -375,22 +393,27 @@ namespace csl
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(rhs) == true );
 
-        if( rhs.size() == 0 ) { CSL_THROW( invalid_parameter ); }
-
-        CollectionT ret;
+        CollectionT ret, rtmp;
+        const CollectionT * rtmpp = &rhs;
         
+        if( rhs.size() == 0 )
+        {
+          trailing_zero<CollectionT>::ensure(rtmp);
+          rtmpp = &rtmp;
+        }        
+
         if( lhs == zero<sibling_t>::val_ )
         {
-          ret = rhs;
+          ret = *rtmpp;
         }
         else
-        {
+        {          
           trailing_zero<CollectionT>::ensure(ret);
           sibling_t lstr[2] = { lhs, zero<sibling_t>::val_ };
           execute( ret, lstr );
-          execute( ret, rhs );
+          execute( ret, *rtmpp );
         }
-        
+                
         CSL_ENSURE( trailing_zero<CollectionT>::check(ret) == true );                        
         return ret;
       }

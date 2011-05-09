@@ -30,6 +30,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/simpstr.hh"
 #include "codesloop/common/excbase.hh"
+#include <string>
 #include <assert.h>
 
 using csl::common::simpstr;
@@ -59,8 +60,34 @@ namespace test_simpstr
     simpstr s1,s2;
     assert( s1 == s2 );
     assert( s1 == "" );
-    assert( s1 == static_cast<char *>(0) );
-    assert( s1 == static_cast<wchar_t *>(0) );
+    
+    {
+      bool caught = false;
+      try
+      {
+        assert( s1 == static_cast<char *>(0) );
+      }
+      catch( csl::common::excbase & e )
+      {
+        caught = true;
+        print_exc_caught( e );
+      }
+      assert( caught == true );
+    }
+
+    {
+      bool caught = false;
+      try
+      {
+        assert( s1 == static_cast<wchar_t *>(0) );
+      }
+      catch( csl::common::excbase & e )
+      {
+        caught = true;
+        print_exc_caught( e );
+      }
+      assert( caught == true );
+    }
   }
   
   void str_copy()
@@ -112,10 +139,121 @@ namespace test_simpstr
     assert( s1 == s2 );
     simpstr s3;
     s3 = "Hello world";
-    assert( s1 == s3 && s3 == s2 );
+    assert( s1 == s3 );
+    assert( s3 == s2 );
     simpstr s4 = s1;
-    assert( s1 == s4 && s4 == s2 );
+    assert( s1 == s4 );
+    assert( s4 == s2 );
   }
+  
+  void stdstring_copy()
+  {
+    std::string x("Hello world");
+    simpstr s0,s1(x),s2;
+    s2 = x;
+    assert( s1 != s0 );
+    assert( !(s1 == s0) );
+    assert( s1 == "Hello world" );
+    assert( s1 == s2 );
+  }
+  
+  void charptr_append()
+  {
+    simpstr s1;
+    s1 += "Hello";
+    assert( s1 == "Hello" );
+    s1 += "";
+    assert( s1 == "Hello" );
+    s1 += " world";
+    assert( s1 == "Hello world" );
+    bool caught = false;
+    try
+    {
+      char * p = 0;
+      s1 += p;
+    }
+    catch( csl::common::excbase & e )
+    {
+      caught = true;
+      print_exc_caught( e );
+    }
+    assert( caught == true );
+    s1 += '!';
+    assert( s1 == "Hello world!" );
+    s1 += '\0';
+    assert( s1 == "Hello world!" );
+  }
+
+  void stdstring_append()
+  {
+    simpstr s1;
+    std::string h("Hello"), w("world"), e;
+    s1 += h;
+    assert( s1 == "Hello" );
+    s1 += ' ';
+    s1 += w;
+    assert( s1 == "Hello world");
+    s1 += e;
+    assert( s1 == "Hello world");
+  }
+
+  void comparisons()
+  {
+    simpstr s1(L"Hello world");
+    assert( s1 == "Hello world");
+    assert( s1 == L"Hello world");
+    assert( s1 !=  "H" );
+    assert( s1 !=  "Hello world!" );
+    assert( s1 != L"H" );
+    assert( s1 != L"Hello world!" );
+    assert( s1 != "" );
+    assert( s1 != L"" );
+    
+    {
+      bool caught = false;
+      try
+      {
+        char * p = 0;
+        s1.operator==(p);
+      }
+      catch( csl::common::excbase & e )
+      {
+        caught = true;
+        print_exc_caught( e );
+      }
+      assert( caught == true );
+    }
+
+    {
+      bool caught = false;
+      try
+      {
+        wchar_t * p = 0;
+        s1.operator==(p);
+      }
+      catch( csl::common::excbase & e )
+      {
+        caught = true;
+        print_exc_caught( e );
+      }
+      assert( caught == true );
+    }    
+  }
+  
+  void find()
+  {
+  }
+  
+  void rfind()
+  {
+  }
+  
+  void assign()
+  {
+  }
+  
+  
+    
   
 } // end of test_simpstr
 
@@ -132,10 +270,18 @@ int main()
     str_substr();
     str_trim();
     charptr_copy();
+    stdstring_copy();
+    charptr_append();
+    stdstring_append();
+    comparisons();
+    find();
+    rfind();
+    assign();
   }
   catch( csl::common::excbase & e )
   {
     print_exc_caught( e );
+    throw;
   }
   return 0;
 }

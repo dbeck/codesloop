@@ -77,6 +77,7 @@ namespace csl
     simpstr& simpstr::operator+=(const wchar_t * s)
     {
       CSL_REQUIRE( s != 0 );
+      if( !s ) { return *this; }
       strconcat<buf_t>::execute(buf_,s);
       CSL_CHECK_INVARIANT();
       return *this;      
@@ -85,6 +86,7 @@ namespace csl
     simpstr& simpstr::operator+=(const char * s)
     {
       CSL_REQUIRE( s != 0 );
+      if( !s ) { return *this; }
       strconcat<buf_t>::execute(buf_,s);
       CSL_CHECK_INVARIANT();
       return *this;      
@@ -115,7 +117,7 @@ namespace csl
     {
       CSL_REQUIRE( st != 0 );
       
-      if( !st ) return;
+      if( !st ) { return; }
 
       size_t len = ::strlen(st)+1;
       size_t ssz = 0;
@@ -144,8 +146,7 @@ namespace csl
     simpstr& simpstr::operator=(const char * st)
     {
       CSL_REQUIRE( st != 0 );
-
-      if( !st ) return *this;
+      if( !st ) { return *this; }
       reset();
       if( *st ) { strconcat<buf_t>::execute(buf_,st); }
       CSL_CHECK_INVARIANT();
@@ -154,6 +155,7 @@ namespace csl
 
     bool simpstr::operator==(const wchar_t * s) const
     {
+      CSL_REQUIRE( s != 0 );
       if( !s ) { return empty(); }
       int ret = wcscmp( data(), s );
       return (ret == 0);
@@ -161,11 +163,12 @@ namespace csl
     
     bool simpstr::operator==(const char * s) const
     {
+      CSL_REQUIRE( s != 0 );
       if( !s ) { return empty(); }
       simpstr rhs(s);
       return (*this == rhs);
     }
-    
+
     bool simpstr::operator==(const simpstr& s) const
     {
       if( size() != s.size() ) return false;
@@ -219,8 +222,8 @@ namespace csl
     {
       CSL_REQUIRE( strv != 0 );
       
-      if( !strv )    return npos;
-      if( empty() )  return npos;
+      if( !strv )   { return npos; }
+      if( empty() ) { return npos; }
 
       const wchar_t * res = 0;
 
@@ -309,6 +312,7 @@ namespace csl
     simpstr::simpstr(const wchar_t * wcs) : buf_(L'\0')
     {
       CSL_REQUIRE( wcs != 0 );
+      if( !wcs ) { return; }
       *this = wcs;
       CSL_CHECK_INVARIANT();
     }
@@ -316,7 +320,7 @@ namespace csl
     simpstr& simpstr::operator=(const wchar_t * wcs)
     {
       CSL_REQUIRE( wcs != 0 );
-      if( !wcs ) return *this;
+      if( !wcs ) { return *this; }
       // wcslen only cares about trailing zero, so combining characters will not confuse here
       buf_.set( wcs, ::wcslen(wcs)+1 );
       CSL_CHECK_INVARIANT();
@@ -326,6 +330,9 @@ namespace csl
     simpstr& simpstr::assign(const wchar_t * start, const wchar_t * end)
     {
       CSL_REQUIRE( (end-start) >= 0 );
+      CSL_REQUIRE( start != NULL );
+      CSL_REQUIRE( end != NULL );
+      if( start == NULL || end == NULL ) { return *this; }
       buf_.set( start, end-start );
       trailing_zero<buf_t>::ensure(buf_);
       CSL_CHECK_INVARIANT();
