@@ -47,6 +47,7 @@ IF(CMAKE_BUILD_TYPE MATCHES "debug")
 ENDIF(CMAKE_BUILD_TYPE MATCHES "debug")
 
 ADD_EXECUTABLE( perf_stpodary perf_stpodary.cc )
+ADD_EXECUTABLE( perf_simpstr  perf_simpstr.cc )
 ADD_EXECUTABLE( func_stpodary func_stpodary.cc )
 ADD_EXECUTABLE( func_simpstr  func_simpstr.cc )
 ADD_EXECUTABLE( func_exc      func_exc.cc )
