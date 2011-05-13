@@ -189,7 +189,7 @@ namespace csl
       size_t ret = npos;
       size_t len = size();
 
-      for ( size_t pos = 0; pos < len ; pos++ )
+      for ( size_t pos = 0; pos < len ; ++pos )
       {
         if ( (*this)[pos] == c ) {
           ret = pos;
@@ -207,13 +207,19 @@ namespace csl
       if( c == zero<wchar_t>::val_ ) return npos;
 
       size_t ret = npos;
-      size_t len = size();
-
-      for ( size_t pos = len-1; pos >= 0 ; --pos )
+      size_t len = buf_.size();
+      
+      if( len > 1 )
       {
-        if ( (*this)[pos] == c ) {
-          ret = pos;
-          break;
+        const wchar_t * dp = data()+len-1;
+        for ( size_t pos = 0; pos <= len ; ++pos )
+        {
+          if ( *dp == c )
+          {
+            ret = len-pos-1;
+            break;
+          }
+          --dp;
         }
       }
 

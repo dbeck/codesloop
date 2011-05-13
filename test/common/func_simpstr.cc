@@ -39,16 +39,16 @@ using csl::common::excbase;
 using csl::common::zero;
 
 #ifndef ASSERT_OR_EXC
-#define ASSERT_OR_EXC(EXPR)                   \
-    do {                                      \
-      bool caught__ = false;                  \
-      try {                                   \
-        assert( (EXPR) );                     \
-      } catch(  csl::common::excbase & e ) {  \
-        caught__ = true;                      \
-        print_exc_caught( e );                \
-      }                                       \
-      CSL_DEBUG_ASSERT( caught__ == true );   \
+#define ASSERT_OR_EXC(EXPR)                       \
+    do {                                          \
+      bool caught__ = false;                      \
+      try {                                       \
+        assert( (EXPR) );                         \
+      } catch(  csl::common::excbase & exc__ ) {  \
+        caught__ = true;                          \
+        print_exc_caught( exc__ );                \
+      }                                           \
+      CSL_DEBUG_ASSERT( caught__ == true );       \
     } while( 0 )
 #endif
 
@@ -205,6 +205,8 @@ namespace test_simpstr
       const char * zs = "";
       const char * nf = "wl";
       const char * fn = "worl";
+      char H          = 'H';
+      char d          = 'd';
       
       ASSERT_OR_EXC( empty.find(z) == simpstr::npos );
       assert( empty.find(nz) == simpstr::npos );
@@ -217,6 +219,8 @@ namespace test_simpstr
       ASSERT_OR_EXC( hw.find(zs) == simpstr::npos );
       assert( hw.find(nf) == simpstr::npos );
       assert( hw.find(fn) == 6 );
+      assert( hw.find(H) == 0 );
+      assert( hw.find(d) == 10 );
     }
     
     {
@@ -225,6 +229,8 @@ namespace test_simpstr
       const wchar_t * zs = L"";
       const wchar_t * nf = L"wl";
       const wchar_t * fn = L"worl";
+      wchar_t H          = L'H';
+      wchar_t d          = L'd';
       
       ASSERT_OR_EXC( empty.find(z) == simpstr::npos );
       assert( empty.find(nz) == simpstr::npos );
@@ -237,15 +243,55 @@ namespace test_simpstr
       ASSERT_OR_EXC( hw.find(zs) == simpstr::npos );
       assert( hw.find(nf) == simpstr::npos );
       assert( hw.find(fn) == 6 );
+      assert( hw.find(H) == 0 );
+      assert( hw.find(d) == 10 );
     }
   }
   
   void rfind()
   {
+    simpstr empty, hw(L"Hello world");
+    wchar_t z  = zero<wchar_t>::val_;
+    wchar_t x  = L'x';
+    wchar_t e  = L'e';
+    wchar_t H  = L'H';
+    wchar_t d  = L'd';
+    
+    
+    ASSERT_OR_EXC( empty.rfind(z) == simpstr::npos );
+    assert( empty.rfind(x) == simpstr::npos );
+    assert( empty.rfind(e) == simpstr::npos );
+
+    ASSERT_OR_EXC( hw.rfind(z) == simpstr::npos );
+    assert( hw.rfind(x) == simpstr::npos );
+    assert( hw.rfind(e) == 1 );
+    assert( hw.rfind(d) == 10 );
+    assert( hw.rfind(H) == 0 );
   }
   
   void assign()
   {
+    simpstr empty, hw(L"Hello world");
+    const wchar_t * np = 0;
+    const wchar_t * hl = L"Hello world";
+    const wchar_t * end = hl + 11;
+    const wchar_t * m0 = hl + 6;
+    const wchar_t * m1 = hl + 9;
+    
+    simpstr s0;
+    ASSERT_OR_EXC( s0.assign(np,np) == empty );
+    ASSERT_OR_EXC( s0.assign(hl,np) == empty );
+    ASSERT_OR_EXC( s0.assign(np,end) == empty );
+    ASSERT_OR_EXC( s0.assign(end,hl) == empty );
+    ASSERT_OR_EXC( s0.assign(m1,m0) == empty );
+    
+    simpstr s1;
+    assert( s1.assign( hl,hl ) == empty );
+    assert( s1.assign( hl,end ) == hl );
+    assert( s1.assign( hl,end ) == hw );
+
+    simpstr s2;
+    assert( s1.assign( m0,m1 ) == L"wor" );
   }
 
 } // end of test_simpstr
