@@ -23,18 +23,35 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifdef DEBUG
+#ifdef CSL_DEBUG
 #define DEBUG_ENABLE_INDENT
 #define DEBUG_VERBOSE
-#endif /* DEBUG */
+#endif /* CSL_DEBUG */
 
 #include "codesloop/common/simpstr.hh"
 #include "codesloop/common/excbase.hh"
+#include "codesloop/common/zero.hh"
 #include <string>
 #include <assert.h>
 
 using csl::common::simpstr;
 using csl::common::excbase;
+using csl::common::zero;
+
+#ifndef ASSERT_OR_EXC
+#define ASSERT_OR_EXC(EXPR)                   \
+    do {                                      \
+      bool caught__ = false;                  \
+      try {                                   \
+        assert( (EXPR) );                     \
+      } catch(  csl::common::excbase & e ) {  \
+        caught__ = true;                      \
+        print_exc_caught( e );                \
+      }                                       \
+      CSL_DEBUG_ASSERT( caught__ == true );   \
+    } while( 0 )
+#endif
+
 
 namespace test_simpstr
 {
@@ -60,34 +77,10 @@ namespace test_simpstr
     simpstr s1,s2;
     assert( s1 == s2 );
     assert( s1 == "" );
-    
-    {
-      bool caught = false;
-      try
-      {
-        assert( s1 == static_cast<char *>(0) );
-      }
-      catch( csl::common::excbase & e )
-      {
-        caught = true;
-        print_exc_caught( e );
-      }
-      assert( caught == true );
-    }
-
-    {
-      bool caught = false;
-      try
-      {
-        assert( s1 == static_cast<wchar_t *>(0) );
-      }
-      catch( csl::common::excbase & e )
-      {
-        caught = true;
-        print_exc_caught( e );
-      }
-      assert( caught == true );
-    }
+    ASSERT_OR_EXC( (s1 == static_cast<const char *>(0)) == false );
+    ASSERT_OR_EXC( (s1 == static_cast<const wchar_t *>(0)) == false );
+    ASSERT_OR_EXC( (s1 == static_cast<char *>(0)) == false );
+    ASSERT_OR_EXC( (s1 == static_cast<wchar_t *>(0)) == false );
   }
   
   void str_copy()
@@ -162,25 +155,13 @@ namespace test_simpstr
     simpstr s1;
     s1 += "Hello";
     assert( s1 == "Hello" );
-    s1 += "";
-    assert( s1 == "Hello" );
+    assert( (s1 += "") == "Hello" );
     s1 += " world";
     assert( s1 == "Hello world" );
-    bool caught = false;
-    try
-    {
-      char * p = 0;
-      s1 += p;
-    }
-    catch( csl::common::excbase & e )
-    {
-      caught = true;
-      print_exc_caught( e );
-    }
-    assert( caught == true );
+    const char * p = 0;
+    ASSERT_OR_EXC( (s1 += p) == "Hello world" );
     s1 += '!';
-    assert( s1 == "Hello world!" );
-    s1 += '\0';
+    ASSERT_OR_EXC( (s1 += '\0') == "Hello world!" );    
     assert( s1 == "Hello world!" );
   }
 
@@ -208,40 +189,55 @@ namespace test_simpstr
     assert( s1 != L"Hello world!" );
     assert( s1 != "" );
     assert( s1 != L"" );
-    
-    {
-      bool caught = false;
-      try
-      {
-        char * p = 0;
-        s1.operator==(p);
-      }
-      catch( csl::common::excbase & e )
-      {
-        caught = true;
-        print_exc_caught( e );
-      }
-      assert( caught == true );
-    }
-
-    {
-      bool caught = false;
-      try
-      {
-        wchar_t * p = 0;
-        s1.operator==(p);
-      }
-      catch( csl::common::excbase & e )
-      {
-        caught = true;
-        print_exc_caught( e );
-      }
-      assert( caught == true );
-    }    
+    const char * p = 0;
+    ASSERT_OR_EXC( (s1.operator==(p)) == false );
+    const wchar_t * wp = 0;
+    ASSERT_OR_EXC( (s1.operator==(wp)) == false );
   }
   
   void find()
   {
+    simpstr empty, hw(L"Hello world");
+
+    {
+      char z          = zero<char>::val_;
+      char nz         = 'a';
+      const char * zs = "";
+      const char * nf = "wl";
+      const char * fn = "worl";
+      
+      ASSERT_OR_EXC( empty.find(z) == simpstr::npos );
+      assert( empty.find(nz) == simpstr::npos );
+      ASSERT_OR_EXC( empty.find(zs) == simpstr::npos );
+      assert( empty.find(nf) == simpstr::npos );
+      assert( empty.find(fn) == simpstr::npos );
+      
+      ASSERT_OR_EXC( hw.find(z) == simpstr::npos );
+      assert( hw.find(nz) == simpstr::npos );
+      ASSERT_OR_EXC( hw.find(zs) == simpstr::npos );
+      assert( hw.find(nf) == simpstr::npos );
+      assert( hw.find(fn) == 6 );
+    }
+    
+    {
+      wchar_t z          = zero<wchar_t>::val_;
+      wchar_t nz         = L'a';
+      const wchar_t * zs = L"";
+      const wchar_t * nf = L"wl";
+      const wchar_t * fn = L"worl";
+      
+      ASSERT_OR_EXC( empty.find(z) == simpstr::npos );
+      assert( empty.find(nz) == simpstr::npos );
+      ASSERT_OR_EXC( empty.find(zs) == simpstr::npos );
+      assert( empty.find(nf) == simpstr::npos );
+      assert( empty.find(fn) == simpstr::npos );
+      
+      ASSERT_OR_EXC( hw.find(z) == simpstr::npos );
+      assert( hw.find(nz) == simpstr::npos );
+      ASSERT_OR_EXC( hw.find(zs) == simpstr::npos );
+      assert( hw.find(nf) == simpstr::npos );
+      assert( hw.find(fn) == 6 );
+    }
   }
   
   void rfind()
@@ -251,10 +247,7 @@ namespace test_simpstr
   void assign()
   {
   }
-  
-  
-    
-  
+
 } // end of test_simpstr
 
 using namespace test_simpstr;

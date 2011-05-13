@@ -101,6 +101,7 @@ namespace csl
     
     simpstr& simpstr::operator+=(const char c)
     {
+      CSL_REQUIRE( c != zero<char>::val_ );
       strconcat<buf_t>::execute(buf_,c);
       CSL_CHECK_INVARIANT();
       return *this;      
@@ -108,6 +109,7 @@ namespace csl
     
     simpstr& simpstr::operator+=(const wchar_t w)
     {
+      CSL_REQUIRE( w != zero<wchar_t>::val_ );
       strconcat<buf_t>::execute(buf_,w);
       CSL_CHECK_INVARIANT();
       return *this;      
@@ -171,6 +173,7 @@ namespace csl
 
     bool simpstr::operator==(const simpstr& s) const
     {
+      CSL_REQUIRE( s.buf_.size() > 0 );
       if( size() != s.size() ) return false;
       if( empty() ) return true;
       int ret = wcscmp( data(), s.data() );
@@ -179,6 +182,10 @@ namespace csl
 
     size_t simpstr::find(wchar_t c) const
     {
+      CSL_REQUIRE( c != zero<wchar_t>::val_ );
+      
+      if( c == zero<wchar_t>::val_ ) return npos;
+
       size_t ret = npos;
       size_t len = size();
 
@@ -195,6 +202,10 @@ namespace csl
 
     size_t simpstr::rfind(wchar_t c) const
     {
+      CSL_REQUIRE( c != zero<wchar_t>::val_ );
+      
+      if( c == zero<wchar_t>::val_ ) return npos;
+
       size_t ret = npos;
       size_t len = size();
 
@@ -212,6 +223,7 @@ namespace csl
     size_t simpstr::find(const simpstr & s) const
     {
       CSL_REQUIRE( s.empty() == false );
+      if( s.empty() || empty() ) { return npos; }
       const wchar_t * p = ::wcsstr( data(), s.data() );
       size_t ret = npos;
       if ( p != NULL ) { ret = p - data(); }
@@ -221,9 +233,10 @@ namespace csl
     size_t simpstr::find(const wchar_t * strv) const
     {
       CSL_REQUIRE( strv != 0 );
+      CSL_REQUIRE( *strv != zero<wchar_t>::val_ );
       
-      if( !strv )   { return npos; }
-      if( empty() ) { return npos; }
+      if( !strv || *strv == zero<wchar_t>::val_ )  { return npos; }
+      if( empty() )                                { return npos; }
 
       const wchar_t * res = 0;
 
@@ -231,10 +244,27 @@ namespace csl
 
       return (res-data());
     }
+    
+    size_t simpstr::find(char c) const
+    {
+      CSL_REQUIRE( c != zero<char>::val_ );
+      if( c == zero<char>::val_ ) { return npos; }
+      char t[2] = { c, zero<char>::val_ };
+      simpstr x(t);
+      return find(x);
+    }
+    
+    size_t simpstr::find(const char * s) const
+    {
+      CSL_REQUIRE( s != NULL );
+      CSL_REQUIRE( *s != zero<char>::val_ );
+      if( s == NULL || *s == zero<char>::val_ ) { return npos; }
+      simpstr x(s);
+      return find(x);
+    }
 
     wchar_t simpstr::at(const size_t n) const
     {
-     
       size_t l = ::wcslen( data() );
       CSL_REQUIRE( n <= l );
       
@@ -275,6 +305,9 @@ namespace csl
       
       CSL_REQUIRE( (start+length) <= sz );
       CSL_REQUIRE( start <= sz );
+      CSL_REQUIRE( length >  0 );
+      
+      if( length == 0 ) { return s; }
 
       // shrink length to fit in
       if ( sz < (length + start) )
@@ -312,7 +345,8 @@ namespace csl
     simpstr::simpstr(const wchar_t * wcs) : buf_(L'\0')
     {
       CSL_REQUIRE( wcs != 0 );
-      if( !wcs ) { return; }
+      CSL_REQUIRE( *wcs != zero<wchar_t>::val_ );
+      if( !wcs || *wcs == zero<wchar_t>::val_ ) { return; }
       *this = wcs;
       CSL_CHECK_INVARIANT();
     }
@@ -320,7 +354,8 @@ namespace csl
     simpstr& simpstr::operator=(const wchar_t * wcs)
     {
       CSL_REQUIRE( wcs != 0 );
-      if( !wcs ) { return *this; }
+      CSL_REQUIRE( *wcs != zero<wchar_t>::val_ );
+      if( !wcs || *wcs == zero<wchar_t>::val_ ) { return *this; }
       // wcslen only cares about trailing zero, so combining characters will not confuse here
       buf_.set( wcs, ::wcslen(wcs)+1 );
       CSL_CHECK_INVARIANT();
@@ -332,7 +367,8 @@ namespace csl
       CSL_REQUIRE( (end-start) >= 0 );
       CSL_REQUIRE( start != NULL );
       CSL_REQUIRE( end != NULL );
-      if( start == NULL || end == NULL ) { return *this; }
+      CSL_REQUIRE( *start != zero<wchar_t>::val_ );
+      if( start == NULL || end == NULL || *start == zero<wchar_t>::val_ ) { return *this; }
       buf_.set( start, end-start );
       trailing_zero<buf_t>::ensure(buf_);
       CSL_CHECK_INVARIANT();

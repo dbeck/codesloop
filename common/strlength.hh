@@ -42,12 +42,11 @@ namespace csl
     template <> struct strlength<char>
     {
       CSL_CLASS( csl::common::strlength );
-      CSL_DECLARE_EXCEPTION( invalid_parameter );
       
       static size_t execute(const char * s)
       {
         CSL_REQUIRE( s != NULL );
-        if( s == NULL ) { CSL_THROW( invalid_parameter ); }
+        if( s == NULL ) { return 0; }
         return ::strlen(s);
       }
 
@@ -60,12 +59,11 @@ namespace csl
     template <> struct strlength<wchar_t>
     {
       CSL_CLASS( csl::common::strlength );
-      CSL_DECLARE_EXCEPTION( invalid_parameter );
       
       static size_t execute(const wchar_t * s)
       {
         CSL_REQUIRE( s != NULL );
-        if( s == NULL ) { CSL_THROW( invalid_parameter ); }
+        if( s == NULL ) { return 0; }
         return ::wcslen(s);
       }
 

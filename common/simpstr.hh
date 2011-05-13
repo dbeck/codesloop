@@ -67,7 +67,7 @@ namespace csl
         explicit simpstr(const char *);
         explicit simpstr(const wchar_t * wcs);
         explicit simpstr(const std::string & s);
-        
+                
         // operators
         simpstr& operator=(const simpstr& s);
         simpstr& operator=(const char *);
@@ -114,6 +114,8 @@ namespace csl
         size_t find(const simpstr & s) const;
         size_t find(wchar_t w) const;
         size_t find(const wchar_t * s) const;
+        size_t find(char c) const;
+        size_t find(const char * s) const;
                 
         size_t rfind(wchar_t w) const;
 
