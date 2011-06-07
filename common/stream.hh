@@ -22,3 +22,41 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#ifndef _csl_common_stream_hh_included_
+#define _csl_common_stream_hh_included_
+#include "codesloop/common/stream_part.hh"
+#include "codesloop/common/common.h"
+#ifdef __cplusplus
+
+namespace csl
+{
+  namespace common
+  {
+    class stream
+    {
+    public:
+      // packet frame
+      virtual void start() = 0;
+      virtual void end()   = 0;
+      virtual void flush() = 0;
+      
+      // output interface
+      virtual stream_part reserve( size_t sz ) = 0;
+      virtual stream_part confirm( size_t sz ) = 0;
+      
+      // input interface
+      virtual stream_part get( size_t sz ) = 0;
+      virtual size_t poll( size_t sz, uint32_t & timeout_ms ) = 0;
+      
+      // stats
+      virtual size_t position() const = 0;
+      virtual size_t available() const = 0;
+      
+      virtual ~stream() {}      
+    };
+  }
+}
+
+#endif /*__cplusplus*/
+#endif /*_csl_common_stream_hh_included_*/
