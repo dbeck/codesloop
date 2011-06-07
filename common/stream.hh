@@ -43,7 +43,7 @@ namespace csl
       
       // output interface
       virtual stream_part reserve( size_t sz ) = 0;
-      virtual stream_part confirm( size_t sz ) = 0;
+      virtual stream_part confirm( const stream_part & p, size_t sz ) = 0;
       
       // input interface
       virtual stream_part get( size_t sz ) = 0;

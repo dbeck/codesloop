@@ -41,6 +41,7 @@ ADD_LIBRARY( csl_common STATIC
     strconcat.hh
     strlength.hh
     simpstr.cc simpstr.hh
+    logger.cc logger.hh
 		)
 #             cexc.cc       cexc.hh
 #             exc.cc        exc.hh

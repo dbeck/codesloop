@@ -22,3 +22,38 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#ifndef _csl_common_stream_part_hh_included_
+#define _csl_common_stream_part_hh_included_
+#include "codesloop/common/common.h"
+#ifdef __cplusplus
+namespace csl
+{
+  namespace common
+  {
+    class stream_part
+    {
+    public:
+      typedef uint8_t item_t;
+      
+      item_t * data() const  { return data_;  }
+      size_t   items() const { return items_; }
+      
+      void data(item_t * d)  { data_  = d; }
+      void items(size_t s)   { items_ = s; }
+      
+      stream_part() : data_(0), items_(0) {}
+      stream_part(item_t * d, size_t s) : data_(d), items_(s) {}
+      
+      void reset() { data_ = 0; items_ = 0; }
+      
+    private:
+      item_t * data_;
+      size_t   items_;      
+    };
+  }
+}
+    
+#endif /*__cplusplus*/
+#endif /*_csl_common_stream_part_hh_included_*/
+
