@@ -35,25 +35,42 @@ namespace csl
   {
     class stream
     {
-    public:
+    public:      
       // packet frame
       virtual void start() = 0;
       virtual void end()   = 0;
       virtual void flush() = 0;
       
       // output interface
-      virtual stream_part reserve( size_t sz ) = 0;
-      virtual stream_part confirm( const stream_part & p, size_t sz ) = 0;
+      virtual stream_part reserve(size_t sz) = 0;
+      virtual void confirm(const stream_part & p, size_t sz) = 0;
+      virtual void push(const stream_part & p) = 0;
       
       // input interface
-      virtual stream_part get( size_t sz ) = 0;
-      virtual size_t poll( size_t sz, uint32_t & timeout_ms ) = 0;
+      virtual stream_part get(size_t sz) = 0;
+      virtual size_t poll(size_t sz, uint32_t & timeout_ms) = 0;
       
       // stats
       virtual size_t position() const = 0;
       virtual size_t available() const = 0;
       
-      virtual ~stream() {}      
+      // event interface
+      class event
+      {
+      public:
+        virtual void operator()(int which) {}
+        virtual ~event() {}
+      };
+      
+      static const int start_event_ = 0;
+      static const int end_event_   = 1;
+      static const int flush_event_ = 2;
+      static const int data_event_  = 3;
+      static const int empty_event_ = 4;
+      
+      virtual void event_cb(event & ev, int which) = 0;
+
+      virtual ~stream() {}
     };
   }
 }
