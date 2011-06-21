@@ -94,7 +94,7 @@ namespace csl
     T * stpodary<T,SZ>::allocate_nocopy(size_t sz)
     {
       T * ret = data_;
-      
+
       if( !sz )
       {
         reset();
@@ -125,7 +125,7 @@ namespace csl
         else
         {
           // already have data ?
-          if( size_ > 0 && is_dynamic() ) delete [] data_; 
+          if( size_ > 0 && is_dynamic() ) delete [] data_;
 
           ret = data_ = tmp;
           size_ = sz;
@@ -179,7 +179,7 @@ namespace csl
       CSL_ENSURE( is_dynamic() == false );
       CSL_ENSURE( is_empty() == false );
       CSL_ENSURE( has_data() == true );
-      CSL_CHECK_INVARIANT();      
+      CSL_CHECK_INVARIANT();
     }
 
     template <typename T, size_t SZ>
@@ -207,13 +207,13 @@ namespace csl
       if( !dta ) { return false; }
 
       bool ret = (allocate(sz) != NULL);
-      
+
       if( ret )
       {
         // copy in the data
         ::memcpy(data_,dta,(item_size_*sz));
       }
-      
+
       CSL_CHECK_INVARIANT();
       return ret;
     }
@@ -223,7 +223,7 @@ namespace csl
     stpodary<T,SZ>::operator=(const stpodary & other)
     {
       CSL_REQUIRE( &other != this && other.data_ != data_ );
-    
+
       // return immediately if they are the same
       if( &other == this || other.data_ == data_ )
       {
@@ -279,14 +279,14 @@ namespace csl
     }
 
     template <typename T, size_t SZ>
-    bool stpodary<T,SZ>::stpodary<T,SZ>::get(T * dta) const
+    bool stpodary<T,SZ>::get(T * dta) const
     {
       CSL_REQUIRE( dta != NULL );
 
       if( !dta || !size_ || !data_ ) { return false; }
 
       ::memcpy(dta,data_,(size_*item_size_));
-      
+
       CSL_CHECK_INVARIANT();
       return true;
     }
@@ -307,12 +307,12 @@ namespace csl
     {
       // if no data on the other side we are done
       if( !sz )  { return true; }
-      
+
       CSL_REQUIRE( dta != NULL );
 
       // if sz is not zero than dta must not be null
       if( !dta ) { return false; }
-      
+
       bool ret = (allocate(size_+sz) != NULL);
 
       if( ret )
@@ -320,7 +320,7 @@ namespace csl
         // copy in the data
         ::memcpy(data_+size_-sz,dta,(sz*item_size_));
       }
-      
+
       CSL_CHECK_INVARIANT();
       return ret;
     }

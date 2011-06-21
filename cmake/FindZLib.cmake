@@ -37,8 +37,8 @@ SET(ZLIB_NAMES z zlib zdll)
 
 FIND_LIBRARY( ZLIB_LIBRARY NAMES ${ZLIB_NAMES}
   HINTS $ENV{ZLIB_DIR} $ENV{ZLIB_DEV_ENV}
-  PATH_SUFFIXES lib64 lib
-  PATHS /usr/local /usr /sw /opt/local /opt )
+  PATH_SUFFIXES x86_64-linux-gnu lib64 lib
+  PATHS /usr/local /usr/lib64 /usr/lib /usr /sw /opt/local /opt )
 
 SET(ZLIB_FOUND "NO")
 

@@ -23,10 +23,10 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifdef DEBUG
-#define DEBUG_ENABLE_INDENT
-#define DEBUG_VERBOSE
-#endif /* DEBUG */
+#ifdef CSL_DEBUG
+#define CSL_DEBUG_ENABLE_INDENT
+#define CSL_DEBUG_VERBOSE
+#endif /* CSL_DEBUG */
 
 #include "codesloop/common/excbase.hh"
 #include <assert.h>
@@ -41,14 +41,14 @@ namespace test_exc
     public:
       CSL_CLASS( test_class );
       CSL_DECLARE_EXCEPTION( test_exc );
-      
+
       void faulty_fun()
       {
         CSL_THROW( test_exc );
       }
-  
+
   };
-  
+
   void print_exc_caught(const excbase & e)
   {
     printf("[%s:%d] %s :: %s (%s) caught\n",
@@ -56,14 +56,14 @@ namespace test_exc
         e.line(),
         e.clazz(),
         e.func(),
-        e.reason()); 
-  }  
+        e.reason());
+  }
 
   void catch_base_ref()
   {
     bool caught = false;
     test_class tc;
-    
+
     try { tc.faulty_fun(); }
     catch( excbase & e )
     {
@@ -71,18 +71,18 @@ namespace test_exc
       assert( strstr( e.func(),"faulty_fun" ) != NULL );
       assert( strstr( e.clazz(),"test_class" ) != NULL );
       assert( strstr( e.reason(),"test_exc" ) != NULL );
-      assert( e.line() > 0 );      
+      assert( e.line() > 0 );
       // print_exc_caught( e );
       caught = true;
     }
-    assert( caught == true );      
+    assert( caught == true );
   }
 
   void catch_base_copy()
   {
     bool caught = false;
     test_class tc;
-    
+
     try { tc.faulty_fun(); }
     catch( excbase e )
     {
@@ -90,18 +90,18 @@ namespace test_exc
       assert( strstr( e.func(),"faulty_fun" ) != NULL );
       assert( strstr( e.clazz(),"test_class" ) != NULL );
       assert( strstr( e.reason(),"test_exc" ) != NULL );
-      assert( e.line() > 0 );      
+      assert( e.line() > 0 );
       // print_exc_caught( e );
       caught = true;
     }
-    assert( caught == true );      
+    assert( caught == true );
   }
 
   void catch_desc_ref()
   {
     bool caught = false;
     test_class tc;
-    
+
     try { tc.faulty_fun(); }
     catch( test_class::test_exc & e )
     {
@@ -109,13 +109,13 @@ namespace test_exc
       assert( strstr( e.func(),"faulty_fun" ) != NULL );
       assert( strstr( e.clazz(),"test_class" ) != NULL );
       assert( strstr( e.reason(),"test_exc" ) != NULL );
-      assert( e.line() > 0 );      
+      assert( e.line() > 0 );
       // print_exc_caught( e );
       caught = true;
     }
-    assert( caught == true );      
+    assert( caught == true );
   }
-      
+
 } // end of test_exc
 
 using namespace test_exc;

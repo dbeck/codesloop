@@ -23,13 +23,12 @@
 
 # -- test / common --
 
-LINK_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}../../common
-                  ${ZLIB_LIBRARY_DIR} )
+LINK_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}../../common ${ZLIB_LIBRARY_DIR} )
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../../.. ${ZLIB_INCLUDE_DIR} )
 
 LINK_LIBRARIES( csl_common
-                ${ZLIB_LIBRARY}
+                # ${ZLIB_LIBRARY}
                 ${WSOCK32_LIBRARY} )
 
 # SET_SOURCE_FILES_PROPERTIES( t__logger.cc PROPERTIES  COMPILE_FLAGS -DENABLE_LOGGER )
@@ -46,11 +45,12 @@ IF(CMAKE_BUILD_TYPE MATCHES "debug")
 
 ENDIF(CMAKE_BUILD_TYPE MATCHES "debug")
 
-ADD_EXECUTABLE( perf_stpodary perf_stpodary.cc )
-ADD_EXECUTABLE( perf_simpstr  perf_simpstr.cc )
-ADD_EXECUTABLE( func_stpodary func_stpodary.cc )
-ADD_EXECUTABLE( func_simpstr  func_simpstr.cc )
-ADD_EXECUTABLE( func_exc      func_exc.cc )
+ADD_EXECUTABLE( perf_stpodary   perf_stpodary.cc )
+ADD_EXECUTABLE( perf_simpstr    perf_simpstr.cc )
+ADD_EXECUTABLE( feas_allocator  feas_allocator.cc )
+ADD_EXECUTABLE( func_stpodary   func_stpodary.cc )
+ADD_EXECUTABLE( func_simpstr    func_simpstr.cc )
+ADD_EXECUTABLE( func_exc        func_exc.cc )
 ADD_TEST( func_common_stpodary ${EXECUTABLE_OUTPUT_PATH}/func_stpodary )
 ADD_TEST( func_common_simpstr  ${EXECUTABLE_OUTPUT_PATH}/func_simpstr )
 ADD_TEST( func_common_exc      ${EXECUTABLE_OUTPUT_PATH}/func_exc )

@@ -286,3 +286,4 @@ Testing
 test/common/func_exc
 test/common/func_simpstr
 test/common/perf_simpstr
+test/common/feas_allocator

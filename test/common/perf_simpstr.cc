@@ -24,8 +24,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #ifdef CSL_DEBUG
-#define DEBUG_ENABLE_INDENT
-#define DEBUG_VERBOSE
+#define CSL_DEBUG_ENABLE_INDENT
+#define CSL_DEBUG_VERBOSE
 #endif /* CSL_DEBUG */
 
 #include "codesloop/common/simpstr.hh"
@@ -40,7 +40,7 @@ namespace test_str {
 
   void string_baseline() { std::string b; }
   void str_baseline()    { simpstr b; }
-  
+
   void string_hello()
   {
     std::string b;
@@ -83,7 +83,7 @@ namespace test_str {
 
   void string_initconstr() { std::string b("hello world"); }
   void str_initconstr()    { simpstr b(L"hello world"); }
-  
+
   void string_copy() { std::string b("hello world"); std::string c(b); }
   void str_copy()    { simpstr b(L"hello world");    simpstr c(b);     }
 
@@ -121,13 +121,13 @@ int main()
 
   csl_common_print_results( "string_hello       ", csl_common_test_timer_v0(string_hello),"" );
   csl_common_print_results( "str_hello          ", csl_common_test_timer_v0(str_hello),"" );
-  
+
   csl_common_print_results( "string_concat      ", csl_common_test_timer_v0(string_concat),"" );
   csl_common_print_results( "str_concat         ", csl_common_test_timer_v0(str_concat),"" );
-  
+
   csl_common_print_results( "string_append      ", csl_common_test_timer_v0(string_append),"" );
   csl_common_print_results( "str_append         ", csl_common_test_timer_v0(str_append),"" );
-  
+
   csl_common_print_results( "string_initconstr  ", csl_common_test_timer_v0(string_initconstr),"" );
   csl_common_print_results( "str_initconstr     ", csl_common_test_timer_v0(str_initconstr),"" );
 
