@@ -287,3 +287,8 @@ test/common/func_exc
 test/common/func_simpstr
 test/common/perf_simpstr
 test/common/feas_allocator
+cslrf1.cbp
+cslrf1.layout
+rf2.project
+test/common/func_bitmap512
+test/common/perf_bitmap512

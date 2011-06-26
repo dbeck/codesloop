@@ -42,6 +42,7 @@ ADD_LIBRARY( csl_common STATIC
     strlength.hh
     simpstr.cc simpstr.hh
     logger.cc logger.hh
+    bitmap512.cc bitmap512.hh
 		)
 #             cexc.cc       cexc.hh
 #             exc.cc        exc.hh

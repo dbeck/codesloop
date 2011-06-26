@@ -31,6 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/common/stpodary.hh"
+#include "codesloop/common/bitmap512.hh"
 #include <vector>
 #include <limits>
 
@@ -132,74 +133,6 @@ namespace test_allocator
     size_t len_;
   };
 
-  class bitmap512
-  {
-  private:
-    static uint8_t empty_[64];
-    static uint8_t first_free_[256];
-    uint8_t map_[64];
-
-  public:
-    inline void reset() { memcpy(map_,empty_,64); }
-
-    inline uint8_t get(size_t s) const
-    {
-      size_t pos      = s&0x1ff;
-      size_t offset   = pos>>3;
-      uint8_t bitpos  = pos&0x7;
-      return ((map_[offset])>>bitpos)&1;
-    }
-    inline void set(size_t s)
-    {
-      size_t pos      = s&0x1ff;
-      size_t offset   = pos>>3;
-      uint8_t bitpos  = pos&0x7;
-      map_[offset]   |= static_cast<uint8_t>(1<<bitpos);
-    }
-    inline void clear(size_t s)
-    {
-      size_t pos      = s&0x1ff;
-      size_t offset   = pos>>3;
-      uint8_t bitpos  = pos&0x7;
-      map_[offset]   &= static_cast<uint8_t>(~(1<<bitpos));
-    }
-    inline size_t first_free() const
-    {
-      for( size_t i=0;i<64;++i )
-      {
-        uint8_t ff = first_free_[map_[i]];
-        if( ff != 255 ) return ((i<<3)+ff);
-      }
-      return 512;
-    }
-
-  };
-
-  uint8_t bitmap512::empty_[64] =
-  {
-    0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-    0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-    0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-    0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0
-  };
-
-  uint8_t bitmap512::first_free_[256] =
-  {
-    0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,4, 0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,5,
-    0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,4, 0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,6,
-    0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,4, 0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,5,
-    0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,4, 0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,7,
-    0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,4, 0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,5,
-    0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,4, 0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,6,
-    0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,4, 0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,5,
-    0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,4, 0,1,0,2,0,1,0,3, 0,1,0,2,0,1,0,255
-  };
-
-  void b512()       { bitmap512 b; }
-  void b512_reset() { bitmap512 b; b.reset(); }
-  void b512_pos()   { bitmap512 b; b.reset(); b.set(13); b.get(13); }
-  void b512_ff()    { bitmap512 b; b.reset(); b.set(0);  b.first_free(); }
-
   void baseline()      { std::vector<int> v; }
   void baseline_16()   { std::vector<int> v; v.reserve(16);  }
   void baseline_256()  { std::vector<int> v; v.reserve(256); }
@@ -238,51 +171,6 @@ using namespace test_allocator;
 
 int main()
 {
-  bitmap512 b;
-  b.reset();
-  for( size_t i=0;i<400;++i )
-  {
-    for( size_t j=0;j<512;++j )
-    {
-      if(b.get(j)!=0)
-      {
-        printf("A%ld@%ld ",j,i);
-      }
-    }
-    b.set(i);
-    if( b.get(i)!=1 )
-    {
-      printf("B%ld ",i);
-    }
-    for( size_t j=0;j<512;++j )
-    {
-      if(j!=i && b.get(j)!=0)
-      {
-        printf("C%ld@%ld(b[j]=%d) ",j,i,b.get(j));
-      }
-    }
-    b.clear(i);
-    for( size_t j=0;j<512;++j )
-    {
-      if(b.get(j)!=0)
-      {
-        printf("D%ld@%ld ",j,i);
-      }
-    }
-    for( size_t j=0;j<512;++j ) { b.set(j); }
-    b.clear(i);
-    if( b.first_free()!=i )
-    {
-      printf("E%ld ",i);
-    }
-    b.reset();
-  }
-
-  csl_common_print_results( "b512                 ", csl_common_test_timer_v0(b512),"" );
-  csl_common_print_results( "b512_reset           ", csl_common_test_timer_v0(b512_reset),"" );
-  csl_common_print_results( "b512_pos             ", csl_common_test_timer_v0(b512_pos),"" );
-  csl_common_print_results( "b512_ff              ", csl_common_test_timer_v0(b512_ff),"" );
-
   csl_common_print_results( "dummy                ", csl_common_test_timer_v0(baseline_dummy),"" );
   csl_common_print_results( "16_dummy             ", csl_common_test_timer_v0(baseline_16_dummy),"" );
   csl_common_print_results( "256_dummy            ", csl_common_test_timer_v0(baseline_256_dummy),"" );
