@@ -43,6 +43,7 @@ ADD_LIBRARY( csl_common STATIC
     simpstr.cc simpstr.hh
     logger.cc logger.hh
     bitmap512.cc bitmap512.hh
+    bithacks.cc bithacks.hh
 		)
 #             cexc.cc       cexc.hh
 #             exc.cc        exc.hh

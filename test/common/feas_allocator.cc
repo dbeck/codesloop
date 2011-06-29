@@ -82,7 +82,7 @@ namespace test_allocator
     inline bool operator!=(dummy const& a) { return !operator==(a); }
   };
 
-  template<typename T, size_t SZ>
+  template<typename T, size_t SZ,bool DBG=false>
   class simple {
   public :
     //	typedefs
@@ -96,25 +96,31 @@ namespace test_allocator
 
   public :
     //	convert an allocator<T> to allocator<U>
-    template<typename U> struct rebind { typedef simple<U,SZ> other; };
+    template<typename U> struct rebind { typedef simple<U,SZ,DBG> other; };
 
   public :
     inline explicit simple() : len_(0) {}
     inline ~simple() {}
     inline explicit simple(simple const&) : len_(0) {}
-    template<typename U> inline explicit simple(simple<U,SZ> const&) : len_(0) {}
+    template<typename U> inline explicit simple(simple<U,SZ,DBG> const&) : len_(0) {}
 
     //	address
     inline pointer address(reference r) { return &r; }
     inline const_pointer address(const_reference r) { return &r; }
 
     //	memory allocation
-    inline pointer allocate(size_type cnt, typename std::allocator<void>::const_pointer = 0) {
+    inline pointer allocate(size_type cnt, typename std::allocator<void>::const_pointer x = 0)
+    {
       pointer ret = reinterpret_cast<pointer>(buf_+len_);
       len_+=cnt;
+      if( DBG ) printf("allocate: sz:%ld, place:%p => ret:%p\n",cnt,x,ret);
       return ret;
     }
-    inline void deallocate(pointer p, size_type s) { len_ -= s; }
+    inline void deallocate(pointer p, size_type s)
+    {
+      if( DBG ) printf("deallocate: ptr:%p, sz:%ld\n",p,s);
+      len_ -= s;
+    }
 
     //	size
     inline size_type max_size() const {
@@ -122,8 +128,16 @@ namespace test_allocator
     }
 
     //	construction/destruction
-    inline void construct(pointer p, const T& t) { new (p) T(t); }
-    inline void destroy(pointer p) { p->~T(); }
+    inline void construct(pointer p, const T& t)
+    {
+      if( DBG ) printf("construct: %p\n",p);
+      new (p) T(t);
+    }
+    inline void destroy(pointer p)
+    {
+      if( DBG ) printf("destroy: %p\n",p);
+      p->~T();
+    }
 
     inline bool operator==(simple const&)   { return true; }
     inline bool operator!=(simple const& a) { return !operator==(a); }
@@ -165,12 +179,21 @@ namespace test_allocator
     v.reserve(256);
   }
 
+  void simple_t()
+  {
+    simple<int,256,true> a;
+    std::vector< int,simple<int,256,true> > v(a);
+    for(int i=0;i<256;++i) v.push_back(i);
+  }
+
 } // test_allocator
 
 using namespace test_allocator;
 
 int main()
 {
+  //simple_t();
+
   csl_common_print_results( "dummy                ", csl_common_test_timer_v0(baseline_dummy),"" );
   csl_common_print_results( "16_dummy             ", csl_common_test_timer_v0(baseline_16_dummy),"" );
   csl_common_print_results( "256_dummy            ", csl_common_test_timer_v0(baseline_256_dummy),"" );

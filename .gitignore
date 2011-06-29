@@ -292,3 +292,5 @@ cslrf1.layout
 rf2.project
 test/common/func_bitmap512
 test/common/perf_bitmap512
+test/common/func_bithacks
+test/common/perf_bithacks

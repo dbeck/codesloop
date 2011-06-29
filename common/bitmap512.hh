@@ -36,56 +36,145 @@ namespace csl
   {
     class bitmap512
     {
-    private:
-      static uint8_t empty_[64];
-      static uint8_t first_free_[256];
-      static uint8_t max_free_[256];
-      static uint8_t max_pos_[256];
-      static uint8_t max_posB_[256];
-      uint8_t map_[64];
-
     public:
+      CSL_CLASS( csl::common::simpstr );
+      typedef unsigned int pos_t;
+      typedef uint32_t     item_t;
+
+      inline bitmap512() : map_({0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0}) {}
+
       inline void reset() { memcpy(map_,empty_,64); }
 
-      inline uint8_t get(size_t s) const
+      inline bool get(pos_t s) const
       {
-        size_t pos      = s&0x1ff;
-        size_t offset   = pos>>3;
-        uint8_t bitpos  = pos&0x7;
+        pos_t pos         = (s&0x1ff);
+        uint8_t offset    = static_cast<uint8_t>(pos>>5);
+        uint8_t bitpos    = static_cast<uint8_t>(pos&0x1f);
         return ((map_[offset])>>bitpos)&1;
       }
-      inline void set(size_t s)
+
+      inline void set(pos_t s)
       {
-        size_t pos      = s&0x1ff;
-        size_t offset   = pos>>3;
-        uint8_t bitpos  = pos&0x7;
-        map_[offset]   |= static_cast<uint8_t>(1<<bitpos);
+        pos_t pos         = (s&0x1ff);
+        uint8_t offset    = static_cast<uint8_t>(pos>>5);
+        uint8_t bitpos    = static_cast<uint8_t>(pos&0x1f);
+        map_[offset]     |= static_cast<item_t>(1<<bitpos);
       }
-      inline void clear(size_t s)
+
+      inline void set_n(pos_t s, pos_t n)
       {
-        size_t pos      = s&0x1ff;
-        size_t offset   = pos>>3;
-        uint8_t bitpos  = pos&0x7;
-        map_[offset]   &= static_cast<uint8_t>(~(1<<bitpos));
+         // XXX TODO
       }
-      inline size_t first_free() const
+
+      inline void clear(pos_t s)
       {
-        for( size_t i=0;i<64;++i )
+        pos_t pos         = (s&0x1ff);
+        uint8_t offset    = static_cast<uint8_t>(pos>>5);
+        uint8_t bitpos    = static_cast<uint8_t>(pos&0x1f);
+        map_[offset]     &= static_cast<item_t>(~(1<<bitpos));
+      }
+
+      inline void clear_n(pos_t s, pos_t n)
+      {
+         // XXX TODO
+      }
+
+      inline pos_t first_clear() const
+      {
+        for( pos_t i=0;i<16;++i )
         {
-          uint8_t ff = first_free_[map_[i]];
-          if( ff != 255 ) return ((i<<3)+ff);
+          uint8_t ff0 = first_free_[(map_[i])&0xff];
+          if( ff0 != 255 ) return ((i<<5)+ff0);
+
+          uint8_t ff1 = first_free_[((map_[i])>>8)&0xff];
+          if( ff1 != 255 ) return ((i<<5)+8+ff1);
+
+          uint8_t ff2 = first_free_[((map_[i])>>16)&0xff];
+          if( ff2 != 255 ) return ((i<<5)+16+ff2);
+
+          uint8_t ff3 = first_free_[((map_[i])>>24)&0xff];
+          if( ff3 != 255 ) return ((i<<5)+24+ff3);
         }
         return 512;
       }
-      inline size_t find_n_free(size_t n) const
+
+      inline pos_t flip_first_clear()
+      {
+        for( pos_t i=0;i<16;++i )
+        {
+          uint8_t ff0 = first_free_[(map_[i])&0xff];
+          if( ff0 != 255 )
+          {
+            pos_t ret = ((i<<5)+ff0);
+            set(ret);
+            return ret;
+          }
+
+          uint8_t ff1 = first_free_[((map_[i])>>8)&0xff];
+          if( ff1 != 255 )
+          {
+            pos_t ret = ((i<<5)+8+ff1);
+            set(ret);
+            return ret;
+          }
+
+          uint8_t ff2 = first_free_[((map_[i])>>16)&0xff];
+          if( ff2 != 255 )
+          {
+            pos_t ret = ((i<<5)+16+ff2);
+            set(ret);
+            return ret;
+          }
+
+          uint8_t ff3 = first_free_[((map_[i])>>24)&0xff];
+          if( ff3 != 255 )
+          {
+            pos_t ret = ((i<<5)+24+ff3);
+            set(ret);
+            return ret;
+          }
+        }
+        return 512;
+      }
+
+      inline pos_t find_n_clear(pos_t n) const
       {
         if(n>=512) return 512;
         if(n>8)
         {
-          size_t blocks = ((n+7)>>3)<<3;
-          size_t found = 0;
-          size_t start = 65;
-          for( size_t i=0;i<64;++i )
+          pos_t blocks = ((n+31)>>5)<<5;
+          pos_t found = 0;
+          pos_t start = 128;
+          for( pos_t i=0;i<16;++i )
+          {
+            if(map_[i]==0)
+            {
+              if( start == 128 ) start = i;
+              ++found;
+              if( found == blocks ) return (start*32);
+            }
+            else
+            {
+              found = 0;
+              start = 128;
+            }
+          }
+        }
+        else
+        {
+          for( pos_t i=0;i<64;++i )
+          {
+            uint8_t ff = max_free_[map_[i]];
+            if(ff>= n) return ((i<<3)+max_pos_[map_[i]]);
+          }
+        }
+        /*
+        if(n>8)
+        {
+          pos_t blocks = ((n+7)>>3)<<3;
+          pos_t found = 0;
+          pos_t start = 65;
+          for( pos_t i=0;i<64;++i )
           {
             if(map_[i]==0)
             {
@@ -102,14 +191,23 @@ namespace csl
         }
         else
         {
-          for( size_t i=0;i<64;++i )
+          for( pos_t i=0;i<64;++i )
           {
             uint8_t ff = max_free_[map_[i]];
             if(ff>= n) return ((i<<3)+max_pos_[map_[i]]);
           }
         }
+        */
         return 512;
       }
+
+    private:
+      static uint8_t empty_[64];
+      static uint8_t first_free_[256];
+      static uint8_t max_free_[256];
+      static uint8_t max_pos_[256];
+      static uint8_t max_posB_[256];
+      item_t map_[16];
     };
   }
 }
