@@ -36,13 +36,13 @@ namespace csl
   {
     struct bithacks
     {
-      static inline int n_leading_zero_gcc(unsigned int x)
+      static inline int nlz_gcc(unsigned int x)
       {
         if (x == 0) return(32);
         return __builtin_clz(x);
       }
 
-      static inline int n_leading_zero_c1(unsigned int x)
+      static inline int nlz_c1(unsigned int x)
       {
         int n;
         if (x == 0) return(32);
@@ -55,14 +55,14 @@ namespace csl
         return n;
       }
 
-      static inline int n_leading_zero_c2(unsigned int x)
+      static inline int nlz_c2(unsigned int x)
       {
         enum { u=99 };
-         static char table[64] =
-           {32,31, u,16, u,30, 3, u,  15, u, u, u,29,10, 2, u,
-             u, u,12,14,21, u,19, u,   u,28, u,25, u, 9, 1, u,
-            17, u, 4, u, u, u,11, u,  13,22,20, u,26, u, u,18,
-             5, u, u,23, u,27, u, 6,   u,24, 7, u, 8, u, 0, u};
+        static char table[64] =
+          {32,31, u,16, u,30, 3, u,  15, u, u, u,29,10, 2, u,
+            u, u,12,14,21, u,19, u,   u,28, u,25, u, 9, 1, u,
+           17, u, 4, u, u, u,11, u,  13,22,20, u,26, u, u,18,
+            5, u, u,23, u,27, u, 6,   u,24, 7, u, 8, u, 0, u};
 
         x = x | (x >> 1);
         x = x | (x >> 2);
@@ -77,16 +77,80 @@ namespace csl
       }
 
 // select fastest
-#ifndef n_leading_zero
-#define n_leading_zero n_leading_zero_gcc
-#endif // n_leading_zero
+#ifndef fastest_nlz
+#define fastest_nlz nlz_gcc
+#endif // fastest_nlz
 
-      static inline int popcount_gcc(unsigned int x)
+      static inline int ntz_gcc(unsigned int x)
+      {
+        if(x==0) return(32);
+        return __builtin_ctz(x);
+      }
+
+      static inline int ntz_c1(unsigned int x)
+      {
+        int n;
+
+        if (x == 0) return(32);
+        n = 1;
+        if ((x & 0x0000FFFF) == 0) {n = n +16; x = x >>16;}
+        if ((x & 0x000000FF) == 0) {n = n + 8; x = x >> 8;}
+        if ((x & 0x0000000F) == 0) {n = n + 4; x = x >> 4;}
+        if ((x & 0x00000003) == 0) {n = n + 2; x = x >> 2;}
+        return n - (x & 1);
+      }
+
+      static inline int ntz_c2(unsigned int x)
+      {
+        unsigned y, bz, b4, b3, b2, b1, b0;
+
+        y = x & -x;
+        bz = y ? 0 : 1;
+        b4 = (y & 0x0000FFFF) ? 0 : 16;
+        b3 = (y & 0x00FF00FF) ? 0 : 8;
+        b2 = (y & 0x0F0F0F0F) ? 0 : 4;
+        b1 = (y & 0x33333333) ? 0 : 2;
+        b0 = (y & 0x55555555) ? 0 : 1;
+        return bz + b4 + b3 + b2 + b1 + b0;
+      }
+
+      static inline int ntz_c3(unsigned int x)
+      {
+        enum { u=99 };
+        static char table[64] =
+          {32, 0, 1,12, 2, 6, u,13,   3, u, 7, u, u, u, u,14,
+           10, 4, u, u, 8, u, u,25,   u, u, u, u, u,21,27,15,
+           31,11, 5, u, u, u, u, u,   9, u, u,24, u, u,20,26,
+           30, u, u, u, u,23, u,19,  29, u,22,18,28,17,16, u};
+
+        x = (x & -x)*0x0450FBAF;
+        return table[x >> 26];
+      }
+
+      static inline int ntz_c4(unsigned int x)
+      {
+        enum { u=99 };
+        static char table[37] =
+          {32,  0,  1, 26,  2, 23, 27,
+           u,  3, 16, 24, 30, 28, 11,  u, 13,  4,
+           7, 17,  u, 25, 22, 31, 15, 29, 10, 12,
+           6,  u, 21, 14,  9,  5, 20,  8, 19, 18};
+
+        x = (x & -x)%37;
+        return table[x];
+      }
+
+// select fastest
+#ifndef fastest_ntz
+#define fastest_ntz ntz_gcc
+#endif // fastest_ntz
+
+      static inline int pop_gcc(unsigned int x)
       {
         return __builtin_popcount(x);
       }
 
-      static inline int popcount_c1(unsigned int x)
+      static inline int pop_c1(unsigned int x)
       {
         x = (x & 0x55555555) + ((x >> 1) & 0x55555555);
         x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
@@ -96,7 +160,7 @@ namespace csl
         return x;
       }
 
-      static inline int popcount_c2(unsigned int x)
+      static inline int pop_c2(unsigned int x)
       {
         x = x - ((x >> 1) & 0x55555555);
         x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
@@ -106,7 +170,7 @@ namespace csl
         return x & 0x0000003F;
       }
 
-      static inline int popcount_c3(unsigned int x)
+      static inline int pop_c3(unsigned int x)
       {
         int n = 0;
         while (x != 0)
@@ -117,7 +181,7 @@ namespace csl
         return n;
       }
 
-      static inline int popcount_c4(unsigned int x)
+      static inline int pop_c4(unsigned int x)
       {
         static char table[256] = {
           0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,
@@ -146,10 +210,70 @@ namespace csl
                table[(x >> 24)];
       }
 
-// select fastest
-#ifndef popcount
-#define popcount popcount_c2
-#endif // popcount
+// select fastest pop
+#ifndef fastest_pop
+#define fastest_pop pop_c4
+#endif // fastest_pop
+
+      static inline int bestfit_c1(unsigned int x, int n, int *apos)
+      {
+        int k, kmin, y0, y;
+        unsigned int x0, xmin;
+
+        kmin = 32;
+        xmin = x;
+        y0 = fastest_pop(x);
+        x0 = x;
+        do
+        {
+          x = ((x | (x - 1)) + 1) & x;      // Turn off
+          y = fastest_pop(x);               // rightmost string.
+          k = y0 - y;                       // k = length of string
+          if (k <= kmin && k >= n)          // turned off.
+          {                                 //
+            kmin = k;                       // Save shortest length
+            xmin = x;                       // found, and the string.
+          }
+          y0 = y;
+        } while (x != 0);
+        *apos = fastest_nlz(x0 ^ xmin);
+        return kmin;
+      }
+
+// select fastest bestfit
+#ifndef fastest_bestfit
+#define fastest_bestfit bestfit_c1
+#endif // fastest_bestfit
+
+      static inline int firstfit_c1(unsigned int x, int n, int *apos)
+      {
+        int k, y0, kmin, y;
+        unsigned int x0, xmin;
+
+        xmin = x;
+        y0 = fastest_pop(x);
+        x0 = x;
+        do
+        {
+          x = ((x | (x - 1)) + 1) & x;      // Turn off
+          y = fastest_pop(x);               // rightmost string.
+          k = y0 - y;                       // k = length of string
+          if( k>=n )
+          {
+            kmin = k;
+            xmin = x;
+            break;
+          }
+          y0 = y;
+        } while (x != 0);
+        *apos = fastest_nlz(x0 ^ xmin);
+        return kmin;
+      }
+
+// select fastest firstfit
+#ifndef fastest_firstfit
+#define fastest_firstfit firstfit_c1
+#endif // fastest_firstfit
 
     };
   }

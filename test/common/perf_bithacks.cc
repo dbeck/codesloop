@@ -26,51 +26,128 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/common/bithacks.hh"
+#include <vector>
 
 using csl::common::bithacks;
 
 namespace test_bithacks
 {
+#define ITER 1000
+  void malloc_baseline()
+  {
+    void * p = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      p = malloc(((i+1)<<2));
+      free(p);
+    }
+  }
+
+  void vector_baseline()
+  {
+    std::vector<int> v;
+    for(int i=0;i<ITER;++i)
+    {
+      v.push_back(i);
+    }
+  }
+
   void nlz_gcc()
   {
     static unsigned int g = 0;
     int j = 0;
-    for(int i=0;i<6130;++i)
+    for(int i=0;i<ITER;++i)
     {
-      j += bithacks::n_leading_zero_gcc(g++);
+      j += bithacks::nlz_gcc(g++);
     }
     g += j;
+  }
+
+  void ntz_gcc()
+  {
+    static unsigned int g2 = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::ntz_gcc(g2++);
+    }
+    g2 += j;
   }
 
   void nlz_c1()
   {
     static unsigned int c = 0;
     int j = 0;
-    for(int i=0;i<6130;++i)
+    for(int i=0;i<ITER;++i)
     {
-      j += bithacks::n_leading_zero_c1(c++);
+      j += bithacks::nlz_c1(c++);
     }
     c += j;
   }
+
+  void ntz_c1()
+  {
+    static unsigned int c2 = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::ntz_c1(c2++);
+    }
+    c2 += j;
+  }
+
 
   void nlz_c2()
   {
     static unsigned int d = 0;
     int j = 0;
-    for(int i=0;i<6130;++i)
+    for(int i=0;i<ITER;++i)
     {
-      j += bithacks::n_leading_zero_c2(d++);
+      j += bithacks::nlz_c2(d++);
     }
     d += j;
+  }
+
+  void ntz_c2()
+  {
+    static unsigned int t2 = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::ntz_c2(t2++);
+    }
+    t2 += j;
+  }
+
+  void ntz_c3()
+  {
+    static unsigned int t3 = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::ntz_c3(t3++);
+    }
+    t3 += j;
+  }
+
+  void ntz_c4()
+  {
+    static unsigned int t4 = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::ntz_c4(t4++);
+    }
+    t4 += j;
   }
 
   void pop_gcc()
   {
     static unsigned int p0 = 0;
     int j = 0;
-    for(int i=0;i<6130;++i)
+    for(int i=0;i<ITER;++i)
     {
-      j += bithacks::popcount_gcc(p0++);
+      j += bithacks::pop_gcc(p0++);
     }
     p0 += j;
   }
@@ -79,9 +156,9 @@ namespace test_bithacks
   {
     static unsigned int p1 = 0;
     int j = 0;
-    for(int i=0;i<6130;++i)
+    for(int i=0;i<ITER;++i)
     {
-      j += bithacks::popcount_c1(p1++);
+      j += bithacks::pop_c1(p1++);
     }
     p1 += j;
   }
@@ -90,9 +167,9 @@ namespace test_bithacks
   {
     static unsigned int p2 = 0;
     int j = 0;
-    for(int i=0;i<6130;++i)
+    for(int i=0;i<ITER;++i)
     {
-      j += bithacks::popcount_c2(p2++);
+      j += bithacks::pop_c2(p2++);
     }
     p2 += j;
   }
@@ -101,9 +178,9 @@ namespace test_bithacks
   {
     static unsigned int p3 = 0;
     int j = 0;
-    for(int i=0;i<6130;++i)
+    for(int i=0;i<ITER;++i)
     {
-      j += bithacks::popcount_c3(p3++);
+      j += bithacks::pop_c3(p3++);
     }
     p3 += j;
   }
@@ -112,13 +189,34 @@ namespace test_bithacks
   {
     static unsigned int p4 = 0;
     int j = 0;
-    for(int i=0;i<6130;++i)
+    for(int i=0;i<ITER;++i)
     {
-      j += bithacks::popcount_c4(p4++);
+      j += bithacks::pop_c4(p4++);
     }
     p4 += j;
   }
 
+  void bestfit_c1()
+  {
+    static unsigned int f1 = 0;
+    int k,j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::bestfit_c1(f1++,1+(f1%31),&k);
+    }
+    f1 += j;
+  }
+
+  void firstfit_c1()
+  {
+    static unsigned int xf1 = 0;
+    int k,j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::firstfit_c1(xf1++,1+(xf1%31),&k);
+    }
+    xf1 += j;
+  }
 
 };
 
@@ -126,14 +224,23 @@ using namespace test_bithacks;
 
 int main()
 {
-  csl_common_print_results( "nlz_c1       ", csl_common_test_timer_v0(nlz_c1),"" );
-  csl_common_print_results( "nlz_c2       ", csl_common_test_timer_v0(nlz_c2),"" );
-  csl_common_print_results( "nlz_gcc      ", csl_common_test_timer_v0(nlz_gcc),"" );
-  csl_common_print_results( "pop_c1       ", csl_common_test_timer_v0(pop_c1),"" );
-  csl_common_print_results( "pop_c2       ", csl_common_test_timer_v0(pop_c2),"" );
-  csl_common_print_results( "pop_c3       ", csl_common_test_timer_v0(pop_c3),"" );
-  csl_common_print_results( "pop_c4       ", csl_common_test_timer_v0(pop_c4),"" );
-  csl_common_print_results( "pop_gcc      ", csl_common_test_timer_v0(pop_gcc),"" );
+  csl_common_print_results( "malloc_baseline  ", csl_common_test_timer_v0(malloc_baseline),"" );
+  csl_common_print_results( "vector_baseline  ", csl_common_test_timer_v0(vector_baseline),"" );
+  csl_common_print_results( "ntz_gcc          ", csl_common_test_timer_v0(ntz_gcc),"" );
+  csl_common_print_results( "ntz_c1           ", csl_common_test_timer_v0(ntz_c1),"" );
+  csl_common_print_results( "ntz_c2           ", csl_common_test_timer_v0(ntz_c2),"" );
+  csl_common_print_results( "ntz_c3           ", csl_common_test_timer_v0(ntz_c3),"" );
+  csl_common_print_results( "ntz_c4           ", csl_common_test_timer_v0(ntz_c4),"" );
+  csl_common_print_results( "nlz_gcc          ", csl_common_test_timer_v0(nlz_gcc),"" );
+  csl_common_print_results( "nlz_c1           ", csl_common_test_timer_v0(nlz_c1),"" );
+  csl_common_print_results( "nlz_c2           ", csl_common_test_timer_v0(nlz_c2),"" );
+  csl_common_print_results( "pop_c1           ", csl_common_test_timer_v0(pop_c1),"" );
+  csl_common_print_results( "pop_c2           ", csl_common_test_timer_v0(pop_c2),"" );
+  csl_common_print_results( "pop_c3           ", csl_common_test_timer_v0(pop_c3),"" );
+  csl_common_print_results( "pop_c4           ", csl_common_test_timer_v0(pop_c4),"" );
+  csl_common_print_results( "pop_gcc          ", csl_common_test_timer_v0(pop_gcc),"" );
+  csl_common_print_results( "bestfit_c1       ", csl_common_test_timer_v0(bestfit_c1),"" );
+  csl_common_print_results( "firstfit_c1      ", csl_common_test_timer_v0(firstfit_c1),"" );
 
   return 0;
 }

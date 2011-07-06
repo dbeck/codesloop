@@ -36,28 +36,88 @@ using csl::common::bithacks;
 
 namespace test_bithacks
 {
-  void n_leading_zero_loop1()
+  void check_fun_3(int(*fun1)(unsigned int),
+                   int(*fun2)(unsigned int),
+                   int(*fun3)(unsigned int),
+                   unsigned int & in)
   {
-    static int i = 0;
-    assert( bithacks::n_leading_zero_gcc(i) == bithacks::n_leading_zero_c1(i) );
-    assert( bithacks::n_leading_zero_c2(i) == bithacks::n_leading_zero_c1(i) );
-    ++i;
+    assert( (fun1(in) == fun2(in)) && (fun2(in)== fun3(in)) );
   }
 
-  void n_leading_zero_loop2()
+  void check_fun_5(int(*fun1)(unsigned int),
+                   int(*fun2)(unsigned int),
+                   int(*fun3)(unsigned int),
+                   int(*fun4)(unsigned int),
+                   int(*fun5)(unsigned int),
+                   unsigned int & in)
   {
-    static int i2 = 0;
-    assert( bithacks::n_leading_zero_gcc(i2) == bithacks::n_leading_zero_c1(i2) );
-    assert( bithacks::n_leading_zero_c2(i2) == bithacks::n_leading_zero_c1(i2) );
-    i2 += 3;
+    assert( (fun1(in) == fun2(in)) && (fun3(in) == fun4(in)) && (fun2(in) == fun5(in)) && (fun3(in) == fun1(in)) );
   }
 
-  void n_leading_zero_loop3()
+  void loop1()
   {
-    static int i3 = 0;
-    assert( bithacks::n_leading_zero_gcc(i3) == bithacks::n_leading_zero_c1(i3) );
-    assert( bithacks::n_leading_zero_c2(i3) == bithacks::n_leading_zero_c1(i3) );
-    i3 += 119;
+    static unsigned int z1 = 0;
+    check_fun_3(bithacks::nlz_gcc,
+                bithacks::nlz_c1,
+                bithacks::nlz_c2,
+                z1);
+    check_fun_5(bithacks::pop_gcc,
+                bithacks::pop_c1,
+                bithacks::pop_c2,
+                bithacks::pop_c3,
+                bithacks::pop_c4,
+                z1);
+    check_fun_5(bithacks::ntz_gcc,
+                bithacks::ntz_c1,
+                bithacks::ntz_c2,
+                bithacks::ntz_c3,
+                bithacks::ntz_c4,
+                z1);
+    z1++;
+  }
+
+  void loop2()
+  {
+    static unsigned int z2 = 0;
+    check_fun_3(bithacks::nlz_gcc,
+                bithacks::nlz_c1,
+                bithacks::nlz_c2,
+                z2);
+    check_fun_5(bithacks::pop_gcc,
+                bithacks::pop_c1,
+                bithacks::pop_c2,
+                bithacks::pop_c3,
+                bithacks::pop_c4,
+                z2);
+    check_fun_5(bithacks::ntz_gcc,
+                bithacks::ntz_c1,
+                bithacks::ntz_c2,
+                bithacks::ntz_c3,
+                bithacks::ntz_c4,
+                z2);
+    z2 += 3;
+  }
+
+  void loop3()
+  {
+    static unsigned int z3 = 0;
+    check_fun_3(bithacks::nlz_gcc,
+                bithacks::nlz_c1,
+                bithacks::nlz_c2,
+                z3);
+    check_fun_5(bithacks::pop_gcc,
+                bithacks::pop_c1,
+                bithacks::pop_c2,
+                bithacks::pop_c3,
+                bithacks::pop_c4,
+                z3);
+    check_fun_5(bithacks::ntz_gcc,
+                bithacks::ntz_c1,
+                bithacks::ntz_c2,
+                bithacks::ntz_c3,
+                bithacks::ntz_c4,
+                z3);
+    z3 += 119;
   }
 
 };
@@ -66,9 +126,9 @@ using namespace test_bithacks;
 
 int main()
 {
-  csl_common_print_results( "n_leading_zero_loop1 ", csl_common_test_timer_v0(n_leading_zero_loop1),"" );
-  csl_common_print_results( "n_leading_zero_loop2 ", csl_common_test_timer_v0(n_leading_zero_loop2),"" );
-  csl_common_print_results( "n_leading_zero_loop3 ", csl_common_test_timer_v0(n_leading_zero_loop3),"" );
+  csl_common_print_results( "loop1 ", csl_common_test_timer_v0(loop1),"" );
+  csl_common_print_results( "loop2 ", csl_common_test_timer_v0(loop2),"" );
+  csl_common_print_results( "loop3 ", csl_common_test_timer_v0(loop3),"" );
   return 0;
 }
 
