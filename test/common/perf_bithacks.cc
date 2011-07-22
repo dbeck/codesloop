@@ -32,7 +32,7 @@ using csl::common::bithacks;
 
 namespace test_bithacks
 {
-#define ITER 1000
+#define ITER 1000000
   void malloc_baseline()
   {
     void * p = 0;
@@ -41,6 +41,30 @@ namespace test_bithacks
       p = malloc(((i+1)<<2));
       free(p);
     }
+  }
+
+  void malloc2_baseline()
+  {
+    void * p[ITER];
+    for(int i=0;i<ITER;++i)
+    {
+      p[i] = malloc(((i+1)<<2));
+    }
+    for(int i=0;i<ITER;++i)
+    {
+      free(p[i]);
+    }
+  }
+
+  void malloc3_baseline()
+  {
+    void * p[ITER];
+    for(int i=0;i<ITER;++i)
+    {
+      p[i] = malloc(((i+1)<<2));
+      if( i>0 ) free(p[i-1]);
+    }
+    free(p[0]);
   }
 
   void vector_baseline()
@@ -196,6 +220,17 @@ namespace test_bithacks
     p4 += j;
   }
 
+  void pop_c5()
+  {
+    static unsigned int p5 = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::pop_c5(p5++);
+    }
+    p5 += j;
+  }
+
   void bestfit_c1()
   {
     static unsigned int f1 = 0;
@@ -218,6 +253,83 @@ namespace test_bithacks
     xf1 += j;
   }
 
+  void last0bit()
+  {
+    static unsigned int q = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::last0bit(q);
+    }
+    q += j;
+  }
+
+  void last0str()
+  {
+    static unsigned int q = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::last0str(q);
+    }
+    q += j;
+  }
+
+  void last1bit()
+  {
+    static unsigned int q = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::last1bit(q);
+    }
+    q += j;
+  }
+
+  void last1str()
+  {
+    static unsigned int q = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::last1str(q);
+    }
+    q += j;
+  }
+
+  void last1bitoff()
+  {
+    static unsigned int q = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::last1bitoff(q);
+    }
+    q += j;
+  }
+
+  void trailing0str()
+  {
+    static unsigned int q = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += bithacks::trailing0str(q);
+    }
+    q += j;
+  }
+
+  void trailing0strB()
+  {
+    static unsigned int q = 0;
+    int j = 0;
+    for(int i=0;i<ITER;++i)
+    {
+      j += ((~q)&(q-1));
+    }
+    q += j;
+  }
+
 };
 
 using namespace test_bithacks;
@@ -225,6 +337,8 @@ using namespace test_bithacks;
 int main()
 {
   csl_common_print_results( "malloc_baseline  ", csl_common_test_timer_v0(malloc_baseline),"" );
+  csl_common_print_results( "malloc2_baseline ", csl_common_test_timer_v0(malloc2_baseline),"" );
+  csl_common_print_results( "malloc3_baseline ", csl_common_test_timer_v0(malloc3_baseline),"" );
   csl_common_print_results( "vector_baseline  ", csl_common_test_timer_v0(vector_baseline),"" );
   csl_common_print_results( "ntz_gcc          ", csl_common_test_timer_v0(ntz_gcc),"" );
   csl_common_print_results( "ntz_c1           ", csl_common_test_timer_v0(ntz_c1),"" );
@@ -238,9 +352,17 @@ int main()
   csl_common_print_results( "pop_c2           ", csl_common_test_timer_v0(pop_c2),"" );
   csl_common_print_results( "pop_c3           ", csl_common_test_timer_v0(pop_c3),"" );
   csl_common_print_results( "pop_c4           ", csl_common_test_timer_v0(pop_c4),"" );
+  csl_common_print_results( "pop_c5           ", csl_common_test_timer_v0(pop_c5),"" );
   csl_common_print_results( "pop_gcc          ", csl_common_test_timer_v0(pop_gcc),"" );
   csl_common_print_results( "bestfit_c1       ", csl_common_test_timer_v0(bestfit_c1),"" );
   csl_common_print_results( "firstfit_c1      ", csl_common_test_timer_v0(firstfit_c1),"" );
+  csl_common_print_results( "last0bit         ", csl_common_test_timer_v0(last0bit),"" );
+  csl_common_print_results( "last0str         ", csl_common_test_timer_v0(last0str),"" );
+  csl_common_print_results( "last1bit         ", csl_common_test_timer_v0(last1bit),"" );
+  csl_common_print_results( "last1str         ", csl_common_test_timer_v0(last1str),"" );
+  csl_common_print_results( "last1bitoff      ", csl_common_test_timer_v0(last1bitoff),"" );
+  csl_common_print_results( "trailing0str     ", csl_common_test_timer_v0(trailing0str),"" );
+  csl_common_print_results( "trailing0strB    ", csl_common_test_timer_v0(trailing0strB),"" );
 
   return 0;
 }

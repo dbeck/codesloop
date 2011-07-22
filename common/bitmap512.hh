@@ -37,7 +37,7 @@ namespace csl
     class bitmap512
     {
     public:
-      CSL_CLASS( csl::common::simpstr );
+      CSL_CLASS( csl::common::bitmap512 );
       typedef unsigned int pos_t;
       typedef uint32_t     item_t;
 

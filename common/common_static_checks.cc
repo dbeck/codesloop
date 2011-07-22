@@ -25,7 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/common.h"
 #include "codesloop/common/stpodary.hh"
-#include "codesloop/common/simpstr.hh"
+#include "codesloop/common/str.hh"
 #include "codesloop/common/zero.hh"
 #include "codesloop/common/strlength.hh"
 #include "codesloop/common/strconcat.hh"
@@ -34,7 +34,7 @@ namespace
 {
   static void static_check_simpstr()
   {
-    csl::common::simpstr s;
+    csl::common::str s;
   }
   
   static bool static_check_strlength()

@@ -28,13 +28,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CSL_DEBUG_VERBOSE
 #endif /* CSL_DEBUG */
 
-#include "codesloop/common/simpstr.hh"
+#include "codesloop/common/str.hh"
 #include "codesloop/common/excbase.hh"
 #include "codesloop/common/zero.hh"
 #include <string>
 #include <assert.h>
 
-using csl::common::simpstr;
+using csl::common::str;
 using csl::common::excbase;
 using csl::common::zero;
 
@@ -53,7 +53,7 @@ using csl::common::zero;
 #endif
 
 
-namespace test_simpstr
+namespace test_str
 {
   void print_exc_caught(const csl::common::excbase & e)
   {
@@ -67,14 +67,14 @@ namespace test_simpstr
 
   void empty_checks()
   {
-    simpstr s;
+    str s;
     assert( s.empty() == true );
     assert( s.size() == 0 );
   }
 
   void empty_comparisons()
   {
-    simpstr s1,s2;
+    str s1,s2;
     assert( s1 == s2 );
     assert( s1 == "" );
     ASSERT_OR_EXC( (s1 == static_cast<const char *>(0)) == false );
@@ -85,10 +85,10 @@ namespace test_simpstr
 
   void str_copy()
   {
-    simpstr s1(L"Hello world");
-    simpstr s2;
+    str s1(L"Hello world");
+    str s2;
     assert( !(s1 == s2) );
-    simpstr s3(s1);
+    str s3(s1);
     assert( s3 == s1 );
     s2 = s1;
     assert( s2 == s1 );
@@ -98,10 +98,10 @@ namespace test_simpstr
 
   void str_append()
   {
-    simpstr s1(L"Hello ");
-    simpstr s2(L"world");
-    simpstr s3(L"Hello world");
-    simpstr s4(s1+s2);
+    str s1(L"Hello ");
+    str s2(L"world");
+    str s3(L"Hello world");
+    str s4(s1+s2);
     assert( s1 == L"Hello ");
     assert( !(s1 == L"He") );
     s1 += s2;
@@ -111,30 +111,30 @@ namespace test_simpstr
 
   void str_substr()
   {
-    simpstr s1(L"Hello world");
-    simpstr s2(s1.substr(2,3));
+    str s1(L"Hello world");
+    str s2(s1.substr(2,3));
     assert( s2 == L"llo" );
     assert( s1 == L"Hello world");
   }
 
   void str_trim()
   {
-    simpstr s1(L" \t Hello world \t \r\n");
-    simpstr s2(s1.trim());
+    str s1(L" \t Hello world \t \r\n");
+    str s2(s1.trim());
     assert( s2 == L"Hello world");
     assert( s1 == L" \t Hello world \t \r\n");
   }
 
   void charptr_copy()
   {
-    simpstr s1("Hello world");
-    simpstr s2(L"Hello world");
+    str s1("Hello world");
+    str s2(L"Hello world");
     assert( s1 == s2 );
-    simpstr s3;
+    str s3;
     s3 = "Hello world";
     assert( s1 == s3 );
     assert( s3 == s2 );
-    simpstr s4 = s1;
+    str s4 = s1;
     assert( s1 == s4 );
     assert( s4 == s2 );
   }
@@ -142,7 +142,7 @@ namespace test_simpstr
   void stdstring_copy()
   {
     std::string x("Hello world");
-    simpstr s0,s1(x),s2;
+    str s0,s1(x),s2;
     s2 = x;
     assert( s1 != s0 );
     assert( !(s1 == s0) );
@@ -152,7 +152,7 @@ namespace test_simpstr
 
   void charptr_append()
   {
-    simpstr s1;
+    str s1;
     s1 += "Hello";
     assert( s1 == "Hello" );
     assert( (s1 += "") == "Hello" );
@@ -167,7 +167,7 @@ namespace test_simpstr
 
   void stdstring_append()
   {
-    simpstr s1;
+    str s1;
     std::string h("Hello"), w("world"), e;
     s1 += h;
     assert( s1 == "Hello" );
@@ -180,7 +180,7 @@ namespace test_simpstr
 
   void comparisons()
   {
-    simpstr s1(L"Hello world");
+    str s1(L"Hello world");
     assert( s1 == "Hello world");
     assert( s1 == L"Hello world");
     assert( s1 !=  "H" );
@@ -197,7 +197,7 @@ namespace test_simpstr
 
   void find()
   {
-    simpstr empty, hw(L"Hello world");
+    str empty, hw(L"Hello world");
 
     {
       char z          = zero<char>::val_;
@@ -208,16 +208,16 @@ namespace test_simpstr
       char H          = 'H';
       char d          = 'd';
 
-      ASSERT_OR_EXC( empty.find(z) == simpstr::npos );
-      assert( empty.find(nz) == simpstr::npos );
-      ASSERT_OR_EXC( empty.find(zs) == simpstr::npos );
-      assert( empty.find(nf) == simpstr::npos );
-      assert( empty.find(fn) == simpstr::npos );
+      ASSERT_OR_EXC( empty.find(z) == str::npos );
+      assert( empty.find(nz) == str::npos );
+      ASSERT_OR_EXC( empty.find(zs) == str::npos );
+      assert( empty.find(nf) == str::npos );
+      assert( empty.find(fn) == str::npos );
 
-      ASSERT_OR_EXC( hw.find(z) == simpstr::npos );
-      assert( hw.find(nz) == simpstr::npos );
-      ASSERT_OR_EXC( hw.find(zs) == simpstr::npos );
-      assert( hw.find(nf) == simpstr::npos );
+      ASSERT_OR_EXC( hw.find(z) == str::npos );
+      assert( hw.find(nz) == str::npos );
+      ASSERT_OR_EXC( hw.find(zs) == str::npos );
+      assert( hw.find(nf) == str::npos );
       assert( hw.find(fn) == 6 );
       assert( hw.find(H) == 0 );
       assert( hw.find(d) == 10 );
@@ -232,16 +232,16 @@ namespace test_simpstr
       wchar_t H          = L'H';
       wchar_t d          = L'd';
 
-      ASSERT_OR_EXC( empty.find(z) == simpstr::npos );
-      assert( empty.find(nz) == simpstr::npos );
-      ASSERT_OR_EXC( empty.find(zs) == simpstr::npos );
-      assert( empty.find(nf) == simpstr::npos );
-      assert( empty.find(fn) == simpstr::npos );
+      ASSERT_OR_EXC( empty.find(z) == str::npos );
+      assert( empty.find(nz) == str::npos );
+      ASSERT_OR_EXC( empty.find(zs) == str::npos );
+      assert( empty.find(nf) == str::npos );
+      assert( empty.find(fn) == str::npos );
 
-      ASSERT_OR_EXC( hw.find(z) == simpstr::npos );
-      assert( hw.find(nz) == simpstr::npos );
-      ASSERT_OR_EXC( hw.find(zs) == simpstr::npos );
-      assert( hw.find(nf) == simpstr::npos );
+      ASSERT_OR_EXC( hw.find(z) == str::npos );
+      assert( hw.find(nz) == str::npos );
+      ASSERT_OR_EXC( hw.find(zs) == str::npos );
+      assert( hw.find(nf) == str::npos );
       assert( hw.find(fn) == 6 );
       assert( hw.find(H) == 0 );
       assert( hw.find(d) == 10 );
@@ -250,7 +250,7 @@ namespace test_simpstr
 
   void rfind()
   {
-    simpstr empty, hw(L"Hello world");
+    str empty, hw(L"Hello world");
     wchar_t z  = zero<wchar_t>::val_;
     wchar_t x  = L'x';
     wchar_t e  = L'e';
@@ -258,12 +258,12 @@ namespace test_simpstr
     wchar_t d  = L'd';
 
 
-    ASSERT_OR_EXC( empty.rfind(z) == simpstr::npos );
-    assert( empty.rfind(x) == simpstr::npos );
-    assert( empty.rfind(e) == simpstr::npos );
+    ASSERT_OR_EXC( empty.rfind(z) == str::npos );
+    assert( empty.rfind(x) == str::npos );
+    assert( empty.rfind(e) == str::npos );
 
-    ASSERT_OR_EXC( hw.rfind(z) == simpstr::npos );
-    assert( hw.rfind(x) == simpstr::npos );
+    ASSERT_OR_EXC( hw.rfind(z) == str::npos );
+    assert( hw.rfind(x) == str::npos );
     assert( hw.rfind(e) == 1 );
     assert( hw.rfind(d) == 10 );
     assert( hw.rfind(H) == 0 );
@@ -271,32 +271,32 @@ namespace test_simpstr
 
   void assign()
   {
-    simpstr empty, hw(L"Hello world");
+    str empty, hw(L"Hello world");
     const wchar_t * np = 0;
     const wchar_t * hl = L"Hello world";
     const wchar_t * end = hl + 11;
     const wchar_t * m0 = hl + 6;
     const wchar_t * m1 = hl + 9;
 
-    simpstr s0;
+    str s0;
     ASSERT_OR_EXC( s0.assign(np,np) == empty );
     ASSERT_OR_EXC( s0.assign(hl,np) == empty );
     ASSERT_OR_EXC( s0.assign(np,end) == empty );
     ASSERT_OR_EXC( s0.assign(end,hl) == empty );
     ASSERT_OR_EXC( s0.assign(m1,m0) == empty );
 
-    simpstr s1;
+    str s1;
     assert( s1.assign( hl,hl ) == empty );
     assert( s1.assign( hl,end ) == hl );
     assert( s1.assign( hl,end ) == hw );
 
-    simpstr s2;
+    str s2;
     assert( s1.assign( m0,m1 ) == L"wor" );
   }
 
-} // end of test_simpstr
+} // end of test_str
 
-using namespace test_simpstr;
+using namespace test_str;
 
 int main()
 {

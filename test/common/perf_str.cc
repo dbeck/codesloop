@@ -28,7 +28,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CSL_DEBUG_VERBOSE
 #endif /* CSL_DEBUG */
 
-#include "codesloop/common/simpstr.hh"
+#include "codesloop/common/str.hh"
 #include "codesloop/common/excbase.hh"
 #include "codesloop/common/test_timer.h"
 #include <assert.h>
@@ -39,7 +39,7 @@ using namespace csl::common;
 namespace test_str {
 
   void string_baseline() { std::string b; }
-  void str_baseline()    { simpstr b; }
+  void str_baseline()    { str b; }
 
   void string_hello()
   {
@@ -49,7 +49,7 @@ namespace test_str {
 
   void str_hello()
   {
-    simpstr b;
+    str b;
     b = L"Hello";
   }
 
@@ -61,8 +61,8 @@ namespace test_str {
 
   void str_concat()
   {
-    simpstr b;
-    b = L"Hello" + simpstr(L"world");
+    str b;
+    b = L"Hello" + str(L"world");
   }
 
   void string_append()
@@ -75,20 +75,20 @@ namespace test_str {
 
   void str_append()
   {
-    simpstr b;
+    str b;
     b += L"Hello";
     b += L" ";
     b += L"world!";
   }
 
   void string_initconstr() { std::string b("hello world"); }
-  void str_initconstr()    { simpstr b(L"hello world"); }
+  void str_initconstr()    { str b(L"hello world"); }
 
   void string_copy() { std::string b("hello world"); std::string c(b); }
-  void str_copy()    { simpstr b(L"hello world");    simpstr c(b);     }
+  void str_copy()    { str b(L"hello world");    str c(b);     }
 
   void string_copymod() { std::string b("hello world"); std::string c(b); b += "!";  }
-  void str_copymod()    { simpstr b(L"hello world");    simpstr c(b);     b += L"!"; }
+  void str_copymod()    { str b(L"hello world");    str c(b);     b += L"!"; }
 
 
 } // namespace test_str

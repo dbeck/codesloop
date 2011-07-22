@@ -294,3 +294,8 @@ test/common/func_bitmap512
 test/common/perf_bitmap512
 test/common/func_bithacks
 test/common/perf_bithacks
+test/common/feas_bits
+test/common/func_str
+test/common/perf_str
+.cproject
+.project

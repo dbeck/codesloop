@@ -40,7 +40,7 @@ ADD_LIBRARY( csl_common STATIC
     trailing_zero.hh
     strconcat.hh
     strlength.hh
-    simpstr.cc simpstr.hh
+    str.cc str.hh
     logger.cc logger.hh
     bitmap512.cc bitmap512.hh
     bithacks.cc bithacks.hh

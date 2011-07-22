@@ -81,6 +81,8 @@ namespace csl
 #define fastest_nlz nlz_gcc
 #endif // fastest_nlz
 
+      static inline int nlz(unsigned int x) { return fastest_nlz(x); }
+
       static inline int ntz_gcc(unsigned int x)
       {
         if(x==0) return(32);
@@ -144,6 +146,8 @@ namespace csl
 #ifndef fastest_ntz
 #define fastest_ntz ntz_gcc
 #endif // fastest_ntz
+
+      static inline int ntz(unsigned int x) { return fastest_ntz(x); }
 
       static inline int pop_gcc(unsigned int x)
       {
@@ -210,10 +214,26 @@ namespace csl
                table[(x >> 24)];
       }
 
+      static inline int pop_c5(unsigned int x)
+      {
+        static char table[16] = { 0, 1, 1, 2, 1, 2, 2, 3,  1, 2, 2, 3, 2, 3, 3, 4 };
+
+        return table[x         & 0xF] +
+               table[(x >>  4) & 0xF] +
+               table[(x >>  8) & 0xF] +
+               table[(x >> 12) & 0xF] +
+               table[(x >> 16) & 0xF] +
+               table[(x >> 20) & 0xF] +
+               table[(x >> 24) & 0xf] +
+               table[(x >> 28) & 0xf];
+      }
+
 // select fastest pop
 #ifndef fastest_pop
 #define fastest_pop pop_c4
 #endif // fastest_pop
+
+      static inline int pop(unsigned int x) { return fastest_pop(x); }
 
       static inline int bestfit_c1(unsigned int x, int n, int *apos)
       {
@@ -222,12 +242,12 @@ namespace csl
 
         kmin = 32;
         xmin = x;
-        y0 = fastest_pop(x);
+        y0 = pop(x);
         x0 = x;
         do
         {
           x = ((x | (x - 1)) + 1) & x;      // Turn off
-          y = fastest_pop(x);               // rightmost string.
+          y = pop(x);               // rightmost string.
           k = y0 - y;                       // k = length of string
           if (k <= kmin && k >= n)          // turned off.
           {                                 //
@@ -236,7 +256,7 @@ namespace csl
           }
           y0 = y;
         } while (x != 0);
-        *apos = fastest_nlz(x0 ^ xmin);
+        *apos = nlz(x0 ^ xmin);
         return kmin;
       }
 
@@ -245,18 +265,23 @@ namespace csl
 #define fastest_bestfit bestfit_c1
 #endif // fastest_bestfit
 
+      static inline int bestfit(unsigned int x, int n, int *apos)
+      {
+    	  return fastest_bestfit(x,n,apos);
+      }
+
       static inline int firstfit_c1(unsigned int x, int n, int *apos)
       {
         int k, y0, kmin, y;
         unsigned int x0, xmin;
 
         xmin = x;
-        y0 = fastest_pop(x);
+        y0 = pop(x);
         x0 = x;
         do
         {
           x = ((x | (x - 1)) + 1) & x;      // Turn off
-          y = fastest_pop(x);               // rightmost string.
+          y = pop(x);               // rightmost string.
           k = y0 - y;                       // k = length of string
           if( k>=n )
           {
@@ -266,7 +291,7 @@ namespace csl
           }
           y0 = y;
         } while (x != 0);
-        *apos = fastest_nlz(x0 ^ xmin);
+        *apos = nlz(x0 ^ xmin);
         return kmin;
       }
 
@@ -275,6 +300,53 @@ namespace csl
 #define fastest_firstfit firstfit_c1
 #endif // fastest_firstfit
 
+      static inline int firstfit(unsigned int x, int n, int *apos)
+      {
+        return fastest_firstfit(x,n,apos);
+      }
+
+      static inline unsigned int last0bit(unsigned int x)
+      {
+        // 00011 =>
+        // 00100
+        return ((~x)&(x+1));
+      }
+
+      static inline unsigned int last0str(unsigned int x)
+      {
+        // 00110011 =>
+    	// 00001100
+    	unsigned int y = ~x;
+    	return (y^(y&((y|(y-1))+1)));
+      }
+
+      static inline unsigned int last1bit(unsigned int x)
+      {
+        // 101100000 =>
+        // 000100000
+        return (x&(-x));
+      }
+
+      static inline unsigned int last1str(unsigned int x)
+      {
+        // 101100000 =>
+        // 001100000
+        return (x^(x&((x|(x-1))+1)));
+      }
+
+      static inline unsigned int last1bitoff(unsigned int x)
+      {
+          // 00110011 =>
+          // 00110010
+        return (x&(x-1));
+      }
+
+      static inline unsigned int trailing0str(unsigned int x)
+      {
+        // 00110000 =>
+        // 00001111
+        return ((~x)&(x-1));
+      }
     };
   }
 }

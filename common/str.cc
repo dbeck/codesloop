@@ -23,7 +23,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "codesloop/common/simpstr.hh"
+#include "codesloop/common/str.hh"
 #include "codesloop/common/trailing_zero.hh"
 #include "codesloop/common/strconcat.hh"
 
@@ -58,7 +58,7 @@ namespace csl
     }
     
 #ifdef CSL_DEBUG
-    bool simpstr::csl_invariant() const
+    bool str::csl_invariant() const
     {
       // check for trailing zero
       if( buf_.size() == 0 ) return false;
@@ -67,14 +67,14 @@ namespace csl
     }
 #endif //CSL_DEBUG
 
-    simpstr& simpstr::operator+=(const simpstr& s)
+    str& str::operator+=(const str& s)
     {
       strconcat<buf_t>::execute(buf_,s.buf_);
       CSL_CHECK_INVARIANT();
       return *this;      
     }
 
-    simpstr& simpstr::operator+=(const wchar_t * s)
+    str& str::operator+=(const wchar_t * s)
     {
       CSL_REQUIRE( s != 0 );
       if( !s ) { return *this; }
@@ -83,7 +83,7 @@ namespace csl
       return *this;      
     }
     
-    simpstr& simpstr::operator+=(const char * s)
+    str& str::operator+=(const char * s)
     {
       CSL_REQUIRE( s != 0 );
       if( !s ) { return *this; }
@@ -92,14 +92,14 @@ namespace csl
       return *this;      
     }
     
-    simpstr& simpstr::operator+=(const std::string & s)
+    str& str::operator+=(const std::string & s)
     {
       strconcat<buf_t>::execute(buf_,s.c_str());
       CSL_CHECK_INVARIANT();
       return *this;      
     }
     
-    simpstr& simpstr::operator+=(const char c)
+    str& str::operator+=(const char c)
     {
       CSL_REQUIRE( c != zero<char>::val_ );
       strconcat<buf_t>::execute(buf_,c);
@@ -107,7 +107,7 @@ namespace csl
       return *this;      
     }
     
-    simpstr& simpstr::operator+=(const wchar_t w)
+    str& str::operator+=(const wchar_t w)
     {
       CSL_REQUIRE( w != zero<wchar_t>::val_ );
       strconcat<buf_t>::execute(buf_,w);
@@ -115,7 +115,7 @@ namespace csl
       return *this;      
     }
 
-    simpstr::simpstr(const char * st) : buf_( L'\0' )
+    str::str(const char * st) : buf_( L'\0' )
     {
       CSL_REQUIRE( st != 0 );
       
@@ -145,7 +145,7 @@ namespace csl
       CSL_CHECK_INVARIANT();
     }
 
-    simpstr& simpstr::operator=(const char * st)
+    str& str::operator=(const char * st)
     {
       CSL_REQUIRE( st != 0 );
       if( !st ) { return *this; }
@@ -155,7 +155,7 @@ namespace csl
       return *this;
     }
 
-    bool simpstr::operator==(const wchar_t * s) const
+    bool str::operator==(const wchar_t * s) const
     {
       CSL_REQUIRE( s != 0 );
       if( !s ) { return empty(); }
@@ -163,15 +163,15 @@ namespace csl
       return (ret == 0);
     }
     
-    bool simpstr::operator==(const char * s) const
+    bool str::operator==(const char * s) const
     {
       CSL_REQUIRE( s != 0 );
       if( !s ) { return empty(); }
-      simpstr rhs(s);
+      str rhs(s);
       return (*this == rhs);
     }
 
-    bool simpstr::operator==(const simpstr& s) const
+    bool str::operator==(const str& s) const
     {
       CSL_REQUIRE( s.buf_.size() > 0 );
       if( size() != s.size() ) return false;
@@ -180,7 +180,7 @@ namespace csl
       return (ret == 0);
     }
 
-    size_t simpstr::find(wchar_t c) const
+    size_t str::find(wchar_t c) const
     {
       CSL_REQUIRE( c != zero<wchar_t>::val_ );
       
@@ -200,7 +200,7 @@ namespace csl
       return ret;
     }
 
-    size_t simpstr::rfind(wchar_t c) const
+    size_t str::rfind(wchar_t c) const
     {
       CSL_REQUIRE( c != zero<wchar_t>::val_ );
       
@@ -226,7 +226,7 @@ namespace csl
       return ret;
     }
 
-    size_t simpstr::find(const simpstr & s) const
+    size_t str::find(const str & s) const
     {
       CSL_REQUIRE( s.empty() == false );
       if( s.empty() || empty() ) { return npos; }
@@ -236,7 +236,7 @@ namespace csl
       return ret;
     }
 
-    size_t simpstr::find(const wchar_t * strv) const
+    size_t str::find(const wchar_t * strv) const
     {
       CSL_REQUIRE( strv != 0 );
       CSL_REQUIRE( *strv != zero<wchar_t>::val_ );
@@ -251,25 +251,25 @@ namespace csl
       return (res-data());
     }
     
-    size_t simpstr::find(char c) const
+    size_t str::find(char c) const
     {
       CSL_REQUIRE( c != zero<char>::val_ );
       if( c == zero<char>::val_ ) { return npos; }
       char t[2] = { c, zero<char>::val_ };
-      simpstr x(t);
+      str x(t);
       return find(x);
     }
     
-    size_t simpstr::find(const char * s) const
+    size_t str::find(const char * s) const
     {
       CSL_REQUIRE( s != NULL );
       CSL_REQUIRE( *s != zero<char>::val_ );
       if( s == NULL || *s == zero<char>::val_ ) { return npos; }
-      simpstr x(s);
+      str x(s);
       return find(x);
     }
 
-    wchar_t simpstr::at(const size_t n) const
+    wchar_t str::at(const size_t n) const
     {
       size_t l = ::wcslen( data() );
       CSL_REQUIRE( n <= l );
@@ -278,13 +278,13 @@ namespace csl
       else         return 0;
     }
 
-    simpstr::simpstr(const std::string & s)
+    str::str(const std::string & s)
     {
       *this = s;      
       CSL_CHECK_INVARIANT();
     }
 
-    simpstr& simpstr::operator=(const std::string & s)
+    str& str::operator=(const std::string & s)
     {
       return operator=(s.c_str());
     }
@@ -303,9 +303,9 @@ namespace csl
     }
   */
   
-    simpstr simpstr::substr(const size_t start, const size_t length) const
+    str str::substr(const size_t start, const size_t length) const
     {
-      simpstr s;
+      str s;
       size_t len = length;
       size_t sz = size();
       
@@ -333,7 +333,7 @@ namespace csl
       return s;
     }
 
-    simpstr simpstr::trim() const
+    str str::trim() const
     {
       size_t start = npos, length = 0;
 
@@ -348,7 +348,7 @@ namespace csl
       return substr(start,length);
     }
     
-    simpstr::simpstr(const wchar_t * wcs) : buf_(L'\0')
+    str::str(const wchar_t * wcs) : buf_(L'\0')
     {
       CSL_REQUIRE( wcs != 0 );
       CSL_REQUIRE( *wcs != zero<wchar_t>::val_ );
@@ -357,7 +357,7 @@ namespace csl
       CSL_CHECK_INVARIANT();
     }
 
-    simpstr& simpstr::operator=(const wchar_t * wcs)
+    str& str::operator=(const wchar_t * wcs)
     {
       CSL_REQUIRE( wcs != 0 );
       CSL_REQUIRE( *wcs != zero<wchar_t>::val_ );
@@ -368,7 +368,7 @@ namespace csl
       return *this;
     }
     
-    simpstr& simpstr::assign(const wchar_t * start, const wchar_t * end)
+    str& str::assign(const wchar_t * start, const wchar_t * end)
     {
       CSL_REQUIRE( (end-start) >= 0 );
       CSL_REQUIRE( start != NULL );
@@ -381,7 +381,7 @@ namespace csl
       return *this;
     }
 
-    void simpstr::reset()
+    void str::reset()
     {
       buf_.reset();
       buf_.set( L"\0",1 );
@@ -391,7 +391,7 @@ namespace csl
       CSL_CHECK_INVARIANT();
     }
     
-    simpstr::simpstr() : buf_( L'\0' )
+    str::str() : buf_( L'\0' )
     {
       CSL_ENSURE( empty() == true );
       CSL_ENSURE( nbytes() > 0 );
@@ -399,7 +399,7 @@ namespace csl
       CSL_CHECK_INVARIANT();
     }
     
-    simpstr::simpstr(const simpstr& s) : buf_( L'\0' )
+    str::str(const str& s) : buf_( L'\0' )
     {
       buf_ = s.buf_;
       CSL_ENSURE( empty() == s.empty() );
@@ -408,7 +408,7 @@ namespace csl
       CSL_CHECK_INVARIANT();
     }
 
-    simpstr& simpstr::operator=(const simpstr& s)
+    str& str::operator=(const str& s)
     {
       buf_ = s.buf_;
       CSL_ENSURE( empty() == s.empty() );

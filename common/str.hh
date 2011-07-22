@@ -42,10 +42,10 @@ namespace csl
 {
   namespace common
   {
-    class simpstr
+    class str
     {
       public:
-        CSL_CLASS( csl::common::simpstr );
+        CSL_CLASS( csl::common::str );
         CSL_INVARIANT();
         CSL_DECLARE_EXCEPTION( conversion_error );
         CSL_DECLARE_EXCEPTION( out_of_memory );
@@ -59,38 +59,38 @@ namespace csl
         
         typedef stpodary<elem_t,buf_items>  buf_t;
 
-        virtual ~simpstr() {}
+        virtual ~str() {}
 
         // constructors
-        simpstr();
-        simpstr(const simpstr& s);
-        explicit simpstr(const char *);
-        explicit simpstr(const wchar_t * wcs);
-        explicit simpstr(const std::string & s);
+        str();
+        str(const str& s);
+        explicit str(const char *);
+        explicit str(const wchar_t * wcs);
+        explicit str(const std::string & s);
                 
         // operators
-        simpstr& operator=(const simpstr& s);
-        simpstr& operator=(const char *);
-        simpstr& operator=(const wchar_t * wcs);
-        simpstr& operator=(const std::string & s);
+        str& operator=(const str& s);
+        str& operator=(const char *);
+        str& operator=(const wchar_t * wcs);
+        str& operator=(const std::string & s);
         
-        simpstr& operator+=(const simpstr& s);
-        simpstr& operator+=(const wchar_t * str);
-        simpstr& operator+=(const char * str);
-        simpstr& operator+=(const std::string & s);
-        simpstr& operator+=(const char c);
-        simpstr& operator+=(const wchar_t w);
+        str& operator+=(const str& s);
+        str& operator+=(const wchar_t * str);
+        str& operator+=(const char * str);
+        str& operator+=(const std::string & s);
+        str& operator+=(const char c);
+        str& operator+=(const wchar_t w);
         
-        friend simpstr operator+(const simpstr& lhs, const simpstr& rhs)
-          { return simpstr(lhs) += rhs; }
+        friend str operator+(const str& lhs, const str& rhs)
+          { return str(lhs) += rhs; }
 
-        friend simpstr operator+(const wchar_t * lhs, const simpstr& rhs)
-          { return simpstr(lhs) += rhs; }
+        friend str operator+(const wchar_t * lhs, const str& rhs)
+          { return str(lhs) += rhs; }
 
-        friend simpstr operator+(const simpstr& lhs, const wchar_t * rhs)
-          { return simpstr(lhs) += rhs; }
+        friend str operator+(const str& lhs, const wchar_t * rhs)
+          { return str(lhs) += rhs; }
 
-        bool operator==(const simpstr& s) const;
+        bool operator==(const str& s) const;
         bool operator==(const char * s) const;
         bool operator==(const wchar_t * s) const;
 
@@ -108,10 +108,10 @@ namespace csl
         // others
         wchar_t at(const size_t n) const;
 
-        simpstr substr(const size_t start, const size_t length) const;
-        simpstr trim() const;
+        str substr(const size_t start, const size_t length) const;
+        str trim() const;
                                                                                                                                                                                                 
-        size_t find(const simpstr & s) const;
+        size_t find(const str & s) const;
         size_t find(wchar_t w) const;
         size_t find(const wchar_t * s) const;
         size_t find(char c) const;
@@ -119,7 +119,7 @@ namespace csl
                 
         size_t rfind(wchar_t w) const;
 
-        simpstr & assign(const wchar_t * start, const wchar_t * end);
+        str & assign(const wchar_t * start, const wchar_t * end);
 
         inline const wchar_t * c_str() const
           { return( data() ); } // TODO: have a char * version
@@ -147,7 +147,7 @@ namespace csl
 
     // append template
     template <typename ARG>
-    simpstr & operator<<(simpstr & s, const ARG & arg)
+    str & operator<<(str & s, const ARG & arg)
     {
       return (s.operator+=(arg));
     }
