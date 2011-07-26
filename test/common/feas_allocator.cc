@@ -30,161 +30,94 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
+#include "codesloop/common/allocator.hh"
 #include "codesloop/common/stpodary.hh"
-#include "codesloop/common/bitmap512.hh"
 #include <vector>
+#include <map>
+#include <list>
 #include <limits>
+
+using namespace csl::common;
 
 namespace test_allocator
 {
-  template<typename T>
-  class dummy {
-  public :
-    //	typedefs
-    typedef T value_type;
-    typedef value_type* pointer;
-    typedef const value_type* const_pointer;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef std::size_t size_type;
-    typedef std::ptrdiff_t difference_type;
-
-  public :
-    //	convert an allocator<T> to allocator<U>
-    template<typename U> struct rebind { typedef dummy<U> other; };
-
-  public :
-    inline explicit dummy() {}
-    inline ~dummy() {}
-    inline explicit dummy(dummy const&) {}
-    template<typename U> inline explicit dummy(dummy<U> const&) {}
-
-    //	address
-    inline pointer address(reference r) { return &r; }
-    inline const_pointer address(const_reference r) { return &r; }
-
-    //	memory allocation
-    inline pointer allocate(size_type cnt, typename std::allocator<void>::const_pointer = 0) {
-      return reinterpret_cast<pointer>(0);
-    }
-    inline void deallocate(pointer p, size_type) {}
-
-    //	size
-    inline size_type max_size() const {
-      return std::numeric_limits<size_type>::max() / sizeof(T);
-    }
-
-    //	construction/destruction
-    inline void construct(pointer p, const T& t) { }
-    inline void destroy(pointer p) { }
-
-    inline bool operator==(dummy const&)   { return true; }
-    inline bool operator!=(dummy const& a) { return !operator==(a); }
-  };
-
-  template<typename T, size_t SZ,bool DBG=false>
-  class simple {
-  public :
-    //	typedefs
-    typedef T value_type;
-    typedef value_type* pointer;
-    typedef const value_type* const_pointer;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef std::size_t size_type;
-    typedef std::ptrdiff_t difference_type;
-
-  public :
-    //	convert an allocator<T> to allocator<U>
-    template<typename U> struct rebind { typedef simple<U,SZ,DBG> other; };
-
-  public :
-    inline explicit simple() : len_(0) {}
-    inline ~simple() {}
-    inline explicit simple(simple const&) : len_(0) {}
-    template<typename U> inline explicit simple(simple<U,SZ,DBG> const&) : len_(0) {}
-
-    //	address
-    inline pointer address(reference r) { return &r; }
-    inline const_pointer address(const_reference r) { return &r; }
-
-    //	memory allocation
-    inline pointer allocate(size_type cnt, typename std::allocator<void>::const_pointer x = 0)
-    {
-      pointer ret = reinterpret_cast<pointer>(buf_+len_);
-      len_+=cnt;
-      if( DBG ) printf("allocate: sz:%ld, place:%p => ret:%p\n",cnt,x,ret);
-      return ret;
-    }
-    inline void deallocate(pointer p, size_type s)
-    {
-      if( DBG ) printf("deallocate: ptr:%p, sz:%ld\n",p,s);
-      len_ -= s;
-    }
-
-    //	size
-    inline size_type max_size() const {
-      return std::numeric_limits<size_type>::max() / sizeof(T);
-    }
-
-    //	construction/destruction
-    inline void construct(pointer p, const T& t)
-    {
-      if( DBG ) printf("construct: %p\n",p);
-      new (p) T(t);
-    }
-    inline void destroy(pointer p)
-    {
-      if( DBG ) printf("destroy: %p\n",p);
-      p->~T();
-    }
-
-    inline bool operator==(simple const&)   { return true; }
-    inline bool operator!=(simple const& a) { return !operator==(a); }
-
-  private:
-    T      buf_[SZ];
-    size_t len_;
-  };
-
-  void baseline()      { std::vector<int> v; }
-  void baseline_16()   { std::vector<int> v; v.reserve(16);  }
-  void baseline_256()  { std::vector<int> v; v.reserve(256); }
-
-  void baseline_dummy()      { std::vector< int,dummy<int> > v; }
-  void baseline_16_dummy()   { std::vector< int,dummy<int> > v; v.reserve(16); }
-  void baseline_256_dummy()  { std::vector< int,dummy<int> > v; v.reserve(256); }
-
-  void baseline_stp()      { csl::common::stpodary< int,1 >   v; }
-  void baseline_16_stp()   { csl::common::stpodary< int,16 >  v; }
-  void baseline_256_stp()  { csl::common::stpodary< int,256 > v; }
-
-  void baseline_simple()
+  template <typename T>
+  void test(T & t, size_t res, size_t loop)
   {
-    simple<int,1> a;
-    std::vector< int,simple<int,1> > v(a);
+    t.reserve(res);
+    for(size_t i=0;i<loop;++i)
+    {
+      t.push_back(0);
+    }
   }
 
-  void baseline_16_simple()
+  template <typename T>
+  void test2(T & t, size_t res, size_t loop)
   {
-    simple<int,16> a;
-    std::vector< int,simple<int,16> > v(a);
-    v.reserve(16);
+    t.allocate(res);
+    for(size_t i=0;i<loop;++i)
+    {
+      t.set_at(i,0);
+    }
   }
 
-  void baseline_256_simple()
+  template <typename T>
+  void test3(T & t, int loop)
   {
-    simple<int,256> a;
-    std::vector< int,simple<int,256> > v(a);
-    v.reserve(256);
+    for(int i=0;i<loop;++i)
+    {
+      t[i] = i;
+    }
   }
 
-  void simple_t()
-  {
-    simple<int,256,true> a;
-    std::vector< int,simple<int,256,true> > v(a);
-    for(int i=0;i<256;++i) v.push_back(i);
-  }
+  void baseline()         { std::vector<int> v;                 }
+  void baseline_16()      { std::vector<int> v; v.reserve(16);  }
+  void baseline_256()     { std::vector<int> v; v.reserve(256); }
+
+  void map_std()          { std::map<int,int,std::less<int> >                                                    m; }
+  void map_stdc()         { std::map<int,int,std::less<int>,allocator<std::pair<int,int>,256,impl::stdc> >       m; }
+  void map_simpstack()    { std::map<int,int,std::less<int>,allocator<std::pair<int,int>,256,impl::simpstack> >  m; }
+
+  void map_std_16()          { std::map<int,int,std::less<int> >                                                    m; test3(m,16); }
+  void map_stdc_16()         { std::map<int,int,std::less<int>,allocator<std::pair<int,int>,256,impl::stdc> >       m; test3(m,16); }
+  void map_simpstack_16()    { std::map<int,int,std::less<int>,allocator<std::pair<int,int>,256,impl::simpstack> >  m; test3(m,16); }
+
+  void map_std_128()          { std::map<int,int,std::less<int> >                                                    m; test3(m,128);  }
+  void map_stdc_128()         { std::map<int,int,std::less<int>,allocator<std::pair<int,int>,256,impl::stdc> >       m; test3(m,128);  }
+  void map_simpstack_128()    { std::map<int,int,std::less<int>,allocator<std::pair<int,int>,256,impl::simpstack> >  m; test3(m,128);  }
+
+  void map_std_1024()          { std::map<int,int,std::less<int> >                                                    m; test3(m,1024); }
+  void map_stdc_1024()         { std::map<int,int,std::less<int>,allocator<std::pair<int,int>,256,impl::stdc> >       m; test3(m,1024); }
+  void map_simpstack_1024()    { std::map<int,int,std::less<int>,allocator<std::pair<int,int>,256,impl::simpstack> >  m; test3(m,1024); }
+
+  void vector_16_128()    { std::vector<int> v; test(v,16,128);    }
+  void vector_256_512()   { std::vector<int> v; test(v,256,512);   }
+  void vector_1024_1024() { std::vector<int> v; test(v,1024,1024); }
+  void vector_1_1024()    { std::vector<int> v; test(v,1,1024);    }
+
+  void baseline_stdc()      { std::vector<int, allocator<int,1> > v;                   }
+  void baseline_16_stdc()   { std::vector<int, allocator<int,16> > v; v.reserve(16);   }
+  void baseline_256_stdc()  { std::vector<int, allocator<int,256> > v; v.reserve(256); }
+
+  void stdc_16_128()     { std::vector<int, allocator<int,16> >   v; test(v,16,128);    }
+  void stdc_256_512()    { std::vector<int, allocator<int,256> >  v; test(v,256,512);   }
+  void stdc_1024_1024()  { std::vector<int, allocator<int,1024> > v; test(v,1024,1024); }
+  void stdc_1_1024()     { std::vector<int, allocator<int> >      v; test(v,1,1024);    }
+
+  void baseline_simpstack()      { std::vector<int, allocator<int,1,impl::simpstack > >   v;                 }
+  void baseline_16_simpstack()   { std::vector<int, allocator<int,16,impl::simpstack > >  v; v.reserve(16);  }
+  void baseline_256_simpstack()  { std::vector<int, allocator<int,256,impl::simpstack > > v; v.reserve(256); }
+
+  void simpstack_16_128()     { std::vector<int, allocator<int,16,impl::simpstack   > >   v; test(v,16,128);    }
+  void simpstack_256_512()    { std::vector<int, allocator<int,256,impl::simpstack  > >   v; test(v,256,512);   }
+  void simpstack_1024_1024()  { std::vector<int, allocator<int,1024,impl::simpstack > >   v; test(v,1024,1024); }
+  void simpstack_1_1024()     { std::vector<int, allocator<int,256,impl::simpstack    > > v; test(v,1,1024);    }
+
+  void stpodary_16_128()     { stpodary<int, 16>    v; test2(v,16,128);    }
+  void stpodary_256_512()    { stpodary<int, 256>   v; test2(v,256,512);   }
+  void stpodary_1024_1024()  { stpodary<int, 1024>  v; test2(v,1024,1024); }
+  void stpodary_1_1024()     { stpodary<int, 256>   v; test2(v,1,1024);    }
+
 
 } // test_allocator
 
@@ -192,24 +125,52 @@ using namespace test_allocator;
 
 int main()
 {
-  //simple_t();
+  csl_common_print_results( "map std     baseline ", csl_common_test_timer_v0(map_std),"" );
+  csl_common_print_results( "map stdc    baseline ", csl_common_test_timer_v0(map_stdc),"" );
+  csl_common_print_results( "map simpst  baseline ", csl_common_test_timer_v0(map_simpstack),"" );
 
-  csl_common_print_results( "dummy                ", csl_common_test_timer_v0(baseline_dummy),"" );
-  csl_common_print_results( "16_dummy             ", csl_common_test_timer_v0(baseline_16_dummy),"" );
-  csl_common_print_results( "256_dummy            ", csl_common_test_timer_v0(baseline_256_dummy),"" );
+  csl_common_print_results( "map std           16 ", csl_common_test_timer_v0(map_std_16),"" );
+  csl_common_print_results( "map stdc          16 ", csl_common_test_timer_v0(map_stdc_16),"" );
+  csl_common_print_results( "map simpstack     16 ", csl_common_test_timer_v0(map_simpstack_16),"" );
 
-  csl_common_print_results( "vector               ", csl_common_test_timer_v0(baseline),"" );
-  csl_common_print_results( "16_vector            ", csl_common_test_timer_v0(baseline_16),"" );
-  csl_common_print_results( "256_vector           ", csl_common_test_timer_v0(baseline_256),"" );
+  csl_common_print_results( "map std          128 ", csl_common_test_timer_v0(map_std_128),"" );
+  csl_common_print_results( "map stdc         128 ", csl_common_test_timer_v0(map_stdc_128),"" );
+  csl_common_print_results( "map simpstack    128 ", csl_common_test_timer_v0(map_simpstack_128),"" );
 
-  csl_common_print_results( "stpodary             ", csl_common_test_timer_v0(baseline_stp),"" );
-  csl_common_print_results( "16_stpodary          ", csl_common_test_timer_v0(baseline_16_stp),"" );
-  csl_common_print_results( "256_stpodary         ", csl_common_test_timer_v0(baseline_256_stp),"" );
+  csl_common_print_results( "map std         1024 ", csl_common_test_timer_v0(map_std_1024),"" );
+  csl_common_print_results( "map stdc        1024 ", csl_common_test_timer_v0(map_stdc_1024),"" );
+  csl_common_print_results( "map simpstack   1024 ", csl_common_test_timer_v0(map_simpstack_1024),"" );
 
-  csl_common_print_results( "simple               ", csl_common_test_timer_v0(baseline_simple),"" );
-  csl_common_print_results( "16_simple            ", csl_common_test_timer_v0(baseline_16_simple),"" );
-  csl_common_print_results( "256_simple           ", csl_common_test_timer_v0(baseline_256_simple),"" );
+  csl_common_print_results( "vector      baseline ", csl_common_test_timer_v0(baseline),"" );
+  csl_common_print_results( "stdc        baseline ", csl_common_test_timer_v0(baseline_stdc),"" );
+  csl_common_print_results( "simstack    baseline ", csl_common_test_timer_v0(baseline_simpstack),"" );
 
+  csl_common_print_results( "16_vector   baseline ", csl_common_test_timer_v0(baseline_16),"" );
+  csl_common_print_results( "16_stdc     baseline ", csl_common_test_timer_v0(baseline_16_stdc),"" );
+  csl_common_print_results( "16_simstack baseline ", csl_common_test_timer_v0(baseline_16_simpstack),"" );
+
+  csl_common_print_results( "256_vector    bsline ", csl_common_test_timer_v0(baseline_256),"" );
+  csl_common_print_results( "256_stdc      bsline ", csl_common_test_timer_v0(baseline_256_stdc),"" );
+  csl_common_print_results( "256_simstack  bsline ", csl_common_test_timer_v0(baseline_256_simpstack),"" );
+
+  csl_common_print_results( "vector        1:1024 ", csl_common_test_timer_v0(vector_1_1024),"" );
+  csl_common_print_results( "stdc          1:1204 ", csl_common_test_timer_v0(stdc_1_1024),"" );
+  csl_common_print_results( "simstack      1:1024 ", csl_common_test_timer_v0(simpstack_1_1024),"" );
+  csl_common_print_results( "stpodary      1:1024 ", csl_common_test_timer_v0(stpodary_1_1024),"" );
+
+  csl_common_print_results( "vector     1024:1024 ", csl_common_test_timer_v0(vector_1024_1024),"" );
+  csl_common_print_results( "stdc       1024:1024 ", csl_common_test_timer_v0(stdc_1024_1024),"" );
+  csl_common_print_results( "simstack   1024:1024 ", csl_common_test_timer_v0(simpstack_1024_1024),"" );
+  csl_common_print_results( "stpodary   1024:1024 ", csl_common_test_timer_v0(stpodary_1024_1024),"" );
+
+  csl_common_print_results( "vector       256:512 ", csl_common_test_timer_v0(vector_256_512),"" );
+  csl_common_print_results( "stdc         256:512 ", csl_common_test_timer_v0(stdc_256_512),"" );
+  csl_common_print_results( "simstack     256:512 ", csl_common_test_timer_v0(simpstack_256_512),"" );
+  csl_common_print_results( "stpodary     256:512 ", csl_common_test_timer_v0(stpodary_256_512),"" );
+
+  csl_common_print_results( "vector        16:128 ", csl_common_test_timer_v0(vector_16_128),"" );
+  csl_common_print_results( "stdc          16:128 ", csl_common_test_timer_v0(stdc_16_128),"" );
+  csl_common_print_results( "stpodary      16:128 ", csl_common_test_timer_v0(stpodary_16_128),"" );
 
   return 0;
 }

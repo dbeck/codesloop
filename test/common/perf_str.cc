@@ -85,10 +85,10 @@ namespace test_str {
   void str_initconstr()    { str b(L"hello world"); }
 
   void string_copy() { std::string b("hello world"); std::string c(b); }
-  void str_copy()    { str b(L"hello world");    str c(b);     }
+  void str_copy()    { str b(L"hello world");        str c(b);     }
 
   void string_copymod() { std::string b("hello world"); std::string c(b); b += "!";  }
-  void str_copymod()    { str b(L"hello world");    str c(b);     b += L"!"; }
+  void str_copymod()    { str b(L"hello world");        str c(b);         b += L"!"; }
 
 
 } // namespace test_str

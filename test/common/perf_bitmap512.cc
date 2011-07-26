@@ -50,7 +50,6 @@ namespace test_bitmap512
   void get_set_clear_v()
   {
     std::vector<bool> bv(512,false);
-    //bv.reserve(512);
     for(uint16_t i=0;i<512;++i)
     {
       if( bv[i] != false ) { printf("\nERRB"); }
@@ -63,7 +62,6 @@ namespace test_bitmap512
   void get_set_clear_x()
   {
     std::vector<uint8_t> bv(512,'F');
-    //bv.reserve(512,'F');
     for(uint16_t i=0;i<512;++i)
     {
       if( bv[i] != 'F' ) { printf("\nERR4"); }
@@ -79,7 +77,7 @@ namespace test_bitmap512
     for(uint16_t i=0;i<511;++i)
     {
       b.set(i);
-      if( b.first_clear() != (i+1) ) { printf("\nERR0"); }
+      if( b.first_clear() != (i+1) ) { printf("\nERR0A: %d",i); }
     }
   }
   void first_clear_x()
@@ -88,7 +86,7 @@ namespace test_bitmap512
     for(uint16_t i=0;i<511;++i)
     {
       bv[i] = 'T';
-      if( (std::find(bv.begin(),bv.end(),'F')-bv.begin()) != i+1 ) { printf("\nERR5"); }
+      if( (std::find(bv.begin(),bv.end(),'F')-bv.begin()) != i+1 ) { printf("\nERR5A"); }
     }
   }
   void set_first()
@@ -96,7 +94,7 @@ namespace test_bitmap512
     bitmap512 b;
     for(uint16_t i=0;i<511;++i)
     {
-      if( b.flip_first_clear() != i ) { printf("\nERR0"); }
+      if( b.flip_first_clear() != i ) { printf("\nERR0B"); }
     }
   }
   void set_first_x()
@@ -106,10 +104,9 @@ namespace test_bitmap512
     {
       std::vector<uint8_t>::iterator it = std::find(bv.begin(),bv.end(),'F');
       *it = 'T';
-      if( (it-bv.begin()) != i ) { printf("\nERR5"); }
+      if( (it-bv.begin()) != i ) { printf("\nERR5B"); }
     }
   }
-
 };
 
 using namespace test_bitmap512;
