@@ -22,3 +22,23 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include "codesloop/common/bufmgr.hh"
+
+namespace csl
+{
+  namespace common
+  {
+    // TODO XXX
+    bufmgr::item::item(bufmgr & mgr) {}
+    void bufmgr::item::free() {}
+
+    bufmgr::item bufmgr::alloc() { return item(); }
+    void bufmgr::free(const item & i) {}
+
+    bufmgr::bufmgr() {}
+    bufmgr::~bufmgr() {}
+  }
+}
+
+// EOF

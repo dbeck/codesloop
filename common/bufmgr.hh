@@ -22,3 +22,59 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#ifndef _csl_common_bufmgr_hh_included_
+#define _csl_common_bufmgr_hh_included_
+#include "codesloop/common/common.h"
+#include "codesloop/common/dbc.hh"
+#include "codesloop/common/bitmap512.hh"
+#ifdef __cplusplus
+
+namespace csl
+{
+  namespace common
+  {
+    class bufmgr
+    {
+    public:
+      CSL_CLASS( csl::common::bufmgr );
+      CSL_DECLARE_EXCEPTION( out_of_memory );
+      CSL_DECLARE_EXCEPTION( invalid_item );
+
+      static const size_t buf_size_;
+
+      class item
+      {
+      public:
+        CSL_CLASS( csl::common::bufmgr );
+
+        item(bufmgr & mgr);
+        void free();
+
+        friend class csl::common::bufmgr;
+      private:
+        int        id_;
+        uint8_t *  data_;
+        size_t     used_size_;
+        bufmgr &   mgr_;
+        item();
+      };
+
+      item alloc();
+      void free(item & i);
+
+      bufmgr();
+      ~bufmgr();
+
+    private:
+      uint8_t      pool_[512*buf_size_];
+      bitmap512    usages_;
+
+      bufmgr(const bufmgr &) {}
+      bufmgr & operator=(const bufmgr &) { return *this; }
+    };
+  }
+}
+
+#endif /*__cplusplus*/
+#endif /*_csl_common_bufmgr_hh_included_*/

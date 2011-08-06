@@ -27,6 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_common_stream_part_hh_included_
 #include "codesloop/common/common.h"
 #ifdef __cplusplus
+
 namespace csl
 {
   namespace common

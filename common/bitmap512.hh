@@ -97,10 +97,6 @@ namespace csl
 
     private:
       static uint32_t empty_[16];
-      // static uint8_t first_free_[256];
-      // static uint8_t max_free_[256];
-      // static uint8_t max_pos_[256];
-      // static uint8_t max_posB_[256];
       item_t map_[16];
     };
   }
