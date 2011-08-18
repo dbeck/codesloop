@@ -39,8 +39,8 @@ namespace csl
     {
     public:
       CSL_CLASS( csl::common::bitmap512 );
-      typedef unsigned int pos_t;
-      typedef uint32_t     item_t;
+      typedef uint32_t  pos_t;
+      typedef uint32_t  item_t;
 
       inline bitmap512() : map_({0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0}) {}
 
@@ -99,7 +99,7 @@ namespace csl
       }
 
     private:
-      static uint32_t empty_[16];
+      static item_t empty_[16];
       item_t map_[16];
     };
   }

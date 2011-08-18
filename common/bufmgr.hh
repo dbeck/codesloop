@@ -130,8 +130,8 @@ namespace csl
 
         map_.clear(i.id_);
 
-        i.data_ = 0;
         i.id_   = 512;
+        i.data_ = 0;
         i.used_ = 0;
         i.mgr_  = 0;
       }

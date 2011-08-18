@@ -25,7 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_common_stream_hh_included_
 #define _csl_common_stream_hh_included_
-#include "codesloop/common/stream_part.hh"
+#include "codesloop/common/bufmgr.hh"
 #include "codesloop/common/common.h"
 #ifdef __cplusplus
 
@@ -42,10 +42,10 @@ namespace csl
       virtual void flush()   = 0;
 
       // output interface
-      virtual void push(const stream_part & p) = 0;
+      virtual void push(bufmgr::item p) = 0;
 
       // input interface
-      virtual stream_part pop(size_t sz)                     = 0;
+      virtual bufmgr::item pop() = 0;
       virtual size_t poll(size_t sz, uint32_t & timeout_ms)  = 0;
 
       // stats
@@ -53,17 +53,20 @@ namespace csl
       virtual size_t available() const    = 0;
 
       // event interface
-      class event { public:
-        virtual void operator()(int which) {}
+      class event
+      {
+      public:
+        static const int start_event_   = 0;
+        static const int end_event_     = 1;
+        static const int flush_event_   = 2;
+        static const int empty_event_   = 3;
+
+        virtual int which() { return start_event_; }
+        virtual void operator()() {}
         virtual ~event() {}
       };
 
-      static const int start_event_   = 0;
-      static const int end_event_     = 1;
-      static const int flush_event_   = 2;
-      static const int empty_event_   = 3;
-
-      virtual void set_event_cb(event & ev, int which) = 0;
+      virtual void set_event_cb(event & ev) = 0;
 
       virtual ~stream() {}
     };
