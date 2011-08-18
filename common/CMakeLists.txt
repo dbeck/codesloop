@@ -44,7 +44,7 @@ ADD_LIBRARY( csl_common STATIC
     logger.cc logger.hh
     bitmap512.cc bitmap512.hh
     bithacks.cc bithacks.hh
-    bufmgr.cc bufmgr.hh
+    bufmgr.hh
 		)
 #             cexc.cc       cexc.hh
 #             exc.cc        exc.hh

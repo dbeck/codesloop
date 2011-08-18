@@ -49,11 +49,10 @@ namespace csl
 
         inline item(item & x) : id_(x.id_), data_(x.data_), used_(x.used_), mgr_(x.mgr_)
         {
+          x.id_   = 512;
+          x.data_ = 0;
+          x.used_ = 0;
           x.mgr_  = 0;
-
-          CSL_DEBUG_ASSIGN( x.used_, 0 );
-          CSL_DEBUG_ASSIGN( x.data_, 0 );
-          CSL_DEBUG_ASSIGN( x.id_, 512 );
         }
 
         inline item & operator=(item & x)
@@ -65,11 +64,10 @@ namespace csl
           used_   = x.used_;
           mgr_    = x.mgr_;
 
+          x.id_   = 512;
+          x.data_ = 0;
+          x.used_ = 0;
           x.mgr_  = 0;
-
-          CSL_DEBUG_ASSIGN( x.used_, 0 );
-          CSL_DEBUG_ASSIGN( x.data_, 0 );
-          CSL_DEBUG_ASSIGN( x.id_, 512 );
 
           return *this;
         }
@@ -117,10 +115,10 @@ namespace csl
 
         if( id == 512 ) { CSL_THROW( out_of_memory ); }
 
-        i.mgr_  = this;
         i.id_   = id;
         i.data_ = pool_+(id*buf_size_);
         i.used_ = 0;
+        i.mgr_  = this;
       }
 
       inline void free(item & i)
@@ -131,11 +129,11 @@ namespace csl
         CSL_REQUIRE( i.used_ <= buf_size_ );
 
         map_.clear(i.id_);
-        i.mgr_  = 0;
 
-        CSL_DEBUG_ASSIGN( i.used_, 0 );
-        CSL_DEBUG_ASSIGN( i.data_, 0 );
-        CSL_DEBUG_ASSIGN( i.id_, 512 );
+        i.data_ = 0;
+        i.id_   = 512;
+        i.used_ = 0;
+        i.mgr_  = 0;
       }
 
       inline bufmgr() {}
