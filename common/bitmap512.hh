@@ -48,6 +48,7 @@ namespace csl
 
       inline bool get(pos_t s) const
       {
+        CSL_REQUIRE( s < 512 );
         pos_t pos         = (s&0x1ff);
         uint8_t offset    = static_cast<uint8_t>(pos>>5);
         uint8_t bitpos    = static_cast<uint8_t>(pos&0x1f);
@@ -56,6 +57,7 @@ namespace csl
 
       inline void set(pos_t s)
       {
+        CSL_REQUIRE( s < 512 );
         pos_t pos         = (s&0x1ff);
         uint8_t offset    = static_cast<uint8_t>(pos>>5);
         uint8_t bitpos    = static_cast<uint8_t>(pos&0x1f);
@@ -64,6 +66,7 @@ namespace csl
 
       inline void clear(pos_t s)
       {
+        CSL_REQUIRE( s < 512 );
         pos_t pos         = (s&0x1ff);
         uint8_t offset    = static_cast<uint8_t>(pos>>5);
         uint8_t bitpos    = static_cast<uint8_t>(pos&0x1f);

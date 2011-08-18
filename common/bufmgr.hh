@@ -39,40 +39,117 @@ namespace csl
     public:
       CSL_CLASS( csl::common::bufmgr );
       CSL_DECLARE_EXCEPTION( out_of_memory );
-      CSL_DECLARE_EXCEPTION( invalid_item );
-
-      static const size_t buf_size_;
+      static const uint32_t buf_size_ = 4096;
 
       class item
       {
       public:
-        CSL_CLASS( csl::common::bufmgr );
-
-        item(bufmgr & mgr);
-        void free();
-
+        CSL_CLASS( csl::common::bufmgr::item );
         friend class csl::common::bufmgr;
+
+        inline item(item & x) : id_(x.id_), data_(x.data_), used_(x.used_), mgr_(x.mgr_)
+        {
+          x.mgr_  = 0;
+
+          CSL_DEBUG_ASSIGN( x.used_, 0 );
+          CSL_DEBUG_ASSIGN( x.data_, 0 );
+          CSL_DEBUG_ASSIGN( x.id_, 512 );
+        }
+
+        inline item & operator=(item & x)
+        {
+          if(mgr_) mgr_->free(*this);
+
+          id_     = x.id_;
+          data_   = x.data_;
+          used_   = x.used_;
+          mgr_    = x.mgr_;
+
+          x.mgr_  = 0;
+
+          CSL_DEBUG_ASSIGN( x.used_, 0 );
+          CSL_DEBUG_ASSIGN( x.data_, 0 );
+          CSL_DEBUG_ASSIGN( x.id_, 512 );
+
+          return *this;
+        }
+
+        inline ~item() { if(mgr_) mgr_->free(*this); }
+        inline item() : id_(512), data_(0), used_(0), mgr_(0)  {}
+
+        inline uint8_t*       operator->()       { return data_; }
+        inline const uint8_t* operator->() const { return data_; }
+
+        inline void           used(uint32_t s)   { used_ = s;    }
+        inline uint32_t       used() const       { return used_; }
+
+        inline uint32_t       max_size() const   { return bufmgr::buf_size_; }
+
+        inline item clone() const
+        {
+          item ret;
+          if( mgr_ )
+          {
+            mgr_->alloc(ret);
+            if(used_)
+            {
+              ret.used_ = used_;
+              memcpy(ret.data_,data_,used_);
+            }
+          }
+          return ret;
+        }
+
       private:
-        int        id_;
-        uint8_t *  data_;
-        size_t     used_size_;
-        bufmgr &   mgr_;
-        item();
+
+        bitmap512::pos_t  id_;
+        uint8_t *         data_;
+        uint32_t          used_;
+        bufmgr *          mgr_;
       };
 
-      item alloc();
-      void free(item & i);
+      inline void alloc(bufmgr::item & i)
+      {
+        CSL_REQUIRE( i.data_ == 0 );
+        CSL_REQUIRE( i.mgr_ == 0 );
 
-      bufmgr();
-      ~bufmgr();
+        bitmap512::pos_t id=map_.flip_first_clear();
+
+        if( id == 512 ) { CSL_THROW( out_of_memory ); }
+
+        i.mgr_  = this;
+        i.id_   = id;
+        i.data_ = pool_+(id*buf_size_);
+        i.used_ = 0;
+      }
+
+      inline void free(bufmgr::item & i)
+      {
+        CSL_REQUIRE( i.id_ < 512 );
+        CSL_REQUIRE( i.mgr_ != 0 );
+        CSL_REQUIRE( i.data_ != 0 );
+        CSL_REQUIRE( i.used_ <= buf_size_ );
+
+        map_.clear(i.id_);
+        i.mgr_  = 0;
+
+        CSL_DEBUG_ASSIGN( i.used_, 0 );
+        CSL_DEBUG_ASSIGN( i.data_, 0 );
+        CSL_DEBUG_ASSIGN( i.id_, 512 );
+      }
+
+      inline bufmgr() {}
+      inline ~bufmgr() {}
 
     private:
       uint8_t      pool_[512*buf_size_];
-      bitmap512    usages_;
+      bitmap512    map_;
 
       bufmgr(const bufmgr &) {}
       bufmgr & operator=(const bufmgr &) { return *this; }
     };
+
+
   }
 }
 

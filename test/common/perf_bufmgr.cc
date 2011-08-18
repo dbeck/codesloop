@@ -23,38 +23,42 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_common_stream_part_hh_included_
-#define _csl_common_stream_part_hh_included_
 #include "codesloop/common/common.h"
-#ifdef __cplusplus
+#include "codesloop/common/test_timer.h"
+#include "codesloop/common/bufmgr.hh"
+#include <memory>
 
-namespace csl
+using csl::common::bufmgr;
+
+namespace test_bufmgr
 {
-  namespace common
-  {
-    class stream_part
-    {
-    public:
-      typedef uint8_t item_t;
-      
-      item_t * data() const  { return data_;  }
-      size_t   items() const { return items_; }
-      
-      void data(item_t * d)  { data_  = d; }
-      void items(size_t s)   { items_ = s; }
-      
-      stream_part() : data_(0), items_(0) {}
-      stream_part(item_t * d, size_t s) : data_(d), items_(s) {}
-      
-      void reset() { data_ = 0; items_ = 0; }
-      
-    private:
-      item_t * data_;
-      size_t   items_;      
-    };
-  }
-}
-    
-#endif /*__cplusplus*/
-#endif /*_csl_common_stream_part_hh_included_*/
+  void baseline2(char * c) { delete [] c; }
+  void baseline1(char * c) { baseline2(c); }
+  void baseline() { baseline1(new char[4096]); }
 
+  void cbaseline2(void * c) { free(c); }
+  void cbaseline1(void * c) { cbaseline2(c); }
+  void cbaseline() { cbaseline1(malloc(4096)); }
+
+  void bsitem1(bufmgr::item i) {}
+  void bsitem2(bufmgr::item i) { bsitem1(i); }
+  void bsitem() { static bufmgr b; bufmgr::item i; b.alloc(i); bsitem2(i); }
+
+  void bsitem3(bufmgr::item i) { bsitem2(i); }
+  void bsitem4(bufmgr::item i) { bsitem3(i); }
+  void bsitemb() { static bufmgr b; bufmgr::item i; b.alloc(i); bsitem4(i); }
+};
+
+using namespace test_bufmgr;
+
+int main()
+{
+  std::auto_ptr<bufmgr> b;
+  csl_common_print_results( "baseline  ", csl_common_test_timer_v0(baseline),"" );
+  csl_common_print_results( "cbaseline ", csl_common_test_timer_v0(cbaseline),"" );
+  csl_common_print_results( "bsitem    ", csl_common_test_timer_v0(bsitem),"" );
+  csl_common_print_results( "bsitemb   ", csl_common_test_timer_v0(bsitemb),"" );
+  return 0;
+}
+
+// EOF

@@ -300,3 +300,4 @@ test/common/perf_str
 .cproject
 .project
 Debug
+test/common/perf_bufmgr

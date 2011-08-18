@@ -29,15 +29,6 @@ namespace csl
 {
   namespace common
   {
-    // TODO XXX
-    bufmgr::item::item(bufmgr & mgr) {}
-    void bufmgr::item::free() {}
-
-    bufmgr::item bufmgr::alloc() { return item(); }
-    void bufmgr::free(const item & i) {}
-
-    bufmgr::bufmgr() {}
-    bufmgr::~bufmgr() {}
   }
 }
 

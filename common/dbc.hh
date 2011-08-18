@@ -83,6 +83,13 @@ namespace csl
 # endif /*CSL_DEBUG*/
 #endif /*CSL_ASSERT_THROW*/
 
+#ifndef CSL_DEBUG_ASSIGN
+# ifdef CSL_DEBUG
+#  define CSL_DEBUG_ASSIGN(A,B) (A)=(B)
+# else
+#  define CSL_DEBUG_ASSIGN(A,B)
+# endif /*CSL_DEBUG*/
+#endif /*CSL_DEBUG_ASSIGN*/
 
 #define CSL_REQUIRE(EXPR) CSL_ASSERT_THROW( (EXPR),"REQUIRE" );
 #define CSL_ENSURE(EXPR)  CSL_ASSERT_THROW( (EXPR),"ENSURE" );
