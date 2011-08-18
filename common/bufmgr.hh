@@ -108,7 +108,7 @@ namespace csl
         bufmgr *          mgr_;
       };
 
-      inline void alloc(bufmgr::item & i)
+      inline void alloc(item & i)
       {
         CSL_REQUIRE( i.data_ == 0 );
         CSL_REQUIRE( i.mgr_ == 0 );
@@ -123,7 +123,7 @@ namespace csl
         i.used_ = 0;
       }
 
-      inline void free(bufmgr::item & i)
+      inline void free(item & i)
       {
         CSL_REQUIRE( i.id_ < 512 );
         CSL_REQUIRE( i.mgr_ != 0 );
@@ -148,8 +148,6 @@ namespace csl
       bufmgr(const bufmgr &) {}
       bufmgr & operator=(const bufmgr &) { return *this; }
     };
-
-
   }
 }
 
