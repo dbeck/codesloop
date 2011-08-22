@@ -22,3 +22,24 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include "codesloop/common/logger.hh"
+#include "codesloop/common/stream.hh"
+
+namespace csl
+{
+  namespace common
+  {
+    stream & file_logger::pushref(const bufmgr::item & p)
+    {
+      return *this;
+    }
+
+    file_logger::file_logger(const char * file_name) : fp_(NULL) {}
+
+    logger_base * logger::get()       { return inst_; }
+    void logger::set(logger_base & l) { inst_ = &l; }
+
+    logger_base * logger::inst_ = 0;;
+  }
+}

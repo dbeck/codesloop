@@ -23,56 +23,59 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_common_stream_hh_included_
-#define _csl_common_stream_hh_included_
-#include "codesloop/common/bufmgr.hh"
+
+#include "codesloop/common/atomic.hh"
 #include "codesloop/common/common.h"
-#ifdef __cplusplus
+#include "codesloop/common/test_timer.h"
 
-namespace csl
+//using namespace csl::common;
+
+namespace test_atomic
 {
-  namespace common
+#ifdef CSL_GCC
+
+  void atomic_xadd()
   {
-    class stream
-    {
-    public:
-      // packet frame
-      virtual stream & start()   = 0;
-      virtual stream & end()     = 0;
-      virtual stream & flush()   = 0;
-
-      // output interface
-      virtual stream & push(bufmgr::item p) = 0;
-      virtual stream & pushref(const bufmgr::item & p) = 0;
-
-      // input interface
-      virtual bool popref(bufmgr::item & p) = 0;
-      virtual size_t poll(size_t sz, uint32_t & timeout_ms)  = 0;
-
-      // stats
-      virtual size_t position()  const    = 0;
-      virtual size_t available() const    = 0;
-
-      // event interface
-      class event
-      {
-      public:
-        static const int start_event_   = 0;
-        static const int end_event_     = 1;
-        static const int flush_event_   = 2;
-        static const int empty_event_   = 3;
-
-        virtual int which() { return start_event_; }
-        virtual void operator()() {}
-        virtual ~event() {}
-      };
-
-      virtual stream & set_event_cb(event & ev) = 0;
-
-      virtual ~stream() {}
-    };
+    static unsigned int i = 0;
+    __sync_fetch_and_add((&i),3);
   }
+
+  void xadd()
+  {
+    static unsigned int i = 0;
+    i += 3;
+  }
+
+  void atomic_inc()
+  {
+    static unsigned int i = 0;
+    __sync_add_and_fetch((&i),3);
+  }
+
+  void inc()
+  {
+    static unsigned int i = 0;
+    ++i;
+  }
+
+  void test_gcc()
+  {
+    csl_common_print_results( "atomic_xadd          ", csl_common_test_timer_v0(atomic_xadd),"" );
+    csl_common_print_results( "xadd                 ", csl_common_test_timer_v0(xadd),"" );
+    csl_common_print_results( "atomic_inc           ", csl_common_test_timer_v0(atomic_inc),"" );
+    csl_common_print_results( "xadd                 ", csl_common_test_timer_v0(xadd),"" );
+  }
+#else /*CSL_GCC*/
+  void test_gcc() { }
+#endif /*CSL_GCC*/
 }
 
-#endif /*__cplusplus*/
-#endif /*_csl_common_stream_hh_included_*/
+using namespace test_atomic;
+
+int main()
+{
+  test_gcc();
+  return 0;
+}
+
+// EOF

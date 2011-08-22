@@ -99,14 +99,13 @@ namespace csl
         }
 
       private:
-
         bitmap512::pos_t  id_;
         uint8_t *         data_;
         uint32_t          used_;
         bufmgr *          mgr_;
       };
 
-      inline void alloc(item & i)
+      inline item & alloc(item & i)
       {
         CSL_REQUIRE( i.data_ == 0 );
         CSL_REQUIRE( i.mgr_ == 0 );
@@ -119,6 +118,8 @@ namespace csl
         i.data_ = pool_+(id*buf_size_);
         i.used_ = 0;
         i.mgr_  = this;
+
+        return i;
       }
 
       inline void free(item & i)

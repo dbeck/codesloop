@@ -22,3 +22,79 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#ifndef _csl_common_logger_hh_included_
+#define _csl_common_logger_hh_included_
+#include "codesloop/common/str.hh"
+#include "codesloop/common/stream.hh"
+#include "codesloop/common/excbase.hh"
+#include "codesloop/common/common.h"
+#ifdef __cplusplus
+
+namespace csl
+{
+  namespace common
+  {
+    class logger_base : public stream
+    {
+    public:
+      virtual ~logger_base() {}
+
+    private:
+      bufmgr logbufs_;
+    };
+
+    class file_logger : public logger_base
+    {
+    public:
+      CSL_CLASS( csl::common::file_logger );
+      CSL_DECLARE_EXCEPTION( cannot_open );
+
+      // output interface
+      inline stream & push(bufmgr::item p) { return pushref(p); }
+      stream & pushref(const bufmgr::item & p);
+
+      file_logger(const char * file_name);
+      virtual ~file_logger() {}
+
+      // -- ignored:
+      // packet frame
+      inline stream & start() { return *this; }
+      inline stream & end()   { return *this; }
+      inline stream & flush() { return *this; }
+
+      // input interface
+      inline bool popref(bufmgr::item & p) { return false; }
+      inline size_t poll(size_t sz, uint32_t & timeout_ms) { return 0; }
+
+      // stats
+      inline size_t position()  const { return 0; }
+      inline size_t available() const { return 0; }
+
+      // events
+      inline stream & set_event_cb(event & ev) { return *this; }
+
+    private:
+      file_logger(const file_logger&) {}
+      file_logger & operator=(const file_logger&) { return *this; }
+      str     file_name_;
+      FILE *  fp_;
+    };
+
+    class logger
+    {
+    public:
+      CSL_CLASS( csl::common::file_logger );
+      CSL_DECLARE_EXCEPTION( not_initialized );
+
+      static logger_base * get();
+      static void set(logger_base & l);
+
+    private:
+      static logger_base * inst_;
+    };
+  }
+}
+
+#endif /*__cplusplus*/
+#endif /*_csl_common_logger_hh_included_*/

@@ -231,28 +231,6 @@ namespace test_bithacks
     p5 += j;
   }
 
-  void bestfit_c1()
-  {
-    static unsigned int f1 = 0;
-    int k,j = 0;
-    for(int i=0;i<ITER;++i)
-    {
-      j += bithacks::bestfit_c1(f1++,1+(f1%31),&k);
-    }
-    f1 += j;
-  }
-
-  void firstfit_c1()
-  {
-    static unsigned int xf1 = 0;
-    int k,j = 0;
-    for(int i=0;i<ITER;++i)
-    {
-      j += bithacks::firstfit_c1(xf1++,1+(xf1%31),&k);
-    }
-    xf1 += j;
-  }
-
   void last0bit()
   {
     static unsigned int q = 0;
@@ -354,8 +332,6 @@ int main()
   csl_common_print_results( "pop_c4           ", csl_common_test_timer_v0(pop_c4),"" );
   csl_common_print_results( "pop_c5           ", csl_common_test_timer_v0(pop_c5),"" );
   csl_common_print_results( "pop_gcc          ", csl_common_test_timer_v0(pop_gcc),"" );
-  csl_common_print_results( "bestfit_c1       ", csl_common_test_timer_v0(bestfit_c1),"" );
-  csl_common_print_results( "firstfit_c1      ", csl_common_test_timer_v0(firstfit_c1),"" );
   csl_common_print_results( "last0bit         ", csl_common_test_timer_v0(last0bit),"" );
   csl_common_print_results( "last0str         ", csl_common_test_timer_v0(last0str),"" );
   csl_common_print_results( "last1bit         ", csl_common_test_timer_v0(last1bit),"" );

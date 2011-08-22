@@ -23,56 +23,39 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_common_stream_hh_included_
-#define _csl_common_stream_hh_included_
-#include "codesloop/common/bufmgr.hh"
+
+#include "codesloop/common/logger.hh"
 #include "codesloop/common/common.h"
-#ifdef __cplusplus
+#include "codesloop/common/test_timer.h"
 
-namespace csl
+using namespace csl::common;
+
+namespace test_logger
 {
-  namespace common
+  void condcheck()
   {
-    class stream
+    static int i = 10;
+    if( ++i < 9 )
     {
-    public:
-      // packet frame
-      virtual stream & start()   = 0;
-      virtual stream & end()     = 0;
-      virtual stream & flush()   = 0;
+      throw "???";
+    }
+  }
 
-      // output interface
-      virtual stream & push(bufmgr::item p) = 0;
-      virtual stream & pushref(const bufmgr::item & p) = 0;
-
-      // input interface
-      virtual bool popref(bufmgr::item & p) = 0;
-      virtual size_t poll(size_t sz, uint32_t & timeout_ms)  = 0;
-
-      // stats
-      virtual size_t position()  const    = 0;
-      virtual size_t available() const    = 0;
-
-      // event interface
-      class event
-      {
-      public:
-        static const int start_event_   = 0;
-        static const int end_event_     = 1;
-        static const int flush_event_   = 2;
-        static const int empty_event_   = 3;
-
-        virtual int which() { return start_event_; }
-        virtual void operator()() {}
-        virtual ~event() {}
-      };
-
-      virtual stream & set_event_cb(event & ev) = 0;
-
-      virtual ~stream() {}
-    };
+  void file_log()
+  {
+    bufmgr b;
+    bufmgr::item i,j(b.alloc(i));
+    file_logger l("");
   }
 }
 
-#endif /*__cplusplus*/
-#endif /*_csl_common_stream_hh_included_*/
+using namespace test_logger;
+
+int main()
+{
+  file_log();
+  csl_common_print_results( "condcheck          ", csl_common_test_timer_v0(condcheck),"" );
+  return 0;
+}
+
+// EOF

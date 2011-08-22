@@ -301,3 +301,7 @@ test/common/perf_str
 .project
 Debug
 test/common/perf_bufmgr
+test/common/feas_atomic
+test/common/feas_lock
+test/common/feas_logger
+test/common/feas_archiver
