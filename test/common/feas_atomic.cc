@@ -63,7 +63,7 @@ namespace test_atomic
     csl_common_print_results( "atomic_xadd          ", csl_common_test_timer_v0(atomic_xadd),"" );
     csl_common_print_results( "xadd                 ", csl_common_test_timer_v0(xadd),"" );
     csl_common_print_results( "atomic_inc           ", csl_common_test_timer_v0(atomic_inc),"" );
-    csl_common_print_results( "xadd                 ", csl_common_test_timer_v0(xadd),"" );
+    csl_common_print_results( "inc                  ", csl_common_test_timer_v0(inc),"" );
   }
 #else /*CSL_GCC*/
   void test_gcc() { }
