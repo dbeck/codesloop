@@ -38,12 +38,7 @@ FIND_PACKAGE(StdCXX)
 
 SUBDIRS(
          common
-         # comm
-         # sec
-         # nthread
-         # db
-         # sched
-         # rpc
+         comm
          example
          test
        )

@@ -1,4 +1,4 @@
-# Copyright (c) 2008,2009,2010,2011 CodeSloop Team
+# Copyright (c) 2008,2009,2010,2011 CodeSLoop Team
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -21,12 +21,25 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# SET(CMAKE_VERBOSE_MAKEFILE ON)
+# -- comm --
 
-# -- test --
+LINK_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}../common )
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}../.. )
+LINK_LIBRARIES( csl_common )
 
-SUBDIRS(
-    common
-    comm
+ADD_LIBRARY(
+    csl_comm STATIC
+    tcp_listener.cc tcp_listener.hh
     )
 
+ADD_DEPENDENCIES( csl_comm ${CMAKE_CURRENT_SOURCE_DIR}../common/libev/config.h )
+
+FILE(GLOB includes "${CMAKE_CURRENT_SOURCE_DIR}/*.h*")
+INSTALL( FILES ${includes} DESTINATION include/codesloop/comm )
+INSTALL(TARGETS csl_comm
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+)
+
+# -- EOF --

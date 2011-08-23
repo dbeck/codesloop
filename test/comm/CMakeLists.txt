@@ -1,4 +1,4 @@
-# Copyright (c) 2008,2009,2010,2011 CodeSloop Team
+# Copyright (c) 2008,2009,2010,2011 CodeSLoop Team
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -21,12 +21,27 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# SET(CMAKE_VERBOSE_MAKEFILE ON)
+# -- test / comm --
 
-# -- test --
-
-SUBDIRS(
-    common
-    comm
+LINK_DIRECTORIES(
+    ${CMAKE_CURRENT_SOURCE_DIR}../../comm
+    ${CMAKE_CURRENT_SOURCE_DIR}../../common
+    ${DLOPEN_LIBRARY_DIR}
     )
 
+LINK_LIBRARIES(
+    csl_comm
+    csl_common
+    ${PTHREAD_LIBRARY}
+    ${DLOPEN_LIBRARY}
+    )
+
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}../../.. ${DLOPEN_INCLUDE_DIR} )
+
+ADD_DEFINITIONS( ${PTHREAD_FLAG} )
+
+ADD_EXECUTABLE( feas_tcp_listener feas_tcp_listener.cc )
+
+# ADD_TEST( comm_bfd               ${EXECUTABLE_OUTPUT_PATH}/t__bfd )
+
+# -- EOF --

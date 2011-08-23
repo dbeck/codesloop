@@ -305,3 +305,4 @@ test/common/feas_atomic
 test/common/feas_lock
 test/common/feas_logger
 test/common/feas_archiver
+test/comm/feas_tcp_listener
