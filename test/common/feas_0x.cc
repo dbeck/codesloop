@@ -23,21 +23,26 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_comm_tcp_listener_hh_included_
-#define _csl_comm_tcp_listener_hh_included_
 #include "codesloop/common/common.h"
-#ifdef __cplusplus
+#include "codesloop/common/test_timer.h"
 
-namespace csl
+namespace test_0x
 {
-  namespace comm
+  void lambda_fun()
   {
-    class tcp_listener
-    {
-    public:
-    };
+    auto fun = [](int x)->int { return 2*x; };
+    int(*xf)(int) = fun;
+    fun(1);
+    xf(1);
   }
 }
 
-#endif /*__cplusplus*/
-#endif /*_csl_comm_tcp_listener_hh_included_*/
+using namespace test_0x;
+
+int main()
+{
+  lambda_fun();
+  return 0;
+}
+
+// EOF
