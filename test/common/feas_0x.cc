@@ -25,6 +25,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
+#include <algorithm>  // for std::for_each
+#include <thread>
+#include <vector>
+#include <iostream>
 
 namespace test_0x
 {
@@ -35,6 +39,51 @@ namespace test_0x
     fun(1);
     xf(1);
   }
+
+  void range_loop()
+  {
+    int sum = 0;
+    std::vector<int> v{1,2,3,4,5};
+    //for(auto x : v) { sum += x; } // not in GCC 4.5
+    for( auto it=v.begin(); it!=v.end(); ++it ) { sum += *it; }
+  }
+
+  void function_obj()
+  {
+    //function< int (int x)> fun; // not in GCC 4.5
+  }
+
+  void initializers()
+  {
+    auto v = new std::vector<int>{1,2,3};
+    delete v;
+  }
+
+  constexpr int cexpr(int a,int b) { return a+b; }
+
+  template<class T> T sum_this(std::initializer_list<T> a)
+  {
+    T ret = 0;
+    std::for_each(a.begin(), a.end(), [&](const T & i){ ret += i; } );
+    return ret;
+  }
+
+  void rvalues()
+  {
+    auto && v = std::vector<int>{1,2,3};
+    std::vector<int> v2 = v;
+    std::vector<int> v3 = v;
+  }
+
+  void start_thread()
+  {
+    std::thread t1(rvalues);
+    std::thread t2(rvalues);
+    std::thread t3(rvalues);
+    t1.join();
+    t2.join();
+    t3.join();
+  }
 }
 
 using namespace test_0x;
@@ -42,6 +91,13 @@ using namespace test_0x;
 int main()
 {
   lambda_fun();
+  range_loop();
+  function_obj();
+  initializers();
+  if( sum_this({1,2,3}) != 6 ) throw "WTF";
+  if( sum_this({1.1,2.2,3.3}) != 6.6 ) throw "WTF";
+  rvalues();
+  start_thread();
   return 0;
 }
 
