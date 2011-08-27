@@ -112,9 +112,24 @@ namespace test_atomic
     std::atomic_store_explicit( &i, ii, std::memory_order_relaxed );
   }
 
+  static std::atomic_bool ab{true};
+  static unsigned int abi{0};
+
+  void test_atomic_bool2()
+  {
+    if( ab ) ++abi;
+  }
+
+  void test_atomic_bool3()
+  {
+    if( std::atomic_load( &ab ) ) ++abi;
+  }
+
   void test_std()
   {
     csl_common_print_results( "atomic bool                 ", csl_common_test_timer_v0(test_atomic_bool),"" );
+    csl_common_print_results( "atomic bool fetch           ", csl_common_test_timer_v0(test_atomic_bool2),"" );
+    csl_common_print_results( "atomic bool fetch 2         ", csl_common_test_timer_v0(test_atomic_bool3),"" );
     csl_common_print_results( "atomic load                 ", csl_common_test_timer_v0(test_atomic_load),"" );
     csl_common_print_results( "atomic load (acq)           ", csl_common_test_timer_v0(test_atomic_load_explicit),"" );
     csl_common_print_results( "atomic load store           ", csl_common_test_timer_v0(test_atomic_load_store),"" );
