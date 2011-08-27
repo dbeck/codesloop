@@ -42,11 +42,11 @@ namespace test_bufmgr
 
   void bsitem1(bufmgr::item i) {}
   void bsitem2(bufmgr::item i) { bsitem1(i); }
-  void bsitem() { static bufmgr b; bufmgr::item i; b.alloc(i); bsitem2(i); }
+  void bsitem() { static bufmgr b; bsitem2(b.alloc()); }
 
   void bsitem3(bufmgr::item i) { bsitem2(i); }
   void bsitem4(bufmgr::item i) { bsitem3(i); }
-  void bsitemb() { static bufmgr b; bufmgr::item i; b.alloc(i); bsitem4(i); }
+  void bsitemb() { static bufmgr b; bsitem4(b.alloc()); }
 };
 
 using namespace test_bufmgr;

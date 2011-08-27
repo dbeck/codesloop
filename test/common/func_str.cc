@@ -52,7 +52,6 @@ using csl::common::zero;
     } while( 0 )
 #endif
 
-
 namespace test_str
 {
   void print_exc_caught(const csl::common::excbase & e)
@@ -77,10 +76,10 @@ namespace test_str
     str s1,s2;
     assert( s1 == s2 );
     assert( s1 == "" );
-    ASSERT_OR_EXC( (s1 == static_cast<const char *>(0)) == false );
-    ASSERT_OR_EXC( (s1 == static_cast<const wchar_t *>(0)) == false );
-    ASSERT_OR_EXC( (s1 == static_cast<char *>(0)) == false );
-    ASSERT_OR_EXC( (s1 == static_cast<wchar_t *>(0)) == false );
+    ASSERT_OR_EXC( (s1 == static_cast<const char *>(0)) == true );
+    ASSERT_OR_EXC( (s1 == static_cast<const wchar_t *>(0)) == true );
+    ASSERT_OR_EXC( (s1 == static_cast<char *>(0)) == true );
+    ASSERT_OR_EXC( (s1 == static_cast<wchar_t *>(0)) == true );
   }
 
   void str_copy()

@@ -27,6 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/test_timer.h"
 #include "codesloop/common/lock.hh"
 #include <pthread.h>
+#include <mutex>
 
 //using namespace csl::common;
 
@@ -96,16 +97,37 @@ namespace test_lock
     l->us = t.us;
   }
 
+  static void rwt_rlock(rwticket * l)
+  {
+    unsigned int me = XADD(&l->u, (1<<16));
+    unsigned char val = static_cast<unsigned char>(me >> 16);
+    while( val != l->s.read ) CPURELAX();
+    l->s.read++;
+  }
+
+  static void rwt_runlock(rwticket * l)
+  {
+    AINC(&l->s.write);
+  }
+
   static rwticket           rwt;
+  static rwticket           rwt2;
   static spin               mspin = 0;
   static pthread_mutex_t    mutex;
   static pthread_rwlock_t   rwlock;
   static pthread_spinlock_t spinlock;
+  static std::mutex         stdmutex;
 
   void rwt_test()
   {
     rwt_lock(&rwt);
     rwt_unlock(&rwt);
+  }
+
+  void rwt_rtest()
+  {
+    rwt_rlock(&rwt2);
+    rwt_runlock(&rwt2);
   }
 
   void spin_test()
@@ -131,6 +153,12 @@ namespace test_lock
     pthread_spin_lock( &spinlock );
     pthread_spin_unlock( &spinlock );
   }
+
+  void std_mutex_test()
+  {
+    stdmutex.lock();
+    stdmutex.unlock();
+  }
 }
 
 using namespace test_lock;
@@ -147,6 +175,8 @@ int main()
   csl_common_print_results( "pthread spinlock  ", csl_common_test_timer_v0(pthread_spinlock_test),"" );
   csl_common_print_results( "spin              ", csl_common_test_timer_v0(spin_test),"" );
   csl_common_print_results( "rwt               ", csl_common_test_timer_v0(rwt_test),"" );
+  csl_common_print_results( "rwt-rd            ", csl_common_test_timer_v0(rwt_rtest),"" );
+  csl_common_print_results( "stdmutex          ", csl_common_test_timer_v0(std_mutex_test),"" );
 
   pthread_rwlock_destroy( &rwlock );
   pthread_spin_destroy( &spinlock );

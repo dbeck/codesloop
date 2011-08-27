@@ -126,9 +126,12 @@ using namespace test_bithacks;
 
 int main()
 {
-  csl_common_print_results( "loop1 ", csl_common_test_timer_v0(loop1),"" );
-  csl_common_print_results( "loop2 ", csl_common_test_timer_v0(loop2),"" );
-  csl_common_print_results( "loop3 ", csl_common_test_timer_v0(loop3),"" );
+  for( int i=0;i<10000;++i )
+  {
+    loop1();
+    loop2();
+    loop3();
+  }
   return 0;
 }
 

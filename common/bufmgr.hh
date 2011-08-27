@@ -47,7 +47,7 @@ namespace csl
         CSL_CLASS( csl::common::bufmgr::item );
         friend class csl::common::bufmgr;
 
-        inline item(item & x) : id_(x.id_), data_(x.data_), used_(x.used_), mgr_(x.mgr_)
+        inline item(item && x) : id_(x.id_), data_(x.data_), used_(x.used_), mgr_(x.mgr_)
         {
           x.id_   = 512;
           x.data_ = 0;
@@ -55,20 +55,23 @@ namespace csl
           x.mgr_  = 0;
         }
 
-        inline item & operator=(item & x)
+        inline item & operator=(item && x)
         {
-          if(mgr_) mgr_->free(*this);
+          CSL_REQUIRE( this != &x );
+          if (this != &x)
+          {
+            if(mgr_) mgr_->free(*this);
 
-          id_     = x.id_;
-          data_   = x.data_;
-          used_   = x.used_;
-          mgr_    = x.mgr_;
+            id_     = x.id_;
+            data_   = x.data_;
+            used_   = x.used_;
+            mgr_    = x.mgr_;
 
-          x.id_   = 512;
-          x.data_ = 0;
-          x.used_ = 0;
-          x.mgr_  = 0;
-
+            x.id_   = 512;
+            x.data_ = 0;
+            x.used_ = 0;
+            x.mgr_  = 0;
+          }
           return *this;
         }
 
@@ -88,7 +91,7 @@ namespace csl
           item ret;
           if( mgr_ )
           {
-            mgr_->alloc(ret);
+            ret = mgr_->alloc();
             if(used_)
             {
               ret.used_ = used_;
@@ -105,14 +108,13 @@ namespace csl
         bufmgr *          mgr_;
       };
 
-      inline item & alloc(item & i)
+      inline item alloc()
       {
-        CSL_REQUIRE( i.data_ == 0 );
-        CSL_REQUIRE( i.mgr_ == 0 );
-
         bitmap512::pos_t id=map_.flip_first_clear();
 
         if( id == 512 ) { CSL_THROW( out_of_memory ); }
+
+        item i;
 
         i.id_   = id;
         i.data_ = pool_+(id*buf_size_);
@@ -144,8 +146,8 @@ namespace csl
       uint8_t      pool_[512*buf_size_];
       bitmap512    map_;
 
-      bufmgr(const bufmgr &) {}
-      bufmgr & operator=(const bufmgr &) { return *this; }
+      bufmgr(const bufmgr &) = delete;
+      bufmgr & operator=(const bufmgr &) = delete;
     };
   }
 }

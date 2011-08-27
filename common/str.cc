@@ -410,6 +410,9 @@ namespace csl
 
     str& str::operator=(const str& s)
     {
+      CSL_REQUIRE( this != &s );
+      // not checking equality to other string because that is already handled
+      // by stpodary, the above requirement would also catch it in debug mode
       buf_ = s.buf_;
       CSL_ENSURE( empty() == s.empty() );
       CSL_ENSURE( nbytes() == s.nbytes() );

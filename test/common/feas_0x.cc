@@ -29,6 +29,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <thread>
 #include <vector>
 #include <iostream>
+#include <condition_variable>
+#include <mutex>
 
 namespace test_0x
 {
@@ -84,6 +86,25 @@ namespace test_0x
     t2.join();
     t3.join();
   }
+
+  void condvar()
+  {
+    std::condition_variable v;
+  }
+
+  void mtx()
+  {
+    std::mutex m;
+    std::unique_lock<std::mutex> l(m);
+  }
+
+  void once()
+  {
+    // from <mutex>
+    std::once_flag fl;
+  }
+
+  // static void * cptr = std::nullptr; // not in gcc 4.5
 }
 
 using namespace test_0x;
@@ -98,6 +119,9 @@ int main()
   if( sum_this({1.1,2.2,3.3}) != 6.6 ) throw "WTF";
   rvalues();
   start_thread();
+  condvar();
+  mtx();
+  once();
   return 0;
 }
 
