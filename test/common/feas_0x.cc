@@ -25,12 +25,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
+#include <cassert>
 #include <algorithm>  // for std::for_each
 #include <thread>
 #include <vector>
 #include <iostream>
 #include <condition_variable>
 #include <mutex>
+#include <functional> // for std::function
+#include <future>
 
 namespace test_0x
 {
@@ -52,7 +55,7 @@ namespace test_0x
 
   void function_obj()
   {
-    //function< int (int x)> fun; // not in GCC 4.5
+    std::function< int (int x)> fun;
   }
 
   void initializers()
@@ -104,6 +107,19 @@ namespace test_0x
     std::once_flag fl;
   }
 
+  void futprom()
+  {
+    std::future<int> f;
+    std::promise<int> p;
+  }
+
+  void binders()
+  {
+    std::vector<int> x{0,1,2};
+    auto y=std::bind(&std::vector<int>::size,x);
+    assert( y() == 3 );
+  }
+
   // static void * cptr = std::nullptr; // not in gcc 4.5
 }
 
@@ -122,6 +138,8 @@ int main()
   condvar();
   mtx();
   once();
+  futprom();
+  binders();
   return 0;
 }
 
