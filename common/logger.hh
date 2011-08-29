@@ -28,8 +28,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/str.hh"
 #include "codesloop/common/stream.hh"
 #include "codesloop/common/excbase.hh"
-#include "codesloop/common/common.h"
-#ifdef __cplusplus
 
 namespace csl
 {
@@ -96,5 +94,4 @@ namespace csl
   }
 }
 
-#endif /*__cplusplus*/
 #endif /*_csl_common_logger_hh_included_*/

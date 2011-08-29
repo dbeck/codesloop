@@ -25,10 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_common_stpodary_hh_included_
 #define _csl_common_stpodary_hh_included_
-
-#include "codesloop/common/common.h"
 #include "codesloop/common/dbc.hh"
-#ifdef __cplusplus
 #include <type_traits>
 
 namespace csl
@@ -92,6 +89,5 @@ namespace csl
   }
 }
 
-#endif /* __cplusplus */
 #include "codesloop/common/stpodary_impl.hh"
 #endif /* _csl_common_stpodary_hh_included_ */

@@ -26,7 +26,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_excbase_hh_included_
 #define _csl_common_excbase_hh_included_
 #include "codesloop/common/common.h"
-#ifdef __cplusplus
 
 namespace csl
 {
@@ -80,12 +79,25 @@ namespace csl
     };
 #endif /*CSL_DECLARE_EXCEPTION*/
 
+#ifndef CSL_DECLARE_DERIVED_EXCEPTION
+#define CSL_DECLARE_DERIVED_EXCEPTION(NAME,BASE)             \
+    class NAME : public BASE {                               \
+    public:                                                  \
+      NAME( const char * fil,                                \
+            unsigned int lin,                                \
+            const char * fun,                                \
+            const char * reas,                               \
+            const char * cls ) :                             \
+            BASE(fil,lin,fun,reas,cls) {}                    \
+      static const char * name() { return (#NAME); }         \
+      virtual ~ NAME() {}                                    \
+    };
+#endif /*CSL_DECLARE_DERIVED_EXCEPTION*/
+
 #ifndef CSL_THROW
 #define CSL_THROW(NAME) { throw NAME(__FILE__,__LINE__,__func__,NAME :: name(), class_name()); }
 #endif /*CSL_THROW*/
   }
 }
 
-#endif /*__cplusplus*/
 #endif /*_csl_common_excbase_hh_included_*/
-

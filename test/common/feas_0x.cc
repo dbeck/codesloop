@@ -113,6 +113,9 @@ namespace test_0x
     std::promise<int> p;
   }
 
+  struct S { void op(int o) {}; };
+  class  C { public: void op(int o) {}; };
+
   void binders()
   {
     std::vector<int> x{0,1,2};

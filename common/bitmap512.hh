@@ -25,11 +25,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_common_bitmap512_hh_included_
 #define _csl_common_bitmap512_hh_included_
-
-#include "codesloop/common/common.h"
 #include "codesloop/common/dbc.hh"
 #include "codesloop/common/bithacks.hh"
-#ifdef __cplusplus
 
 namespace csl
 {
@@ -105,5 +102,4 @@ namespace csl
   }
 }
 
-#endif /* __cplusplus */
 #endif /* _csl_common_bitmap512_hh_included_ */

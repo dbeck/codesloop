@@ -25,19 +25,63 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_comm_tcp_listener_hh_included_
 #define _csl_comm_tcp_listener_hh_included_
-#include "codesloop/common/common.h"
-#ifdef __cplusplus
+#include "codesloop/common/excbase.hh"
+#include "codesloop/common/str.hh"
+#include <thread>
+#include <mutex>
 
 namespace csl
 {
   namespace comm
   {
-    class tcp_listener
+    namespace tcp
     {
-    public:
-    };
+      class listener
+      {
+      public:
+        typedef int socket_type_t;
+
+        CSL_CLASS( csl::com::tcp::listener );
+        CSL_DECLARE_EXCEPTION( already_started );
+
+      public:
+        listener(
+            const csl::common::str & hostname,
+            unsigned short port,
+            handler & handler) {}
+
+        ~listener() {}
+
+        bool start() { return false; }
+        bool stop() { return false; }
+
+        class handler
+        {
+        public:
+          CSL_CLASS( csl::com::tcp::listener );
+          CSL_DECLARE_EXCEPTION( stop );
+          CSL_DECLARE_EXCEPTION( suspend );
+
+          virtual void operator()(listener::sock_type_t s) = 0;
+          virtual ~handler() {}
+        };
+
+      private:
+        listener() {}
+        listener(const listener&) = delete;
+        listener & operator=(const listener &) = delete;
+
+        socket_type_t      sock_;
+        csl::common::str   hostname_;
+        unsigned short     port_;
+        std::thread        thread_;
+        bool               started_;
+        std::mutex         lock_;
+        uint32_t           suspend_interval_;
+        handler *          handler_;
+      };
+    }
   }
 }
 
-#endif /*__cplusplus*/
 #endif /*_csl_comm_tcp_listener_hh_included_*/

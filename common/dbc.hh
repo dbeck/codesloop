@@ -27,7 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_common_dbc_hh_included_
 #include "codesloop/common/common.h"
 #include "codesloop/common/excbase.hh"
-#ifdef __cplusplus
 
 namespace csl
 {
@@ -111,6 +110,5 @@ namespace csl
 # endif /*CSL_DEBUG*/
 #endif /*CSL_VIRTUAL_INVARIANT*/
 
-#endif /*__cplusplus*/
 #endif /*_csl_common_dbc_hh_included_*/
 

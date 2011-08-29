@@ -28,7 +28,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/dbc.hh"
 #include "codesloop/common/bitmap512.hh"
-#ifdef __cplusplus
 
 namespace csl
 {
@@ -152,5 +151,4 @@ namespace csl
   }
 }
 
-#endif /*__cplusplus*/
 #endif /*_csl_common_bufmgr_hh_included_*/

@@ -25,10 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_common_allocator_hh_included_
 #define _csl_common_allocator_hh_included_
-
-#include "codesloop/common/common.h"
 #include "codesloop/common/dbc.hh"
-#ifdef __cplusplus
 #include <limits>
 #include <type_traits>
 
@@ -185,5 +182,4 @@ namespace csl
   }
 }
 
-#endif /* __cplusplus */
 #endif /* _csl_common_allocator_hh_included_ */

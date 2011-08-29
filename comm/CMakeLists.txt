@@ -30,6 +30,9 @@ LINK_LIBRARIES( csl_common )
 ADD_LIBRARY(
     csl_comm STATIC
     tcp_listener.cc tcp_listener.hh
+    autofd.cc autofd.hh
+    fdq.cc fdq.hh
+    fdhandler.cc fdhandler.hh
     )
 
 ADD_DEPENDENCIES( csl_comm ${CMAKE_CURRENT_SOURCE_DIR}../common/libev/config.h )

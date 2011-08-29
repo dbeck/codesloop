@@ -27,9 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_common_strconcat_hh_included_
 #include "codesloop/common/trailing_zero.hh"
 #include "codesloop/common/dbc.hh"
-#include "codesloop/common/excbase.hh"
 #include "codesloop/common/strlength.hh"
-#ifdef __cplusplus
 
 namespace csl
 {
@@ -426,6 +424,5 @@ namespace csl
   }
 }
 
-#endif /* __cplusplus */
 #endif /* _csl_common_strconcat_hh_included_ */
 

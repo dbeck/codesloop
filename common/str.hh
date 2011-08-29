@@ -28,14 +28,10 @@ Credits: some techniques and code pieces are borrowed from Christian
 
 #ifndef _csl_common_simpstr_hh_included_
 #define _csl_common_simpstr_hh_included_
-
-#include "codesloop/common/common.h"
 #include "codesloop/common/stpodary.hh"
 #include "codesloop/common/dbc.hh"
-#include "codesloop/common/excbase.hh"
 #include "codesloop/common/strconcat.hh"
 #include <wctype.h>
-#ifdef __cplusplus
 #include <string>
 
 namespace csl
@@ -154,5 +150,4 @@ namespace csl
   }
 }
 
-#endif /* __cplusplus */
 #endif /* _csl_common_simpstr_hh_included_ */
