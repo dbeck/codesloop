@@ -60,10 +60,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #  endif
 # endif /*CSL_ENDIAN_H_INCLUDED*/
 # ifndef SleepSeconds
-#  define SleepSeconds(A) ::sleep(A)
+#  define SleepSeconds(A) ::sleep((A))
 # endif /*SleepSeconds*/
 # ifndef SleepMiliseconds
-#  define SleepMiliseconds(A) ::usleep(A*1000)
+#  define SleepMiliseconds(A) ::usleep((A)*1000)
 # endif /*SleepMiliseconds*/
 # ifndef ShutdownSocket
 #  define ShutdownSocket(S) { ::shutdown(S,2); }

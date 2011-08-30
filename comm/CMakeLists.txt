@@ -23,8 +23,8 @@
 
 # -- comm --
 
-LINK_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}../common )
-INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}../.. )
+LINK_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../common )
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../.. )
 LINK_LIBRARIES( csl_common )
 
 ADD_LIBRARY(
@@ -32,7 +32,7 @@ ADD_LIBRARY(
     tcp_listener.cc tcp_listener.hh
     autofd.cc autofd.hh
     fdq.cc fdq.hh
-    fdhandler.cc fdhandler.hh
+    fdhandler.hh
     )
 
 ADD_DEPENDENCIES( csl_comm ${CMAKE_CURRENT_SOURCE_DIR}../common/libev/config.h )

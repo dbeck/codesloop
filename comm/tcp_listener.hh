@@ -27,8 +27,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_comm_tcp_listener_hh_included_
 #include "codesloop/common/excbase.hh"
 #include "codesloop/common/str.hh"
+#include "codesloop/comm/fdhandler.hh"
 #include <thread>
 #include <mutex>
+#include <atomic>
 
 namespace csl
 {
@@ -41,44 +43,41 @@ namespace csl
       public:
         typedef int socket_type_t;
 
-        CSL_CLASS( csl::com::tcp::listener );
+        CSL_CLASS( csl::comm::tcp::listener );
+        CSL_DECLARE_EXCEPTION( not_started );
         CSL_DECLARE_EXCEPTION( already_started );
+        CSL_DECLARE_EXCEPTION( failed_to_create_socket );
+        CSL_DECLARE_EXCEPTION( failed_to_set_reuseaddr );
+        CSL_DECLARE_EXCEPTION( failed_to_bind );
+        CSL_DECLARE_EXCEPTION( listen_failed );
 
-      public:
         listener(
-            const csl::common::str & hostname,
+            const common::str & hostname,
             unsigned short port,
-            handler & handler) {}
+            fdhandler & h,
+            int backlog=100);
 
-        ~listener() {}
+        ~listener();
 
-        bool start() { return false; }
-        bool stop() { return false; }
-
-        class handler
-        {
-        public:
-          CSL_CLASS( csl::com::tcp::listener );
-          CSL_DECLARE_EXCEPTION( stop );
-          CSL_DECLARE_EXCEPTION( suspend );
-
-          virtual void operator()(listener::sock_type_t s) = 0;
-          virtual ~handler() {}
-        };
+        bool start();
+        bool stop();
 
       private:
-        listener() {}
+        void loop();
+        listener() = delete;
         listener(const listener&) = delete;
         listener & operator=(const listener &) = delete;
 
-        socket_type_t      sock_;
-        csl::common::str   hostname_;
+        autofd             sock_;
+        common::str        hostname_;
         unsigned short     port_;
         std::thread        thread_;
-        bool               started_;
+        std::atomic_bool   started_;
+        std::atomic_bool   stop_flag_;
         std::mutex         lock_;
         uint32_t           suspend_interval_;
-        handler *          handler_;
+        fdhandler *        handler_;
+        int                backlog_;
       };
     }
   }

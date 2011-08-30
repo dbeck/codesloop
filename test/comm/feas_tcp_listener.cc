@@ -33,7 +33,6 @@ using namespace test_tcp_listener;
 
 int main()
 {
-  csl::comm::tcp::listener l;
   return 0;
 }
 
