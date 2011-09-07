@@ -142,6 +142,10 @@ using namespace test_atomic;
 
 int main()
 {
+  printf("sizeof(uint32_t[16])=%ld sizeof(atomic<uint32_t>[16])=%ld\n",
+      sizeof(uint32_t[16]),
+      sizeof(std::atomic<uint32_t>[16])
+      );
   test_gcc();
   test_std();
   return 0;
