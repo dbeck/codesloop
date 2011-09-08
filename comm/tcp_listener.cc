@@ -29,17 +29,6 @@ namespace csl
 {
   namespace comm
   {
-    /*
-    socket_type_t      sock_;
-    csl::common::str   hostname_;
-    unsigned short     port_;
-    std::thread        thread_;
-    bool               started_;
-    std::mutex         lock_;
-    uint32_t           suspend_interval_;
-    fdhandler *        handler_;
-    */
-
     namespace tcp
     {
       namespace
@@ -56,7 +45,7 @@ namespace csl
           hostname_(hostname),
           port_(0),
           started_(false),
-          stop_flag_(false),
+          stop_me_(false),
           suspend_interval_(0),
           handler_(&h),
           backlog_(backlog) { }
@@ -116,7 +105,7 @@ namespace csl
         {
           scoped_lock lck(lock_);
           ret = started_;
-          stop_flag_ = true;
+          stop_me_ = true;
           if( ret ) thread_.join();
         }
         return ret;
@@ -133,13 +122,13 @@ namespace csl
           }
         }
 
-        while( stop_flag_ == false )
+        while( stop_me_ == false )
         {
         }
 
         sock_      = -1;
         started_   = false;
-        stop_flag_ = false;
+        stop_me_ = false;
       }
     }
   }

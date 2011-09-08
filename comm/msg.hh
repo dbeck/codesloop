@@ -26,6 +26,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_comm_msg_hh_included_
 #define _csl_comm_msg_hh_included_
 #include "codesloop/common/common.h"
+#include "codesloop/common/dbc.hh"
 
 namespace csl
 {
@@ -35,22 +36,31 @@ namespace csl
     {
     public:
       typedef struct sockaddr_in inaddr4_t;
+
       CSL_CLASS( csl::comm::msg );
 
-      inline msg(uint8_t * buf=0) : buffer_(buf), len_(0) { }
+      inline msg(inaddr4_t * addr, uint8_t * buf)
+        : addr4_(addr), buffer_(buf), len_(0)
+      {
+        CSL_REQUIRE(addr != NULL);
+        CSL_REQUIRE(buf != NULL);
+      }
 
       inline void len(size_t l) { len_ = l; }
+      inline msg & operator=(size_t l) { len_ = l; return *this; }
 
-      inline size_t len() const { return len; }
+      inline size_t len() const { return len_; }
       inline const uint8_t * buffer() const { return buffer_; }
-      inline const inaddr4_t & addr4() const { return addr4_; }
+      inline const inaddr4_t & addr4() const { return *addr4_; }
 
       inline ~msg() {}
 
     private:
-      inaddr4_t    addr4_;
+      inaddr4_t *  addr4_;
       uint8_t *    buffer_;
       size_t       len_;
+
+      msg() = delete;
     };
   }
 }

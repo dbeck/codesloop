@@ -31,6 +31,7 @@ ADD_LIBRARY(
     csl_comm STATIC
     tcp_listener.cc tcp_listener.hh
     udp_listener.cc udp_listener.hh
+    resolv.cc resolv.hh
     autofd.cc autofd.hh
     fdq.cc fdq.hh
     fdhandler.hh

@@ -73,7 +73,7 @@ namespace csl
         unsigned short     port_;
         std::thread        thread_;
         std::atomic_bool   started_;
-        std::atomic_bool   stop_flag_;
+        std::atomic_bool   stop_me_;
         std::mutex         lock_;
         uint32_t           suspend_interval_;
         fdhandler *        handler_;
