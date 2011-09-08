@@ -34,26 +34,25 @@ namespace csl
     class msg
     {
     public:
-      typedef int addr4_t;
+      typedef struct sockaddr_in inaddr4_t;
       CSL_CLASS( csl::comm::msg );
 
-      inline msg() { }
+      inline msg(uint8_t * buf=0) : buffer_(buf), len_(0) { }
 
-      //inline autofd(fdtype_t fd) : fd_(fd) { }
-      //inline autofd(autofd && other) : fd_(other.fd_) { other.fd_ = -1; }
+      inline void len(size_t l) { len_ = l; }
 
-      //autofd & operator=(fdtype_t fd);
-      //autofd & operator=(autofd && other);
+      inline size_t len() const { return len; }
+      inline const uint8_t * buffer() const { return buffer_; }
+      inline const inaddr4_t & addr4() const { return addr4_; }
+
       inline ~msg() {}
 
-      //inline fdtype_t get() const { return fd_; }
-
     private:
-      // disable non destructive copy
-      //msg & operator=(const msg &) = delete;
-      //msg(const msg &) = delete;
+      inaddr4_t    addr4_;
+      uint8_t *    buffer_;
+      size_t       len_;
     };
   }
 }
 
-#endif /*_csl_comm_autofd_hh_included_*/
+#endif /*_csl_comm_msg_hh_included_*/
