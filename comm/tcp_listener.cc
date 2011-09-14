@@ -34,6 +34,17 @@ namespace csl
       namespace
       {
         typedef std::lock_guard<std::mutex> scoped_lock;
+
+        class autofree_addrinfo
+        {
+        public:
+          typedef struct addrinfo* addrinfo_ptr;
+          autofree_addrinfo(addrinfo_ptr & p) : ptr_(&p) {}
+          ~autofree_addrinfo() { if(*ptr_!=NULL) { freeaddrinfo(*ptr_); *ptr_ = NULL; } }
+        private:
+          addrinfo_ptr * ptr_;
+          autofree_addrinfo() = delete;
+        };
       }
 
       listener::listener(
@@ -48,7 +59,9 @@ namespace csl
           stop_me_(false),
           suspend_interval_(0),
           handler_(&h),
-          backlog_(backlog) { }
+          backlog_(backlog)
+      {
+      }
 
       listener::~listener()
       {
@@ -59,31 +72,52 @@ namespace csl
       {
         bool ret = false;
         {
-          struct sockaddr_in address;
-
-          // XXX TODO set address here !!!!
-
           scoped_lock lck(lock_);
           if( started_ )
           {
-            CSL_THROW(already_started);
+            CSL_THROW( already_started );
           }
 
-          sock_ = ::socket( AF_INET, SOCK_STREAM, 0 );
-          if( sock_.get() <= 0 )
+          struct addrinfo hints, *result=NULL, *rp=NULL;
+          autofree_addrinfo result_guard(result);
+
+          memset(&hints,0,sizeof(struct addrinfo));
+          hints.ai_family = AF_INET;
+          hints.ai_socktype = SOCK_STREAM;
+
+          std::string nm;
+          hostname_ >> nm;
+
+          int s = getaddrinfo(nm.c_str(),NULL,&hints,&result);
+          if(s!=0)
           {
-            CSL_THROW(failed_to_create_socket);
+            CSL_THROW(failed_to_resolve_name);
           }
 
-          int on = 1;
-          if( ::setsockopt( sock_.get(), SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on) ) < 0 )
+          for( rp=result; rp!=NULL; rp = rp->ai_next )
           {
-            CSL_THROW(failed_to_set_reuseaddr);
+            sock_ = ::socket( rp->ai_family, rp->ai_socktype, rp->ai_protocol );
+
+            if( sock_.get() == -1 )
+            {
+              CSL_THROW(failed_to_create_socket);
+            }
+
+            int on = 1;
+            if( ::setsockopt( sock_.get(), SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on) ) < 0 )
+            {
+              CSL_THROW(failed_to_set_reuseaddr);
+            }
+
+            if( bind(sock_.get(),rp->ai_addr, rp->ai_addrlen) == 0 )
+            {
+              ::memcpy( addr_.get(), rp->ai_addr, rp->ai_addrlen );
+              break;
+            }
+            sock_.close();
           }
 
-          if( ::bind( sock_.get(),
-                      reinterpret_cast<const struct sockaddr *>(&address),
-                      sizeof(address) ) < 0 )
+          if( sock_.get() == -1 )
           {
             CSL_THROW(failed_to_bind);
           }
@@ -124,6 +158,9 @@ namespace csl
 
         while( stop_me_ == false )
         {
+          addr incoming_addr;
+
+          // TODO : accept connection here
         }
 
         sock_      = -1;

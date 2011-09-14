@@ -23,43 +23,49 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_comm_msg_hh_included_
-#define _csl_comm_msg_hh_included_
-#include "codesloop/common/dbc.hh"
-#include "codesloop/comm/addr.hh"
+#ifndef _csl_comm_addr_hh_included_
+#define _csl_comm_addr_hh_included_
+#include "codesloop/common/common.h"
 
 namespace csl
 {
   namespace comm
   {
-    class msg
+    class addr
     {
     public:
-      CSL_CLASS( csl::comm::msg );
-
-      inline msg(addr & addr, uint8_t * buf)
-        : addr_(&addr), buffer_(buf), len_(0)
+      inline addr()
+        : addr_(reinterpret_cast<struct sockaddr *>(&addr_stor_)),
+          len_(0)
       {
-        CSL_REQUIRE(buf != NULL);
       }
 
-      inline void len(size_t l) { len_ = l; }
-      inline msg & operator=(size_t l) { len_ = l; return *this; }
+      inline addr(const addr & other) { *this = other; }
 
-      inline size_t len() const { return len_; }
-      inline const uint8_t * buffer() const { return buffer_; }
-      inline const addr & address() const { return *addr_; }
+      inline addr& operator=(const addr & other)
+      {
+        ::memcpy(&addr_stor_,&other.addr_stor_,sizeof(addr_stor_));
+        addr_ = reinterpret_cast<struct sockaddr *>(&addr_stor_);
+        len_  = other.len_;
+        return *this;
+      }
 
-      inline ~msg() {}
+      inline ~addr() {}
+
+      inline struct sockaddr * get()  { return addr_; }
+      inline size_t * len()           { return &len_; }
+
+      inline const struct sockaddr * get() const { return addr_; }
+      inline const size_t * len()          const { return &len_; }
+
+      inline addr & len(size_t l) { len_ = l; return *this; }
 
     private:
-      addr *       addr_;
-      uint8_t *    buffer_;
-      size_t       len_;
-
-      msg() = delete;
+      struct sockaddr_storage  addr_stor_;
+      struct sockaddr *        addr_;
+      size_t                   len_;
     };
   }
 }
 
-#endif /*_csl_comm_msg_hh_included_*/
+#endif /*_csl_comm_addr_hh_included_*/

@@ -49,6 +49,9 @@ namespace csl
 
       inline fdtype_t get() const { return fd_; }
 
+      autofd & close();
+      autofd & shutdown_close();
+
     private:
       void closefd();
       fdtype_t fd_;

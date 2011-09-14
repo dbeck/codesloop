@@ -115,6 +115,22 @@ namespace csl
       return *this;      
     }
 
+    std::string str::to_std() const
+    {
+      std::string ret;
+      *this >> ret;
+      return ret;
+    }
+
+    const str & str::operator>>(std::string & s) const
+    {
+      typedef stpodary<char,buf_items>  cbuf_t;
+      cbuf_t result;
+      strconcat<cbuf_t>::execute(result,c_str());
+      s.assign(result.private_data());
+      return *this;
+    }
+
     str::str(const char * st) : buf_( L'\0' )
     {
       CSL_REQUIRE( st != 0 );

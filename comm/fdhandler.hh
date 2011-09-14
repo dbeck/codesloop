@@ -27,6 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_comm_fdhandler_hh_included_
 #include "codesloop/common/excbase.hh"
 #include "codesloop/comm/autofd.hh"
+#include "codesloop/comm/addr.hh"
 
 namespace csl
 {
@@ -39,7 +40,7 @@ namespace csl
       CSL_DECLARE_EXCEPTION( stop );
       CSL_DECLARE_EXCEPTION( suspend );
 
-      virtual void operator()(autofd fd) = 0;
+      virtual void operator()(autofd fd, addr a) = 0;
       virtual ~fdhandler() {}
     };
   }

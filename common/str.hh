@@ -90,6 +90,8 @@ namespace csl
         bool operator==(const char * s) const;
         bool operator==(const wchar_t * s) const;
 
+        const str & operator>>(std::string & s) const;
+
         template <typename Other>
         inline bool operator!=(const Other* s) const
           { return !(*this == s); }
@@ -119,6 +121,9 @@ namespace csl
 
         inline const wchar_t * c_str() const
           { return( data() ); } // TODO: have a char * version
+
+        inline const str & to_std(std::string & s) const { return (*this >> s); }
+        std::string to_std() const;
 
         inline const wchar_t * data() const { return buf_.data(); }
 

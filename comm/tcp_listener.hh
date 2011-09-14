@@ -28,6 +28,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/excbase.hh"
 #include "codesloop/common/str.hh"
 #include "codesloop/comm/fdhandler.hh"
+#include "codesloop/comm/addr.hh"
 #include <thread>
 #include <mutex>
 #include <atomic>
@@ -50,6 +51,7 @@ namespace csl
         CSL_DECLARE_EXCEPTION( failed_to_set_reuseaddr );
         CSL_DECLARE_EXCEPTION( failed_to_bind );
         CSL_DECLARE_EXCEPTION( listen_failed );
+        CSL_DECLARE_EXCEPTION( failed_to_resolve_name );
 
         listener(
             const common::str & hostname,
@@ -62,6 +64,8 @@ namespace csl
         bool start();
         bool stop();
 
+        const addr & address() const { return addr_; }
+
       private:
         void loop();
         listener() = delete;
@@ -71,6 +75,7 @@ namespace csl
         autofd             sock_;
         common::str        hostname_;
         unsigned short     port_;
+        addr               addr_;
         std::thread        thread_;
         std::atomic_bool   started_;
         std::atomic_bool   stop_me_;

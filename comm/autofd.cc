@@ -51,6 +51,20 @@ namespace csl
       if( fd_ != -1 ) ShutdownCloseSocket( fd_ );
       fd_ = -1;
     }
+
+    autofd & autofd::close()
+    {
+      if( fd_ != -1 ) CloseSocket( fd_ );
+      fd_ = -1;
+      return *this;
+    }
+
+    autofd & autofd::shutdown_close()
+    {
+      if( fd_ != -1 ) ShutdownCloseSocket( fd_ );
+      fd_ = -1;
+      return *this;
+    }
   }
 }
 

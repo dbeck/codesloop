@@ -51,6 +51,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #  define CSL_SYS_TIME_H_INCLUDED
 #  include <sys/time.h>
 # endif /*CSL_SYS_TIME_H_INCLUDED*/
+# ifndef CSL_SYS_TYPES_H_INCLUDED
+#  define CSL_SYS_TYES_H_INCLUDED
+#  include <sys/types.h>
+# endif /*CSL_SYS_TYPES_H_INCLUDED*/
+# ifndef CSL_NETDB_H_INCLUDED
+#  define CSL_NETDB_H_INCLUDED
+#  include <netdb.h>
+# endif /*CSL_NETDB_H_INCLUDED*/
 # ifndef CSL_ENDIAN_H_INCLUDED
 #  ifdef LINUX
 #   include <endian.h>

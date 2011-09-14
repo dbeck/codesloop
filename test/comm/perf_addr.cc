@@ -23,43 +23,25 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_comm_msg_hh_included_
-#define _csl_comm_msg_hh_included_
-#include "codesloop/common/dbc.hh"
+#include "codesloop/common/common.h"
+#include "codesloop/common/test_timer.h"
 #include "codesloop/comm/addr.hh"
 
-namespace csl
+using csl::comm::addr;
+
+namespace test_addr
 {
-  namespace comm
-  {
-    class msg
-    {
-    public:
-      CSL_CLASS( csl::comm::msg );
+  void baseline() { addr a; }
+  void copy()     { addr a; addr b(a); }
+};
 
-      inline msg(addr & addr, uint8_t * buf)
-        : addr_(&addr), buffer_(buf), len_(0)
-      {
-        CSL_REQUIRE(buf != NULL);
-      }
+using namespace test_addr;
 
-      inline void len(size_t l) { len_ = l; }
-      inline msg & operator=(size_t l) { len_ = l; return *this; }
-
-      inline size_t len() const { return len_; }
-      inline const uint8_t * buffer() const { return buffer_; }
-      inline const addr & address() const { return *addr_; }
-
-      inline ~msg() {}
-
-    private:
-      addr *       addr_;
-      uint8_t *    buffer_;
-      size_t       len_;
-
-      msg() = delete;
-    };
-  }
+int main()
+{
+  csl_common_print_results( "baseline  ", csl_common_test_timer_v0(baseline),"" );
+  csl_common_print_results( "copy      ", csl_common_test_timer_v0(copy),"" );
+  return 0;
 }
 
-#endif /*_csl_comm_msg_hh_included_*/
+// EOF
