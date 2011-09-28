@@ -27,6 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
 #include <atomic>
+#include <thread>
 
 //using namespace csl::common;
 
@@ -145,6 +146,15 @@ int main()
   printf("sizeof(uint32_t[16])=%ld sizeof(atomic<uint32_t>[16])=%ld\n",
       sizeof(uint32_t[16]),
       sizeof(std::atomic<uint32_t>[16])
+      );
+  std::atomic_char ac;
+  std::atomic_llong all;
+  std::atomic_bool ab;
+
+  printf("atomic_char is %s \natomic_llong is %s \natomic_bool is %s\n",
+      (ac.is_lock_free()?"lock-free":"non-lock-free"),
+      (all.is_lock_free()?"lock-free":"non-lock-free"),
+      (ab.is_lock_free()?"lock-free":"non-lock-free")
       );
   test_gcc();
   test_std();

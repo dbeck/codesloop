@@ -159,7 +159,8 @@ namespace csl
         while( stop_me_ == false )
         {
           addr incoming_addr;
-
+          // select
+          // accept
           // TODO : accept connection here
         }
 

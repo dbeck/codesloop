@@ -29,6 +29,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/zero.hh"
 #include "codesloop/common/strlength.hh"
 #include "codesloop/common/strconcat.hh"
+#include "codesloop/common/kspin.hh"
 
 namespace
 {
@@ -88,6 +89,10 @@ namespace
     csl::common::strconcat<w_t>::execute( cp, ws );
     csl::common::strconcat<w_t>::execute( cp[0], ws );
   }
+
+  static void static_check_kspin()
+  {
+  }
     
   class static_check_init
   {
@@ -97,6 +102,7 @@ namespace
       static_check_simpstr();
       static_check_strlength();
       static_check_strconcat();
+      static_check_kspin();
     }
     
     csl::common::zero<char>       char_zero_;

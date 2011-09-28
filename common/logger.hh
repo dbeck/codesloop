@@ -94,4 +94,8 @@ namespace csl
   }
 }
 
+// --- info/error   : log always
+// --- trace        : cumulate+log when needed
+// --- scoped       : enter / leave  // only trace ???
+
 #endif /*_csl_common_logger_hh_included_*/

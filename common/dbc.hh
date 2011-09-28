@@ -69,7 +69,7 @@ namespace csl
 #  define CSL_ASSERT_THROW(EXPR,TYPE)                        \
       if( !(EXPR) )                                          \
       {                                                      \
-        throw dbcexc( __FILE__,                              \
+        throw csl::common::dbcexc( __FILE__,                 \
                       __LINE__,                              \
                       __func__,                              \
                       "DBC {" TYPE "} failed: " #EXPR,       \
