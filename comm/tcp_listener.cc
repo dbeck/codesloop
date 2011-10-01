@@ -48,13 +48,13 @@ namespace csl
       }
 
       listener::listener(
-                const common::str & hostname,
-                unsigned short port,
+                const std::string & hostname,
+                const std::string & port,
                 fdhandler & h,
                 int backlog)
         :
           hostname_(hostname),
-          port_(0),
+          port_(port),
           started_(false),
           stop_me_(false),
           suspend_interval_(0),
@@ -85,10 +85,7 @@ namespace csl
           hints.ai_family = AF_INET;
           hints.ai_socktype = SOCK_STREAM;
 
-          std::string nm;
-          hostname_ >> nm;
-
-          int s = getaddrinfo(nm.c_str(),NULL,&hints,&result);
+          int s = getaddrinfo(hostname_.c_str(),port_.c_str(),&hints,&result);
           if(s!=0)
           {
             CSL_THROW(failed_to_resolve_name);
@@ -112,6 +109,7 @@ namespace csl
             if( bind(sock_.get(),rp->ai_addr, rp->ai_addrlen) == 0 )
             {
               ::memcpy( addr_.get(), rp->ai_addr, rp->ai_addrlen );
+              ret = true;
               break;
             }
             sock_.close();
@@ -127,6 +125,7 @@ namespace csl
             CSL_THROW(listen_failed);
           }
 
+          started_ = true;
           thread_ =  std::thread(&listener::loop,this);
         }
 
@@ -162,6 +161,7 @@ namespace csl
           // select
           // accept
           // TODO : accept connection here
+          SleepSeconds(1);
         }
 
         sock_      = -1;

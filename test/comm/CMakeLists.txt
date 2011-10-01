@@ -39,8 +39,10 @@ LINK_LIBRARIES(
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../../.. ${DLOPEN_INCLUDE_DIR} )
 
 ADD_EXECUTABLE( feas_tcp_listener feas_tcp_listener.cc )
+ADD_EXECUTABLE( feas_udp_listener feas_udp_listener.cc )
 ADD_EXECUTABLE( perf_addr         perf_addr.cc )
 
 # ADD_TEST( func_comm_resolv ${EXECUTABLE_OUTPUT_PATH}/func_resolv )
 
 # -- EOF --
+

@@ -23,43 +23,59 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_comm_msg_hh_included_
-#define _csl_comm_msg_hh_included_
-#include "codesloop/common/dbc.hh"
+#ifndef _csl_common_ksbuf_hh_included_
+#define _csl_common_ksbuf_hh_included_
 #include "codesloop/common/kspin.hh"
 
 namespace csl
 {
-  namespace comm
+  namespace common
   {
-    class msg
+    template <uint32_t BUF_COUNT=512> // 32 MB
+    class ksbuf
     {
     public:
-      CSL_CLASS( csl::comm::msg );
+      CSL_CLASS( csl::common::ksbuf );
 
-      struct buf
+      struct result
       {
-        uint8_t * buf_;
-        size_t    len_;
+        kspin *    spin_;
+        uint32_t   id_;
+        uint8_t *  buf_;
       };
 
-      inline msg(const buf & buff, const common::kspin_lock & lck)
-        : buf_(&buff), lock_(lck)
+      static const uint32_t max_buf_=65536;
+      static const uint32_t buf_count_=BUF_COUNT;
+      static const uint32_t total_buffer_len_=(max_buf_*buf_count_);
+
+      inline ksbuf() : act_id_(0) {}
+
+      inline void get(result & res)
       {
+        ++act_id_;
+        if( act_id_ == 0 ) ++act_id_;
+        uint32_t act_pos = act_id_%buf_count_;
+        // try not to get blocked (no guarantee though)
+        while( locks_[act_pos].load()==0 )
+        {
+          ++act_id_;
+          if( act_id_ == 0 ) ++act_id_;
+          act_pos = act_id_%buf_count_;
+        }
+        res.buf_   = buffer_+(max_buf_+act_pos);
+        res.id_    = act_id_;
+        res.spin_  = locks_+act_pos;
+        uint32_t last_id = (act_id_ < (buf_count_+1) ? kspin::init_ : (act_id_-buf_count_));
+        // invalidate buffer (may still block)
+        locks_[act_pos].xlock(last_id,act_id_);
       }
 
-      inline const buf & buffer() const { return *buf_; }
-      inline common::kspin_lock & lock() { return lock_; }
-
-      inline ~msg() {}
-
     private:
-      const buf *          buf_;
-      common::kspin_lock   lock_;
-
-      msg() = delete;
+      uint8_t   buffer_[total_buffer_len_];
+      kspin     locks_[buf_count_];
+      uint32_t  act_id_;
     };
   }
 }
 
-#endif /*_csl_comm_msg_hh_included_*/
+#endif /*_csl_common_ksbuf_hh_included_*/

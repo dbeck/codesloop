@@ -65,6 +65,11 @@ namespace csl
       fd_ = -1;
       return *this;
     }
+
+    autofd::~autofd()
+    {
+      closefd();
+    }
   }
 }
 

@@ -62,6 +62,22 @@ namespace csl
       const char * func()   const  { return func_;   }
       const char * reason() const  { return reason_; }
       const char * clazz()  const  { return class_;  }
+
+      virtual void print() const
+      {
+        printf(
+            "Exception details:\n"
+            "File: %s\n"
+            "Line: %d\n"
+            "Function: %s\n"
+            "Reason: %s\n"
+            "Class: %s\n",
+            file_,
+            line_,
+            func_,
+            reason_,
+            class_);
+      }
     };
     
 #ifndef CSL_DECLARE_EXCEPTION

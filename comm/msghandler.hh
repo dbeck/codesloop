@@ -27,6 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_comm_msghandler_hh_included_
 #include "codesloop/common/excbase.hh"
 #include "codesloop/comm/msg.hh"
+#include "codesloop/comm/addr.hh"
 
 namespace csl
 {
@@ -39,7 +40,7 @@ namespace csl
       CSL_DECLARE_EXCEPTION( stop );
       CSL_DECLARE_EXCEPTION( suspend );
 
-      virtual void operator()(const msg & m) = 0;
+      virtual void operator()(msg m, addr a) = 0;
       virtual ~msghandler() {}
     };
   }

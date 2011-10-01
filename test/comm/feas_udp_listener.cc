@@ -23,43 +23,46 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_comm_msg_hh_included_
-#define _csl_comm_msg_hh_included_
-#include "codesloop/common/dbc.hh"
-#include "codesloop/common/kspin.hh"
+#include "codesloop/comm/udp_listener.hh"
+#include <assert.h>
 
-namespace csl
+using namespace csl::comm;
+using namespace csl::common;
+
+namespace test_udp_listener
 {
-  namespace comm
+  class handler : public csl::comm::msghandler
   {
-    class msg
+  public:
+    void operator()(msg m, addr a)
     {
-    public:
-      CSL_CLASS( csl::comm::msg );
+      printf(".");
+    }
+  };
 
-      struct buf
-      {
-        uint8_t * buf_;
-        size_t    len_;
-      };
-
-      inline msg(const buf & buff, const common::kspin_lock & lck)
-        : buf_(&buff), lock_(lck)
-      {
-      }
-
-      inline const buf & buffer() const { return *buf_; }
-      inline common::kspin_lock & lock() { return lock_; }
-
-      inline ~msg() {}
-
-    private:
-      const buf *          buf_;
-      common::kspin_lock   lock_;
-
-      msg() = delete;
-    };
+  void start_and_stop()
+  {
+    handler h;
+    udp::listener l("localhost","22334",h);
+    assert(l.start() == true);
+    SleepSeconds(1000);
+    assert(l.stop() == true);
   }
 }
 
-#endif /*_csl_comm_msg_hh_included_*/
+using namespace test_udp_listener;
+
+int main()
+{
+  try
+  {
+    start_and_stop();
+  }
+  catch(const excbase & e)
+  {
+    e.print();
+  }
+  return 0;
+}
+
+// EOF

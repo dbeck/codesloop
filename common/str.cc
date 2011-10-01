@@ -126,6 +126,7 @@ namespace csl
     {
       typedef stpodary<char,buf_items>  cbuf_t;
       cbuf_t result;
+      trailing_zero<cbuf_t>::ensure(result);
       strconcat<cbuf_t>::execute(result,c_str());
       s.assign(result.private_data());
       return *this;

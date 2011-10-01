@@ -92,6 +92,9 @@ namespace
 
   static void static_check_kspin()
   {
+    csl::common::kspin ks(1);
+    csl::common::kspin_lock kl(ks,1);
+    csl::common::scoped_kspin_lock sl(kl);
   }
     
   class static_check_init

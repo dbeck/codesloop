@@ -27,11 +27,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_comm_udp_listener_hh_included_
 #include "codesloop/common/excbase.hh"
 #include "codesloop/common/str.hh"
+#include "codesloop/common/kspin.hh"
+#include "codesloop/common/ksbuf.hh"
 #include "codesloop/comm/msghandler.hh"
 #include "codesloop/comm/autofd.hh"
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include <memory>
+
+#ifndef CSL_COMM_UDP_LISTENER_BUFFER_COUNT
+#define CSL_COMM_UDP_LISTENER_BUFFER_COUNT 512
+#endif //CSL_COMM_UDP_LISTENER_BUFFER_COUNT
 
 namespace csl
 {
@@ -42,25 +49,28 @@ namespace csl
       class listener
       {
       public:
-        typedef int socket_type_t;
-
         CSL_CLASS( csl::comm::tcp::listener );
         CSL_DECLARE_EXCEPTION( not_started );
         CSL_DECLARE_EXCEPTION( already_started );
+        CSL_DECLARE_EXCEPTION( failed_to_resolve_name );
         CSL_DECLARE_EXCEPTION( failed_to_create_socket );
         CSL_DECLARE_EXCEPTION( failed_to_set_reuseaddr );
         CSL_DECLARE_EXCEPTION( failed_to_bind );
+        CSL_DECLARE_EXCEPTION( select_failed );
         CSL_DECLARE_EXCEPTION( recvfrom_failed );
+        CSL_DECLARE_EXCEPTION( out_of_memory );
 
         listener(
-            const common::str & hostname,
-            unsigned short port,
+            const std::string & hostname,
+            const std::string & port,
             msghandler & h);
 
         ~listener();
 
         bool start();
         bool stop();
+
+        const addr & address() const { return addr_; }
 
       private:
         void loop();
@@ -69,14 +79,16 @@ namespace csl
         listener & operator=(const listener &) = delete;
 
         autofd             sock_;
-        common::str        hostname_;
-        unsigned short     port_;
+        std::string        hostname_;
+        std::string        port_;
+        addr               addr_;
         std::thread        thread_;
         std::atomic_bool   started_;
         std::atomic_bool   stop_me_;
         std::mutex         lock_;
         uint32_t           suspend_interval_;
         msghandler *       handler_;
+        std::auto_ptr< common::ksbuf<CSL_COMM_UDP_LISTENER_BUFFER_COUNT> > buffer_;
       };
     }
   }

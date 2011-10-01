@@ -53,17 +53,17 @@ namespace csl
       inline ~addr() {}
 
       inline struct sockaddr * get()  { return addr_; }
-      inline size_t * len()           { return &len_; }
+      inline socklen_t & len()        { return len_; }
 
       inline const struct sockaddr * get() const { return addr_; }
-      inline const size_t * len()          const { return &len_; }
+      inline const socklen_t & len()       const { return len_; }
 
-      inline addr & len(size_t l) { len_ = l; return *this; }
+      inline addr & len(socklen_t l) { len_ = l; return *this; }
 
     private:
       struct sockaddr_storage  addr_stor_;
       struct sockaddr *        addr_;
-      size_t                   len_;
+      socklen_t                len_;
     };
   }
 }

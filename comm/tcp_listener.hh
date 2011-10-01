@@ -42,8 +42,6 @@ namespace csl
       class listener
       {
       public:
-        typedef int socket_type_t;
-
         CSL_CLASS( csl::comm::tcp::listener );
         CSL_DECLARE_EXCEPTION( not_started );
         CSL_DECLARE_EXCEPTION( already_started );
@@ -52,10 +50,12 @@ namespace csl
         CSL_DECLARE_EXCEPTION( failed_to_bind );
         CSL_DECLARE_EXCEPTION( listen_failed );
         CSL_DECLARE_EXCEPTION( failed_to_resolve_name );
+        CSL_DECLARE_EXCEPTION( select_failed );
+        CSL_DECLARE_EXCEPTION( accept_failed );
 
         listener(
-            const common::str & hostname,
-            unsigned short port,
+            const std::string & hostname,
+            const std::string & port,
             fdhandler & h,
             int backlog=100);
 
@@ -73,8 +73,8 @@ namespace csl
         listener & operator=(const listener &) = delete;
 
         autofd             sock_;
-        common::str        hostname_;
-        unsigned short     port_;
+        std::string        hostname_;
+        std::string        port_;
         addr               addr_;
         std::thread        thread_;
         std::atomic_bool   started_;

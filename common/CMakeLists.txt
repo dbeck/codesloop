@@ -47,6 +47,7 @@ ADD_LIBRARY( csl_common STATIC
     bufmgr.hh
     archiver.cc archiver.hh
     kspin.hh
+    ksbuf.hh
 		)
 
 FILE(GLOB includes "${CMAKE_CURRENT_SOURCE_DIR}/*.h*")

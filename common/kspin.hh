@@ -25,7 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_common_kspin_hh_included_
 #define _csl_common_kspin_hh_included_
-#include "codesloop/common/common.h"
+#include "codesloop/common/excbase.hh"
 #include <atomic>
 
 namespace csl
@@ -39,7 +39,8 @@ namespace csl
 
       static const uint32_t init_ = 0xffffffff;
 
-      inline kspin(uint32_t init=init_) : spin_(init_) {}
+      inline kspin(uint32_t init) : spin_(init) { }
+      inline kspin() : spin_(init_) { }
 
       // old => new
       // locks the kspin to new id
@@ -73,7 +74,49 @@ namespace csl
     private:
       std::atomic_uint_fast32_t spin_;
     };
+
+    class kspin_lock
+    {
+    public:
+      CSL_CLASS( csl::common::kspin_lock );
+
+      kspin_lock(kspin & ks, uint32_t id) : lock_(&ks), id_(id) {}
+
+      inline bool lock()   { return lock_->lock(id_);   }
+      inline void unlock() { lock_->unlock(id_); }
+
+    private:
+      kspin_lock() = delete;
+
+      kspin *   lock_;
+      uint32_t  id_;
+    };
+
+    class scoped_kspin_lock
+    {
+    public:
+      CSL_CLASS( csl::common::scoped_kspin_lock );
+      CSL_DECLARE_EXCEPTION( key_changed );
+
+      scoped_kspin_lock(kspin_lock & ksl) : lock_(&ksl)
+      {
+        if( lock_->lock() == false ) { CSL_THROW( key_changed ); }
+      }
+
+      ~scoped_kspin_lock()
+      {
+        lock_->unlock();
+      }
+
+    private:
+      scoped_kspin_lock() = delete;
+      scoped_kspin_lock(const scoped_kspin_lock &) = delete;
+      scoped_kspin_lock & operator=(const scoped_kspin_lock &) = delete;
+
+      kspin_lock * lock_;
+    };
   }
 }
 
 #endif /* _csl_common_kspin_hh_included_ */
+

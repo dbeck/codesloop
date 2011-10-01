@@ -24,15 +24,44 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "codesloop/comm/tcp_listener.hh"
+#include <assert.h>
+
+using namespace csl::comm;
+using namespace csl::common;
 
 namespace test_tcp_listener
 {
+  class handler : public csl::comm::fdhandler
+  {
+  public:
+    void operator()(autofd fd, addr a)
+    {
+      printf(".");
+    }
+  };
+
+  void start_and_stop()
+  {
+    handler h;
+    tcp::listener l("localhost","22334",h);
+    assert(l.start() == true);
+    SleepSeconds(1000);
+    assert(l.stop() == true);
+  }
 }
 
 using namespace test_tcp_listener;
 
 int main()
 {
+  try
+  {
+    start_and_stop();
+  }
+  catch(const excbase & e)
+  {
+    e.print();
+  }
   return 0;
 }
 
