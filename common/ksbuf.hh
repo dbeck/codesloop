@@ -31,7 +31,7 @@ namespace csl
 {
   namespace common
   {
-    template <uint32_t BUF_COUNT=512> // 32 MB
+    template <uint32_t BUF_COUNT=512,uint32_t BUF_SIZE=65536> // 32 MB
     class ksbuf
     {
     public:
@@ -44,9 +44,10 @@ namespace csl
         uint8_t *  buf_;
       };
 
-      static const uint32_t max_buf_=65536;
+      static const uint32_t buf_size_=BUF_SIZE;
       static const uint32_t buf_count_=BUF_COUNT;
-      static const uint32_t total_buffer_len_=(max_buf_*buf_count_);
+      static const uint32_t total_buffer_len_=(buf_size_*buf_count_);
+      static const uint32_t buf_mask_=(buf_size_|(buf_size_-1));
 
       inline ksbuf() : act_id_(0) {}
 
@@ -62,7 +63,7 @@ namespace csl
           if( act_id_ == 0 ) ++act_id_;
           act_pos = act_id_%buf_count_;
         }
-        res.buf_   = buffer_+(max_buf_+act_pos);
+        res.buf_   = buffer_+(buf_size_*act_pos);
         res.id_    = act_id_;
         res.spin_  = locks_+act_pos;
         uint32_t last_id = (act_id_ < (buf_count_+1) ? kspin::init_ : (act_id_-buf_count_));

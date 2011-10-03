@@ -78,17 +78,19 @@ namespace csl
         listener(const listener&) = delete;
         listener & operator=(const listener &) = delete;
 
-        autofd             sock_;
-        std::string        hostname_;
-        std::string        port_;
-        addr               addr_;
-        std::thread        thread_;
-        std::atomic_bool   started_;
-        std::atomic_bool   stop_me_;
-        std::mutex         lock_;
-        uint32_t           suspend_interval_;
-        msghandler *       handler_;
-        std::auto_ptr< common::ksbuf<CSL_COMM_UDP_LISTENER_BUFFER_COUNT> > buffer_;
+        typedef common::ksbuf<CSL_COMM_UDP_LISTENER_BUFFER_COUNT> buffer_t;
+
+        autofd                          sock_;
+        std::string                     hostname_;
+        std::string                     port_;
+        addr                            addr_;
+        std::thread                     thread_;
+        std::atomic_bool                started_;
+        std::atomic_bool                stop_me_;
+        std::mutex                      lock_;
+        uint32_t                        suspend_interval_;
+        msghandler *                    handler_;
+        std::auto_ptr<buffer_t>         buffer_;
       };
     }
   }

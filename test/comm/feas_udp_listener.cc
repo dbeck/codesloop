@@ -34,10 +34,35 @@ namespace test_udp_listener
   class handler : public csl::comm::msghandler
   {
   public:
-    void operator()(msg m, addr a)
+    void operator()(msg m, addr a, int fd)
     {
-      printf(".");
+      try
+      {
+        scoped_kspin_lock lck(m.lock());
+        const char * bf = reinterpret_cast<const char *>(m.buffer().buf_);
+        std::string s(bf, bf+m.buffer().len_);
+        char host[NI_MAXHOST], service[NI_MAXSERV];
+        int err = getnameinfo(a.get(),
+                        a.len(), host, NI_MAXHOST,
+                        service, NI_MAXSERV, NI_NUMERICSERV);
+
+        if(!err)
+        {
+          printf("Received: %s (from %s:%s) %ld bytes (lockid:%d)\n",
+              s.c_str(),
+              host,
+              service,
+              m.buffer().len_,
+              m.lock().id());
+          ::sendto(fd,bf,m.buffer().len_,0,a.get(),a.len());
+        }
+      }
+      catch(const scoped_kspin_lock::key_changed & e)
+      {
+        e.print();
+      }
     }
+    handler() {}
   };
 
   void start_and_stop()

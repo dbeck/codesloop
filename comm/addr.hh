@@ -25,6 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_comm_addr_hh_included_
 #define _csl_comm_addr_hh_included_
+#include "codesloop/common/dbc.hh"
 #include "codesloop/common/common.h"
 
 namespace csl
@@ -34,9 +35,11 @@ namespace csl
     class addr
     {
     public:
+      CSL_CLASS( csl::comm::addr );
+
       inline addr()
         : addr_(reinterpret_cast<struct sockaddr *>(&addr_stor_)),
-          len_(0)
+          len_(sizeof(addr_stor_))
       {
       }
 
@@ -59,6 +62,15 @@ namespace csl
       inline const socklen_t & len()       const { return len_; }
 
       inline addr & len(socklen_t l) { len_ = l; return *this; }
+
+      inline void set(struct sockaddr * a, socklen_t l)
+      {
+        CSL_REQUIRE(a!=NULL);
+        CSL_REQUIRE(l>0);
+        CSL_REQUIRE(l<=sizeof(addr_stor_));
+        ::memcpy(addr_,a,l);
+        len_=l;
+      }
 
     private:
       struct sockaddr_storage  addr_stor_;

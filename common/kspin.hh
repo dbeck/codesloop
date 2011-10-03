@@ -80,10 +80,11 @@ namespace csl
     public:
       CSL_CLASS( csl::common::kspin_lock );
 
-      kspin_lock(kspin & ks, uint32_t id) : lock_(&ks), id_(id) {}
+      kspin_lock(kspin & ks, uint32_t lockid) : lock_(&ks), id_(lockid) {}
 
-      inline bool lock()   { return lock_->lock(id_);   }
-      inline void unlock() { lock_->unlock(id_); }
+      inline bool lock()          { return lock_->lock(id_); }
+      inline void unlock()        { lock_->unlock(id_); }
+      inline uint32_t id() const  { return id_; }
 
     private:
       kspin_lock() = delete;

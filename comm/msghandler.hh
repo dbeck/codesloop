@@ -40,7 +40,7 @@ namespace csl
       CSL_DECLARE_EXCEPTION( stop );
       CSL_DECLARE_EXCEPTION( suspend );
 
-      virtual void operator()(msg m, addr a) = 0;
+      virtual void operator()(msg m, addr a, int fd) = 0;
       virtual ~msghandler() {}
     };
   }

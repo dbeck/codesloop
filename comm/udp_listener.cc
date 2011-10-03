@@ -59,7 +59,7 @@ namespace csl
           stop_me_(false),
           suspend_interval_(0),
           handler_(&h),
-          buffer_(new common::ksbuf<CSL_COMM_UDP_LISTENER_BUFFER_COUNT>() ) { }
+          buffer_(new buffer_t() ) { }
 
       listener::~listener()
       {
@@ -106,7 +106,7 @@ namespace csl
 
             if( bind(sock_.get(),rp->ai_addr, rp->ai_addrlen) == 0 )
             {
-              ::memcpy( addr_.get(), rp->ai_addr, rp->ai_addrlen );
+              addr_.set( rp->ai_addr, rp->ai_addrlen );
               ret = true;
               break;
             }
@@ -148,13 +148,64 @@ namespace csl
           }
         }
 
+        fd_set rfds;
+
         while( stop_me_ == false )
         {
           addr incoming_addr;
-          // select
-          // recvfrom
-          // TODO
-          SleepSeconds(1);
+          struct timeval tv = { 1,0 };
+          FD_ZERO(&rfds);
+          FD_SET(sock_.get(),&rfds);
+
+          int err = ::select(sock_.get()+1,&rfds,NULL,NULL,&tv);
+          if( err == -1 )
+          {
+            CSL_THROW( select_failed );
+          }
+          else if (err)
+          {
+            // allocate read buffer
+            typename buffer_t::result buf;
+            buffer_->get(buf);
+            // receive data
+            ssize_t recvd = ::recvfrom(
+                                sock_.get(),
+                                buf.buf_,
+                                buffer_t::buf_size_,
+                                0, // flags
+                                incoming_addr.get(),
+                                &incoming_addr.len() );
+
+            // ignore errors, assume select will signal socket and system related
+            // problems
+            if( recvd > 0 )
+            {
+              comm::msg::buf b;
+              b.buf_ = buf.buf_;
+              // being defensive: buffer cannot be larger than buf_size_
+              b.len_ = (static_cast<size_t>(recvd) & (buffer_t::buf_mask_));
+              // create the message
+              common::kspin_lock lock(*(buf.spin_),buf.id_);
+              comm::msg m(b,lock);
+
+              try
+              {
+                // pass the message
+                (*handler_)(m,incoming_addr,sock_.get());
+                suspend_interval_ = 0;
+              }
+              // only catch meaningful
+              catch(const msghandler::stop & e)
+              {
+                stop_me_ = true;
+              }
+              catch(const msghandler::suspend & e)
+              {
+                suspend_interval_ += 100;
+                // wait here XXX TODO
+              }
+            }
+          }
         }
 
         sock_      = -1;

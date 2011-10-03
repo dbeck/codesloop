@@ -108,7 +108,7 @@ namespace csl
 
             if( bind(sock_.get(),rp->ai_addr, rp->ai_addrlen) == 0 )
             {
-              ::memcpy( addr_.get(), rp->ai_addr, rp->ai_addrlen );
+              addr_.set( rp->ai_addr, rp->ai_addrlen );
               ret = true;
               break;
             }
