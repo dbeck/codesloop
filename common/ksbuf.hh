@@ -59,22 +59,24 @@ namespace csl
       {
         // ??? XXX TODO : multithreaded get() ?
         // act_id ???
-        ++act_id_;
-        if( act_id_ == 0 ) ++act_id_;
-        uint32_t act_pos = act_id_%buf_count_;
+        uint32_t new_id = ++act_id_;
+        if( new_id == 0 ) new_id = ++act_id_;
+        uint32_t act_pos = new_id%buf_count_;
         // try not to get blocked (no guarantee though)
+        /*
         while( locks_[act_pos].load()==0 )
         {
-          ++act_id_;
-          if( act_id_ == 0 ) ++act_id_;
-          act_pos = act_id_%buf_count_;
-        }
+          new_id = ++act_id_;
+          if( act_id_ == 0 ) new_id = ++act_id_;
+          act_pos = new_id%buf_count_;
+        }*/
         res.buf_   = buffer_+(buf_size_*act_pos);
-        res.id_    = act_id_;
+        res.id_    = new_id;
         res.spin_  = locks_+act_pos;
-        uint32_t last_id = (act_id_ < (buf_count_+1) ? kspin::init_ : (act_id_-buf_count_));
+        // XXX TODO : not sure if the past value is really what we expected
+        uint32_t last_id = (new_id < (buf_count_+1) ? kspin::init_ : (new_id-buf_count_));
         // invalidate buffer (may still block)
-        locks_[act_pos].xlock(last_id,act_id_);
+        locks_[act_pos].xlock(last_id,new_id);
       }
 
       inline result get()

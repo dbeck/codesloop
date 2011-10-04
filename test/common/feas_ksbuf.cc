@@ -26,6 +26,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/kspin.hh"
 #include "codesloop/common/excbase.hh"
 #include "codesloop/common/test_timer.h"
+#include "codesloop/common/ksbuf.hh"
 #include <memory>
 #include <assert.h>
 
@@ -89,6 +90,20 @@ namespace test_ksbuf
     ksbuf2_->get(res);
   }
 
+  void ksbuf_baseline()
+  {
+    ksbuf<> * b = new ksbuf<>();
+    delete b;
+  }
+
+  ksbuf<> * ksbuf_ = 0;
+
+  void ksbuf_get()
+  {
+    ksbuf<>::result res;
+    ksbuf_->get(res);
+  }
+
 }
 
 using namespace test_ksbuf;
@@ -98,7 +113,10 @@ int main()
   try
   {
     ksbuf2_ = new ksbuf2;
+    ksbuf_ = new ksbuf<>();
+    csl_common_print_results( "ksbuf_baseline                ", csl_common_test_timer_v0(ksbuf_baseline),"" );
     csl_common_print_results( "ksbuf2_baseline                ", csl_common_test_timer_v0(ksbuf2_baseline),"" );
+    csl_common_print_results( "ksbuf_get                     ", csl_common_test_timer_v0(ksbuf_get),"" );
     csl_common_print_results( "ksbuf2_get                     ", csl_common_test_timer_v0(ksbuf2_get),"" );
   }
   catch(const excbase & e)
