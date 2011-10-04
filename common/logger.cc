@@ -31,7 +31,11 @@ namespace csl
   {
     file_logger::file_logger(const char * file_name) : fp_(NULL) {}
 
-    logger_base * logger::get()       { return inst_; }
+    logger_base & logger::get()
+    {
+      if( !inst_ ) { CSL_THROW(not_initialized); }
+      return *inst_;
+    }
     void logger::set(logger_base & l) { inst_ = &l; }
 
     logger_base * logger::inst_ = 0;;

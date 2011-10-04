@@ -45,12 +45,18 @@ namespace csl
       CSL_DECLARE_EXCEPTION( cannot_open );
 
       // output interface
-      inline stream & push(ksmsg p) { return *this; }
+      inline stream & push(ksmsg p) { return *this; } // XXX TODO
 
+      // initialize
+      file_logger(const char * file_name);  // XXX TODO
+      virtual ~file_logger() {}  // XXX TODO
+
+      // -- ignored:
       // input interface
       inline bool pop(ksmsg & p) { return false; }
       inline size_t poll(size_t sz, uint32_t & timeout_ms) { return 0; }
 
+      // -- ignored:
       // events
       inline stream & set_event_cb(event & ev) { return *this; }
 
@@ -60,12 +66,10 @@ namespace csl
       inline stream & end()   { return *this; }
       inline stream & flush() { return *this; }
 
-      file_logger(const char * file_name);
-      virtual ~file_logger() {}
-
     private:
-      file_logger(const file_logger&) {}
-      file_logger & operator=(const file_logger&) { return *this; }
+      file_logger() = delete;
+      file_logger(const file_logger&) = delete;
+      file_logger & operator=(const file_logger&) = delete;
       str     file_name_;
       FILE *  fp_;
     };
@@ -76,7 +80,7 @@ namespace csl
       CSL_CLASS( csl::common::file_logger );
       CSL_DECLARE_EXCEPTION( not_initialized );
 
-      static logger_base * get();
+      static logger_base & get();
       static void set(logger_base & l);
 
     private:
@@ -88,5 +92,10 @@ namespace csl
 // --- info/error   : log always
 // --- trace        : cumulate+log when needed
 // --- scoped       : enter / leave  // only trace ???
+
+// INFO(val + val + val);
+// ERROR(val + val + val);
+// TRACE(val + val + val);
+// SCOPED(val + val + val + val);
 
 #endif /*_csl_common_logger_hh_included_*/

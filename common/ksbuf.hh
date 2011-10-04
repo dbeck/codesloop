@@ -57,6 +57,8 @@ namespace csl
 
       inline void get(result & res)
       {
+        // ??? XXX TODO : multithreaded get() ?
+        // act_id ???
         ++act_id_;
         if( act_id_ == 0 ) ++act_id_;
         uint32_t act_pos = act_id_%buf_count_;
