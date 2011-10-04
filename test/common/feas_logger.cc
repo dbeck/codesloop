@@ -43,8 +43,6 @@ namespace test_logger
 
   void file_log()
   {
-    bufmgr b;
-    bufmgr::item i(b.alloc());
     file_logger l("");
   }
 }

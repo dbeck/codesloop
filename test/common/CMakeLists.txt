@@ -46,10 +46,12 @@ ADD_EXECUTABLE( func_str        func_str.cc )
 ADD_EXECUTABLE( func_exc        func_exc.cc )
 ADD_EXECUTABLE( func_bitmap512  func_bitmap512.cc )
 ADD_EXECUTABLE( func_bithacks   func_bithacks.cc )
+ADD_EXECUTABLE( func_ksmsg      func_ksmsg.cc )
 ADD_TEST( func_common_stpodary    ${EXECUTABLE_OUTPUT_PATH}/func_stpodary )
 ADD_TEST( func_common_str         ${EXECUTABLE_OUTPUT_PATH}/func_str )
 ADD_TEST( func_common_exc         ${EXECUTABLE_OUTPUT_PATH}/func_exc )
 ADD_TEST( func_common_bitmap512   ${EXECUTABLE_OUTPUT_PATH}/func_bitmap512 )
 ADD_TEST( func_common_bithacks    ${EXECUTABLE_OUTPUT_PATH}/func_bithacks )
+ADD_TEST( func_common_ksmsg       ${EXECUTABLE_OUTPUT_PATH}/func_ksmsg )
 
 # -- EOF --

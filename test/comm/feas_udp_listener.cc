@@ -34,11 +34,11 @@ namespace test_udp_listener
   class handler : public csl::comm::msghandler
   {
   public:
-    void operator()(msg m, addr a, int fd)
+    void operator()(ksmsg m, addr a, int fd)
     {
       try
       {
-        scoped_kspin_lock lck(m.lock());
+        scoped_kspin_lock lck(m.get_lock());
         const char * bf = reinterpret_cast<const char *>(m.buffer().buf_);
         std::string s(bf, bf+m.buffer().len_);
         char host[NI_MAXHOST], service[NI_MAXSERV];
@@ -53,7 +53,7 @@ namespace test_udp_listener
               host,
               service,
               m.buffer().len_,
-              m.lock().id());
+              m.get_lock().id());
           ::sendto(fd,bf,m.buffer().len_,0,a.get(),a.len());
         }
       }

@@ -42,6 +42,10 @@ namespace csl
         kspin *    spin_;
         uint32_t   id_;
         uint8_t *  buf_;
+        inline uint8_t * buf()       { return buf_; }
+        inline size_t len()          { return buf_size_; }
+        inline uint32_t id()         { return id_; }
+        inline kspin_lock get_lock() { return kspin_lock(*spin_,id_); }
       };
 
       static const uint32_t buf_size_=BUF_SIZE;
@@ -69,6 +73,13 @@ namespace csl
         uint32_t last_id = (act_id_ < (buf_count_+1) ? kspin::init_ : (act_id_-buf_count_));
         // invalidate buffer (may still block)
         locks_[act_pos].xlock(last_id,act_id_);
+      }
+
+      inline result get()
+      {
+        result ret;
+        get(ret);
+        return ret;
       }
 
     private:

@@ -26,7 +26,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_comm_msghandler_hh_included_
 #define _csl_comm_msghandler_hh_included_
 #include "codesloop/common/excbase.hh"
-#include "codesloop/comm/msg.hh"
+#include "codesloop/common/ksmsg.hh"
 #include "codesloop/comm/addr.hh"
 
 namespace csl
@@ -40,7 +40,7 @@ namespace csl
       CSL_DECLARE_EXCEPTION( stop );
       CSL_DECLARE_EXCEPTION( suspend );
 
-      virtual void operator()(msg m, addr a, int fd) = 0;
+      virtual void operator()(common::ksmsg m, addr a, int fd) = 0;
       virtual ~msghandler() {}
     };
   }

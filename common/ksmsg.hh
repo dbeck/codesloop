@@ -23,43 +23,47 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _csl_comm_msg_hh_included_
-#define _csl_comm_msg_hh_included_
+#ifndef _csl_common_ksmsg_hh_included_
+#define _csl_common_ksmsg_hh_included_
 #include "codesloop/common/dbc.hh"
 #include "codesloop/common/kspin.hh"
+#include "codesloop/common/ksbuf.hh"
 
 namespace csl
 {
-  namespace comm
+  namespace common
   {
-    class msg
+    class ksmsg
     {
     public:
-      CSL_CLASS( csl::comm::msg );
+      CSL_CLASS( csl::common::ksmsg );
 
       struct buf
       {
         uint8_t * buf_;
         size_t    len_;
+        inline buf() : buf_(0), len_(0) {}
+        inline buf(uint8_t * b,size_t l) : buf_(b), len_(l) {}
+        template <typename T> buf(T & t) : buf_(t.buf()), len_(t.len()) {}
       };
 
-      inline msg(const buf & buff, const common::kspin_lock & lck)
-        : buf_(&buff), lock_(lck)
+      inline ksmsg(const buf & buff, const common::kspin_lock & lck)
+        : buf_(&buff), lck_(lck)
       {
       }
 
-      inline const buf & buffer() const { return *buf_; }
-      inline common::kspin_lock & lock() { return lock_; }
+      inline const buf & buffer() const      { return *buf_; }
+      inline common::kspin_lock & get_lock() { return lck_;  }
 
-      inline ~msg() {}
+      inline ~ksmsg() {}
 
     private:
       const buf *          buf_;
-      common::kspin_lock   lock_;
+      common::kspin_lock   lck_;
 
-      msg() = delete;
+      ksmsg() = delete;
     };
   }
 }
 
-#endif /*_csl_comm_msg_hh_included_*/
+#endif /*_csl_common_ksmsg_hh_included_*/

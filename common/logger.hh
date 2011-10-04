@@ -27,7 +27,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_common_logger_hh_included_
 #include "codesloop/common/str.hh"
 #include "codesloop/common/stream.hh"
-#include "codesloop/common/excbase.hh"
 
 namespace csl
 {
@@ -37,9 +36,6 @@ namespace csl
     {
     public:
       virtual ~logger_base() {}
-
-    private:
-      bufmgr logbufs_;
     };
 
     class file_logger : public logger_base
@@ -49,11 +45,14 @@ namespace csl
       CSL_DECLARE_EXCEPTION( cannot_open );
 
       // output interface
-      inline stream & push(bufmgr::item p) { return pushref(p); }
-      stream & pushref(const bufmgr::item & p);
+      inline stream & push(ksmsg p) { return *this; }
 
-      file_logger(const char * file_name);
-      virtual ~file_logger() {}
+      // input interface
+      inline bool pop(ksmsg & p) { return false; }
+      inline size_t poll(size_t sz, uint32_t & timeout_ms) { return 0; }
+
+      // events
+      inline stream & set_event_cb(event & ev) { return *this; }
 
       // -- ignored:
       // packet frame
@@ -61,16 +60,8 @@ namespace csl
       inline stream & end()   { return *this; }
       inline stream & flush() { return *this; }
 
-      // input interface
-      inline bool popref(bufmgr::item & p) { return false; }
-      inline size_t poll(size_t sz, uint32_t & timeout_ms) { return 0; }
-
-      // stats
-      inline size_t position()  const { return 0; }
-      inline size_t available() const { return 0; }
-
-      // events
-      inline stream & set_event_cb(event & ev) { return *this; }
+      file_logger(const char * file_name);
+      virtual ~file_logger() {}
 
     private:
       file_logger(const file_logger&) {}

@@ -46,8 +46,7 @@ ADD_LIBRARY( csl_common STATIC
     bithacks.cc bithacks.hh
     bufmgr.hh
     archiver.cc archiver.hh
-    kspin.hh
-    ksbuf.hh
+    kspin.hh ksbuf.hh ksmsg.hh
 		)
 
 FILE(GLOB includes "${CMAKE_CURRENT_SOURCE_DIR}/*.h*")

@@ -25,7 +25,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_common_stream_hh_included_
 #define _csl_common_stream_hh_included_
-#include "codesloop/common/bufmgr.hh"
+#include "codesloop/common/ksmsg.hh"
 
 namespace csl
 {
@@ -40,16 +40,11 @@ namespace csl
       virtual stream & flush()   = 0;
 
       // output interface
-      virtual stream & push(bufmgr::item p) = 0;
-      virtual stream & pushref(const bufmgr::item & p) = 0;
+      virtual stream & push(ksmsg p) = 0;
 
       // input interface
-      virtual bool popref(bufmgr::item & p) = 0;
+      virtual bool pop(ksmsg & p) = 0;
       virtual size_t poll(size_t sz, uint32_t & timeout_ms)  = 0;
-
-      // stats
-      virtual size_t position()  const    = 0;
-      virtual size_t available() const    = 0;
 
       // event interface
       class event

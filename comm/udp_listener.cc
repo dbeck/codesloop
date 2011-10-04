@@ -180,13 +180,12 @@ namespace csl
             // problems
             if( recvd > 0 )
             {
-              comm::msg::buf b;
+              common::ksmsg::buf b;
               b.buf_ = buf.buf_;
               // being defensive: buffer cannot be larger than buf_size_
               b.len_ = (static_cast<size_t>(recvd) & (buffer_t::buf_mask_));
               // create the message
-              common::kspin_lock lock(*(buf.spin_),buf.id_);
-              comm::msg m(b,lock);
+              common::ksmsg m(b,buf.get_lock());
 
               try
               {

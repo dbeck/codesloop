@@ -34,7 +34,7 @@ ADD_LIBRARY(
     autofd.cc autofd.hh
     fdq.cc fdq.hh
     fdhandler.hh
-    msg.hh msghandler.hh addr.hh
+    msghandler.hh addr.hh
     )
 
 ADD_DEPENDENCIES( csl_comm ${CMAKE_CURRENT_SOURCE_DIR}../common/libev/config.h )
