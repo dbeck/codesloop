@@ -37,10 +37,38 @@ namespace csl
     public:
       CSL_CLASS( csl::common::kspin );
 
-      static const uint32_t init_ = 0xffffffff;
+      static const uint32_t init_ = 0x1;
 
       inline kspin(uint32_t init) : spin_(init) { }
       inline kspin() : spin_(init_) { }
+
+      // TODO : tryset(x)
+      // if(spin_ != 0) { spin_ = x; return true; }
+      // else           { return false; }
+
+      // TODO : set(x)
+      // while(spin_ == 0) { }
+      // spin_ = x;
+
+      // TODO : tryinc()
+      // if(spin_ != 0) { ++spin_; return spin_; }
+      // else           { return 0; }
+
+      // TODO : inc()
+      // while(spin_ == 0) {}
+      // ++spin_; return spin_;
+
+      // TODO : gtinc()
+      // if(spin_ != 0) { ++spin_; return spin_; }
+      // else           { return 0; }
+
+      // TODO : trygtinc()
+      // while(spin_ == 0) {}
+      // ++spin_; return spin_;
+
+      // TODO : tryunlock(x)
+      // if(spin_ == 0) { spin_ = x; return true; }
+      // else           { return false; }
 
       // old => new
       // locks the kspin to new id
