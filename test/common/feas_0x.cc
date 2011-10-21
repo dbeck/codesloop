@@ -53,9 +53,22 @@ namespace test_0x
     for( auto it=v.begin(); it!=v.end(); ++it ) { sum += *it; }
   }
 
+  int tf(int f0) { return 2*f0; }
+
   void function_obj()
   {
     std::function< int (int x)> fun;
+    std::function< int (int x)> fun2(tf);
+    fun = tf;
+
+    typedef std::function< int (int x)> fun_t;
+    typedef std::vector<fun_t> funvec_t;
+
+    funvec_t fv;
+    fv.push_back(tf);
+
+    typedef std::vector<std::thread> thrvec_t;
+    thrvec_t tv;
   }
 
   void initializers()
@@ -80,14 +93,22 @@ namespace test_0x
     std::vector<int> v3 = v;
   }
 
+  struct entry
+  {
+    void operator()() {}
+  };
+
   void start_thread()
   {
     std::thread t1(rvalues);
     std::thread t2(rvalues);
     std::thread t3(rvalues);
+    entry e;
+    std::thread t4(e);
     t1.join();
     t2.join();
     t3.join();
+    t4.join();
   }
 
   void condvar()

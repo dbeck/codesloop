@@ -67,7 +67,7 @@ namespace test_ksbuf
       res.spin_  = locks_+act_pos;
       // invalidate buffer (may still block) but don't care
       uint32_t last_id = (act_id_ < (buf_count_+1) ? kspin::init_ : (act_id_-buf_count_));
-      locks_[act_pos].xlock(last_id,act_id_);
+      locks_[act_pos].gtinc();
     }
 
   private:
@@ -115,9 +115,9 @@ int main()
     ksbuf2_ = new ksbuf2;
     ksbuf_ = new ksbuf<>();
     csl_common_print_results( "ksbuf_baseline                ", csl_common_test_timer_v0(ksbuf_baseline),"" );
-    csl_common_print_results( "ksbuf2_baseline                ", csl_common_test_timer_v0(ksbuf2_baseline),"" );
+    csl_common_print_results( "ksbuf2_baseline               ", csl_common_test_timer_v0(ksbuf2_baseline),"" );
     csl_common_print_results( "ksbuf_get                     ", csl_common_test_timer_v0(ksbuf_get),"" );
-    csl_common_print_results( "ksbuf2_get                     ", csl_common_test_timer_v0(ksbuf2_get),"" );
+    csl_common_print_results( "ksbuf2_get                    ", csl_common_test_timer_v0(ksbuf2_get),"" );
   }
   catch(const excbase & e)
   {

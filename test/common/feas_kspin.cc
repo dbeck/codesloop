@@ -28,6 +28,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/test_timer.h"
 #include "codesloop/common/kspin.hh"
 #include <assert.h>
+#include <thread>
+#include <vector>
+#include <set>
 
 using namespace csl::common;
 
@@ -38,10 +41,11 @@ namespace test_kspin
     kspin ks;
   }
 
-  void xlock()
+  static kspin global_ks;
+
+  void gtinc()
   {
-    kspin ks;
-    ks.xlock(kspin::init_,1);
+    global_ks.gtinc();
   }
 
   void lock()
@@ -52,36 +56,84 @@ namespace test_kspin
 
   void unlock()
   {
-    kspin ks;
-    ks.unlock(1);
+    global_ks.unlock(kspin::init_);
   }
 
   void lock_unlock()
   {
-    kspin ks;
-    ks.lock(kspin::init_);
-    ks.unlock(1);
+    global_ks.lock(kspin::init_);
+    global_ks.unlock(kspin::init_);
+  }
+
+  void atomic_inc()
+  {
+    static std::atomic_uint_fast32_t l;
+    ++l;
   }
 
   void validate()
   {
     kspin ks;
     assert(ks.load()==kspin::init_);
-    ks.xlock(kspin::init_,1);
+    ks.gtinc();
     {
-      assert(ks.lock(1) == true);
+      assert(ks.lock(kspin::init_+1) == true);
       assert(ks.load()==0);
-      ks.unlock(1);
-      assert(ks.load()==1);
+      ks.unlock(kspin::init_+1);
+      assert(ks.load()==kspin::init_+1);
     }
 
-    assert(ks.lock(2) == false);
-    assert(ks.load()==1);
+    assert(ks.lock(kspin::init_+2) == false);
+    assert(ks.load()==kspin::init_+1);
 
     {
-      assert(ks.lock(1) == true);
-      ks.unlock(1);
-      assert(ks.load()==1);
+      assert(ks.lock(kspin::init_+1) == true);
+      ks.unlock(kspin::init_+1);
+      assert(ks.load()==kspin::init_+1);
+    }
+  }
+
+  namespace thr
+  {
+    typedef std::set<uint32_t> intset;
+
+    static const char * class_name() { return "thr::tester"; }
+    CSL_DECLARE_EXCEPTION(gtinc_equals_old_value);
+    CSL_DECLARE_EXCEPTION(duplicate_value);
+
+    void test_entry(kspin * s, intset * v)
+    {
+      for(int i=0;i<1000;++i)
+      {
+        uint32_t old = s->load();
+        uint32_t id = s->gtinc();
+        // printf("%d->%d ",old,id);
+        if( old == id )      { CSL_THROW(gtinc_equals_old_value); }
+        if( id > 0xffffff )  { printf("id: %d\n", id); }
+        if( s->lock(id) )
+        {
+          if( v->find(id) != v->end() )
+          {
+            printf("duplicate value: %d\n",id);
+            CSL_THROW(duplicate_value);
+            break;
+          }
+          v->insert(id);
+          s->unlock(id);
+        }
+      }
+    }
+
+    void tester(kspin & s, int index, intset * is)
+    {
+      if(index > 4) return;
+      for( int x=0;x<3;++x ) { tester(s,index+1,is); }
+      std::thread t1(std::bind(test_entry,&s,is));
+      std::thread t2(std::bind(test_entry,&s,is));
+      std::thread t3(std::bind(test_entry,&s,is));
+      std::thread t4(std::bind(test_entry,&s,is));
+      std::thread t5(std::bind(test_entry,&s,is));
+      t1.join(); t2.join(); t3.join(); t4.join(); t5.join();
     }
   }
 }
@@ -90,11 +142,16 @@ using namespace test_kspin;
 
 int main()
 {
-  validate();
+  thr::intset is;
+  kspin ks;
+  thr::tester(ks,0,&is);
+
   csl_common_print_results( "baseline                 ", csl_common_test_timer_v0(baseline),"" );
-  csl_common_print_results( "xlock                    ", csl_common_test_timer_v0(xlock),"" );
+  csl_common_print_results( "gtinc                    ", csl_common_test_timer_v0(gtinc),"" );
+  global_ks.unlock(kspin::init_);
   csl_common_print_results( "lock                     ", csl_common_test_timer_v0(lock),"" );
   csl_common_print_results( "unlock                   ", csl_common_test_timer_v0(unlock),"" );
   csl_common_print_results( "lock-unlock              ", csl_common_test_timer_v0(lock_unlock),"" );
+  csl_common_print_results( "atomic_inc               ", csl_common_test_timer_v0(atomic_inc),"" );
   return 0;
 }

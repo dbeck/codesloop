@@ -53,30 +53,22 @@ namespace csl
       static const uint32_t total_buffer_len_=(buf_size_*buf_count_);
       static const uint32_t buf_mask_=(buf_size_|(buf_size_-1));
 
-      inline ksbuf() : act_id_(0) {}
+      inline ksbuf() : act_pos_(0) {}
 
       inline void get(result & res)
       {
         // ??? XXX TODO : multithreaded get() ?
-        // act_id ???
-        uint32_t new_id = ++act_id_;
-        if( new_id == 0 ) new_id = ++act_id_;
-        uint32_t act_pos = new_id%buf_count_;
-        // try not to get blocked (no guarantee though)
-        /*
-        while( locks_[act_pos].load()==0 )
+
+        uint32_t pos = (++act_pos_)%buf_count_;
+
+        while( locks_[pos].load()==0 )
         {
-          new_id = ++act_id_;
-          if( act_id_ == 0 ) new_id = ++act_id_;
-          act_pos = new_id%buf_count_;
-        }*/
-        res.buf_   = buffer_+(buf_size_*act_pos);
-        res.id_    = new_id;
-        res.spin_  = locks_+act_pos;
-        // XXX TODO : not sure if the past value is really what we expected
-        uint32_t last_id = (new_id < (buf_count_+1) ? kspin::init_ : (new_id-buf_count_));
-        // invalidate buffer (may still block)
-        locks_[act_pos].xlock(last_id,new_id);
+          pos = (++act_pos_)%buf_count_;
+        }
+
+        res.buf_  = buffer_+(buf_size_*pos);
+        res.id_   = locks_[pos].gtinc();
+        res.spin_ = locks_+pos;
       }
 
       inline result get()
@@ -87,9 +79,9 @@ namespace csl
       }
 
     private:
-      uint8_t   buffer_[total_buffer_len_];
-      kspin     locks_[buf_count_];
-      uint32_t  act_id_;
+      uint8_t                    buffer_[total_buffer_len_];
+      kspin                      locks_[buf_count_];
+      std::atomic_uint_fast32_t  act_pos_;
     };
   }
 }

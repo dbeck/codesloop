@@ -39,68 +39,73 @@ namespace csl
 
       static const uint32_t init_ = 0x1;
 
-      inline kspin(uint32_t init) : spin_(init) { }
-      inline kspin() : spin_(init_) { }
+      inline kspin(uint32_t init) : val_(init), lck_(ATOMIC_FLAG_INIT) { }
+      inline kspin() : val_(init_), lck_(ATOMIC_FLAG_INIT) { }
 
-      // TODO : tryset(x)
-      // if(spin_ != 0) { spin_ = x; return true; }
-      // else           { return false; }
-
-      // TODO : set(x)
-      // while(spin_ == 0) { }
-      // spin_ = x;
-
-      // TODO : tryinc()
-      // if(spin_ != 0) { ++spin_; return spin_; }
-      // else           { return 0; }
-
-      // TODO : inc()
-      // while(spin_ == 0) {}
-      // ++spin_; return spin_;
-
-      // TODO : gtinc()
-      // if(spin_ != 0) { ++spin_; return spin_; }
-      // else           { return 0; }
-
-      // TODO : trygtinc()
-      // while(spin_ == 0) {}
-      // ++spin_; return spin_;
-
-      // TODO : tryunlock(x)
-      // if(spin_ == 0) { spin_ = x; return true; }
-      // else           { return false; }
-
-      // old => new
-      // locks the kspin to new id
-      inline void xlock(uint32_t old_id, uint32_t new_id)
+      // wait if: val_==0
+      // effect:  val_+=1
+      inline uint32_t gtinc()
       {
-        uint32_t old_=old_id;
-        while( !spin_.compare_exchange_strong(old_,new_id) )
+        bool stop = false;
+        uint32_t ret = 0;
+        do
         {
-          old_=old_id;
+          internal_lock();
+          if( val_ )
+          {
+            // overflow
+            if( val_ > 0xfffffff0 ) val_ = 0;
+            stop = true;
+            ret = (++val_);
+          }
+          internal_unlock();
         }
+        while(stop == false);
+        return ret;
       }
 
-      // id => 0 except id mismatch
+      // wait if:  val_==0
+      // error if: val_!=id
+      // effect:   val_=0
       inline bool lock(uint32_t id)
       {
-        uint32_t id_=id;
-        uint32_t busy=0;
-        while( !spin_.compare_exchange_strong(id_,busy) )
+        bool ret = true;
+        bool stop = false;
+        do
         {
-          if( id_!=id ) return false;
-          id_=id;
+          internal_lock();
+          if( val_ == id )  { val_ = 0; stop = true; }
+          else if( val_ )   { ret = false; }
+          internal_unlock();
         }
-        return true;
+        while(ret == true && stop == false);
+        return ret;
       }
 
-      // 0 => id
-      inline void unlock(uint32_t id) { spin_.store(id); }
+      // no wait for val_
+      // assume the one who unlocks, did have the lock before
+      // effect: val_=id
+      inline void unlock(uint32_t id)
+      {
+        internal_lock();
+        val_ = id;
+        internal_unlock();
+      }
 
-      inline uint32_t load() const { return spin_.load(); }
+      inline uint32_t load()
+      {
+        internal_lock();
+        uint32_t ret = val_;
+        internal_unlock();
+        return ret;
+      }
 
     private:
-      std::atomic_uint_fast32_t spin_;
+      uint32_t           val_;
+      std::atomic_flag   lck_;
+
+      inline void internal_lock()   { while(lck_.test_and_set(std::memory_order_acquire)); }
+      inline void internal_unlock() { lck_.clear(std::memory_order_release); }
     };
 
     class kspin_lock
