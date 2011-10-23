@@ -85,11 +85,13 @@ namespace csl
       // no wait for val_
       // assume the one who unlocks, did have the lock before
       // effect: val_=id
-      inline void unlock(uint32_t id)
+      inline bool unlock(uint32_t id)
       {
+        bool ret = false;
         internal_lock();
-        val_ = id;
+        if( !val_ ) { val_ = id; ret = true; }
         internal_unlock();
+        return ret;
       }
 
       inline uint32_t load()
@@ -114,12 +116,13 @@ namespace csl
       CSL_CLASS( csl::common::kspin_lock );
 
       kspin_lock(kspin & ks, uint32_t lockid) : lock_(&ks), id_(lockid) {}
-
-      inline bool lock()          { return lock_->lock(id_); }
-      inline void unlock()        { lock_->unlock(id_); }
       inline uint32_t id() const  { return id_; }
 
     private:
+      friend class scoped_kspin_lock;
+      inline bool lock()     { return lock_->lock(id_); }
+      inline bool unlock()   { return lock_->unlock(id_); }
+
       kspin_lock() = delete;
 
       kspin *   lock_;

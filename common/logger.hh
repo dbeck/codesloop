@@ -91,7 +91,7 @@ namespace csl
 
 // --- info/error   : log always
 // --- trace        : cumulate+log when needed
-// --- scoped       : enter / leave  // only trace ???
+// --- scoped       : enter / leave : only trace
 
 // INFO(val + val + val);
 // ERROR(val + val + val);
