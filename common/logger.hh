@@ -36,42 +36,24 @@ namespace csl
     {
     public:
       virtual ~logger_base() {}
-    };
 
-    class file_logger : public logger_base
-    {
-    public:
-      CSL_CLASS( csl::common::file_logger );
-      CSL_DECLARE_EXCEPTION( cannot_open );
+      struct msg {};
 
-      // output interface
-      inline stream & push(ksmsg p) { return *this; } // XXX TODO
+      virtual msg info(const char * file, unsigned int line, const char * func,const char * clazz) = 0;
+      virtual msg error(const char * file, unsigned int line, const char * func,const char * clazz) = 0;
+      virtual msg trace(const char * file, unsigned int line, const char * func,const char * clazz) = 0;
+      virtual msg scoped(const char * file, unsigned int line, const char * func,const char * clazz) = 0;
 
-      // initialize
-      file_logger(const char * file_name);  // XXX TODO
-      virtual ~file_logger() {}  // XXX TODO
-
-      // -- ignored:
+    public: // -- ignored:
       // input interface
       inline bool pop(ksmsg & p) { return false; }
       inline size_t poll(size_t sz, uint32_t & timeout_ms) { return 0; }
-
-      // -- ignored:
       // events
       inline stream & set_event_cb(event & ev) { return *this; }
-
-      // -- ignored:
       // packet frame
       inline stream & start() { return *this; }
       inline stream & end()   { return *this; }
       inline stream & flush() { return *this; }
-
-    private:
-      file_logger() = delete;
-      file_logger(const file_logger&) = delete;
-      file_logger & operator=(const file_logger&) = delete;
-      str     file_name_;
-      FILE *  fp_;
     };
 
     class logger
@@ -93,9 +75,35 @@ namespace csl
 // --- trace        : cumulate+log when needed
 // --- scoped       : enter / leave : only trace
 
-// INFO(val + val + val);
-// ERROR(val + val + val);
-// TRACE(val + val + val);
-// SCOPED(val + val + val + val);
+// INFO(val << val << val);
+// ERROR(val << val << val);
+// TRACE(val << val << val);
+// SCOPED(val << val << val << val);
+
+#ifdef CSL_INFO_ENABLED
+#define CSL_INFO( EXPR ) logger::get().info(__FILE__,__LINE__,__func__,class_name()) << EXPR;
+#else // !CSL_INFO_ENABLED
+#define CSL_INFO( EXPR )
+#endif
+
+#ifdef CSL_ERROR_ENABLED
+#define CSL_ERROR( EXPR ) logger::get().error(__FILE__,__LINE__,__func__,class_name()) << EXPR;
+#else // !CSL_ERROR_ENABLED
+#define CSL_ERROR( EXPR )
+#endif
+
+#ifdef CSL_TRACE_ENABLED
+#define CSL_TRACE( EXPR ) logger::get().trace(__FILE__,__LINE__,__func__,class_name()) << EXPR;
+#else // !CSL_TRACE_ENABLED
+#define CSL_TRACE( EXPR )
+#endif
+
+#ifdef CSL_SCOPED_TRACE_ENABLED
+#define CSL_SCOPED( EXPR ) \
+  logger_base::msg __func__##__LINE__(logger::get().scoped(__FILE__,__LINE__,__func__,class_name())); \
+  __func__##__LINE__ << EXPR;
+#else // !CSL_SCOPED+TRACE_ENABLED
+#define CSL_SCOPED( EXPR )
+#endif
 
 #endif /*_csl_common_logger_hh_included_*/

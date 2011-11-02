@@ -144,6 +144,7 @@ namespace csl
           scoped_lock lck(lock_);
           if( sock_.get() == -1 )
           {
+            // XXX ???
             CSL_THROW(not_started);
           }
         }
@@ -160,6 +161,7 @@ namespace csl
           int err = ::select(sock_.get()+1,&rfds,NULL,NULL,&tv);
           if( err == -1 )
           {
+            // XXX ???
             CSL_THROW( select_failed );
           }
           else if (err)
@@ -193,7 +195,6 @@ namespace csl
                 (*handler_)(m,incoming_addr,sock_.get());
                 suspend_interval_ = 0;
               }
-              // only catch meaningful
               catch(const msghandler::stop & e)
               {
                 stop_me_ = true;
@@ -201,8 +202,13 @@ namespace csl
               catch(const msghandler::suspend & e)
               {
                 suspend_interval_ += 100;
-                // wait here XXX TODO
+                SleepMiliseconds(suspend_interval_);
               }
+            }
+            else if( recvd < 0 )
+            {
+              // XXX ???
+              CSL_THROW( recvfrom_failed );
             }
           }
         }

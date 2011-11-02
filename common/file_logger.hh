@@ -23,23 +23,36 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
+#ifndef _csl_common_file_logger_hh_included_
+#define _csl_common_file_logger_hh_included_
 #include "codesloop/common/logger.hh"
-#include "codesloop/common/common.h"
-#include "codesloop/common/test_timer.h"
+#include "codesloop/common/str.hh"
 
-using namespace csl::common;
-
-namespace test_logger
+namespace csl
 {
+  namespace common
+  {
+    class file_logger : public logger_base
+    {
+    public:
+      CSL_CLASS( csl::common::file_logger );
+      CSL_DECLARE_EXCEPTION( cannot_open );
 
+      // output interface
+      inline stream & push(ksmsg p) { return *this; } // XXX TODO
+
+      // initialize
+      file_logger(const char * file_name);  // XXX TODO
+      virtual ~file_logger() {}  // XXX TODO
+
+    private:
+      file_logger() = delete;
+      file_logger(const file_logger&) = delete;
+      file_logger & operator=(const file_logger&) = delete;
+      str     file_name_;
+      FILE *  fp_;
+    };
+  }
 }
 
-using namespace test_logger;
-
-int main()
-{
-  return 0;
-}
-
-// EOF
+#endif /*_csl_common_file_logger_hh_included_*/

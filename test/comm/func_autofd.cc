@@ -23,22 +23,60 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifdef CSL_DEBUG
+#define CSL_DEBUG_ENABLE_INDENT
+#define CSL_DEBUG_VERBOSE
+#endif /* CSL_DEBUG */
 
-#include "codesloop/common/logger.hh"
-#include "codesloop/common/common.h"
-#include "codesloop/common/test_timer.h"
+#include "codesloop/comm/autofd.hh"
+#include <assert.h>
+#include <string.h>
+#include <algorithm>
 
-using namespace csl::common;
+using csl::comm::autofd;
 
-namespace test_logger
+namespace test_autofd
 {
+  void copyop()
+  {
+    autofd a(2121);
+    autofd b;
+    b = std::move(a);
+    assert( a.get() == -1 );
+    assert( b.get() == 2121 );
+    b = -1;
+  }
 
-}
+  void copyconstr()
+  {
+    autofd a(2121);
+    autofd b(std::move(a));
+    assert( a.get() == -1 );
+    assert( b.get() == 2121 );
+    b = -1;
+  }
 
-using namespace test_logger;
+  void pass(autofd a)
+  {
+    assert( a.get() == 2121 );
+  }
+
+  void passbyval()
+  {
+    autofd a(2121);
+    pass(std::move(a));
+    assert( a.get() == -1 );
+  }
+
+} // end of test_autofd
+
+using namespace test_autofd;
 
 int main()
 {
+  copyop();
+  copyconstr();
+  passbyval();
   return 0;
 }
 

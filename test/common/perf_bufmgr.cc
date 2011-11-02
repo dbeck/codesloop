@@ -43,11 +43,11 @@ namespace test_bufmgr
   void cbaseline() { cbaseline1(malloc(4096)); }
 
   void bsitem1(bufmgr::item i) {}
-  void bsitem2(bufmgr::item i) { bsitem1(i); }
+  void bsitem2(bufmgr::item i) { bsitem1(std::move(i)); }
   void bsitem() { static bufmgr b; bsitem2(b.alloc()); }
 
-  void bsitem3(bufmgr::item i) { bsitem2(i); }
-  void bsitem4(bufmgr::item i) { bsitem3(i); }
+  void bsitem3(bufmgr::item i) { bsitem2(std::move(i)); }
+  void bsitem4(bufmgr::item i) { bsitem3(std::move(i)); }
   void bsitemb() { static bufmgr b; bsitem4(b.alloc()); }
 
   void ksitem2(ksmsg i)

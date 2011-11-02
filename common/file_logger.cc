@@ -23,23 +23,12 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include "codesloop/common/file_logger.hh"
 
-#include "codesloop/common/logger.hh"
-#include "codesloop/common/common.h"
-#include "codesloop/common/test_timer.h"
-
-using namespace csl::common;
-
-namespace test_logger
+namespace csl
 {
-
+  namespace common
+  {
+    file_logger::file_logger(const char * file_name) : fp_(NULL) {}
+  }
 }
-
-using namespace test_logger;
-
-int main()
-{
-  return 0;
-}
-
-// EOF

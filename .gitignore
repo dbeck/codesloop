@@ -312,3 +312,4 @@ test/common/feas_kspin
 test/comm/feas_udp_listener
 test/common/feas_ksbuf
 test/common/func_ksmsg
+test/comm/func_autofd

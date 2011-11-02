@@ -29,8 +29,6 @@ namespace csl
 {
   namespace common
   {
-    file_logger::file_logger(const char * file_name) : fp_(NULL) {}
-
     logger_base & logger::get()
     {
       if( !inst_ ) { CSL_THROW(not_initialized); }

@@ -151,17 +151,56 @@ namespace csl
           scoped_lock lck(lock_);
           if( sock_.get() == -1 )
           {
+            // XXX ???
             CSL_THROW( not_started );
           }
         }
 
+        fd_set rfds;
+
         while( stop_me_ == false )
         {
           addr incoming_addr;
-          // select
-          // accept
-          // TODO : accept connection here
-          SleepSeconds(1);
+          struct timeval tv = { 1,0 };
+          FD_ZERO(&rfds);
+          FD_SET(sock_.get(),&rfds);
+
+          int err = ::select(sock_.get()+1,&rfds,NULL,NULL,&tv);
+          if( err == -1 )
+          {
+            // XXX ???
+            CSL_THROW( select_failed );
+          }
+          else if (err)
+          {
+            int fdtmp = ::accept(
+                            sock_.get(),
+                            incoming_addr.get(),
+                            &incoming_addr.len());
+
+            if( fdtmp > 0 )
+            {
+              try
+              {
+                (*handler_)(autofd(fdtmp),incoming_addr);
+                suspend_interval_ = 0;
+              }
+              catch(const fdhandler::stop & e)
+              {
+                stop_me_ = true;
+              }
+              catch(const fdhandler::suspend & e)
+              {
+                suspend_interval_ += 100;
+                SleepMiliseconds(suspend_interval_);
+              }
+            }
+            else if( fdtmp < 0 )
+            {
+              // XXX ???
+              CSL_THROW( accept_failed );
+            }
+          }
         }
 
         sock_      = -1;

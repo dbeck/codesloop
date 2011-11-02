@@ -104,6 +104,9 @@ namespace csl
         uint8_t *         data_;
         uint32_t          used_;
         bufmgr *          mgr_;
+
+        inline item & operator=(const item & x) = delete;
+        inline item(const item & x) = delete;
       };
 
       inline item alloc()
