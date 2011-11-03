@@ -23,43 +23,15 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include "codesloop/common/lgr_loc.hh"
 
-#include "codesloop/common/logger.hh"
-#include "codesloop/common/test_timer.h"
-
-using namespace csl::common;
-
-namespace test_logger
+namespace csl
 {
-  const char * class_name() { return "test_logger"; }
-
-  void dummy_loc()
+  namespace common
   {
-    CSL_DEFINE_LOGGER_LOCATION(2);
-  }
-
-  void print_locs()
-  {
-    CSL_DEFINE_LOGGER_LOCATION(1);
-
-    uint32_t nlocs = lgr::locs::instance().nlocs();
-    for( uint32_t i=0;i<nlocs;++i )
+    namespace lgr
     {
-      lgr::loc & l(lgr::locs::instance().get(i));
-      printf("%s:%d %s::%s [level=%d] [id=%d] %s\n",
-          l.file(),l.line(),l.clazz(),l.func(),l.level(),l.locid(),
-          (l.enabled()? "ENABLED":"DISABLED"));
+      locs locs::instance_;
     }
   }
 }
-
-using namespace test_logger;
-
-int main()
-{
-  dummy_loc();
-  print_locs();
-  return 0;
-}
-
-// EOF

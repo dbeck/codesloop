@@ -27,6 +27,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _csl_common_logger_hh_included_
 #include "codesloop/common/str.hh"
 #include "codesloop/common/stream.hh"
+#include "codesloop/common/lgr_loc.hh"
 
 namespace csl
 {
@@ -37,12 +38,14 @@ namespace csl
     public:
       virtual ~logger_base() {}
 
+      enum { info_=1, error_=2, trace_=3, scoped_=4 };
+
       struct msg {};
 
-      virtual msg info(const char * file, unsigned int line, const char * func,const char * clazz) = 0;
-      virtual msg error(const char * file, unsigned int line, const char * func,const char * clazz) = 0;
-      virtual msg trace(const char * file, unsigned int line, const char * func,const char * clazz) = 0;
-      virtual msg scoped(const char * file, unsigned int line, const char * func,const char * clazz) = 0;
+      virtual msg info(lgr::loc & where) = 0;
+      virtual msg error(lgr::loc & where) = 0;
+      virtual msg trace(lgr::loc & where) = 0;
+      virtual msg scoped(lgr::loc & where) = 0;
 
     public: // -- ignored:
       // input interface
@@ -81,27 +84,47 @@ namespace csl
 // SCOPED(val << val << val << val);
 
 #ifdef CSL_INFO_ENABLED
-#define CSL_INFO( EXPR ) logger::get().info(__FILE__,__LINE__,__func__,class_name()) << EXPR;
+#define CSL_INFO( EXPR ) \
+  do { \
+    lgr::loc * __loc_ptr__ = 0; \
+    CSL_DEFINE_LOGGER_LOCATION_PTR( csl::common::logger_base::info_, __loc_ptr__ ); \
+    if( __loc_ptr__->enabled() ) \
+      logger::get().info(*__loc_ptr_) << EXPR; \
+  } while(0)
 #else // !CSL_INFO_ENABLED
 #define CSL_INFO( EXPR )
 #endif
 
 #ifdef CSL_ERROR_ENABLED
-#define CSL_ERROR( EXPR ) logger::get().error(__FILE__,__LINE__,__func__,class_name()) << EXPR;
+#define CSL_ERROR( EXPR ) \
+    do { \
+      lgr::loc * __loc_ptr__ = 0; \
+      CSL_DEFINE_LOGGER_LOCATION_PTR( csl::common::logger_base::error_, __loc_ptr__ ); \
+      if( __loc_ptr__->enabled() ) \
+        logger::get().error(*__loc_ptr_) << EXPR; \
+    } while(0)
 #else // !CSL_ERROR_ENABLED
 #define CSL_ERROR( EXPR )
 #endif
 
 #ifdef CSL_TRACE_ENABLED
-#define CSL_TRACE( EXPR ) logger::get().trace(__FILE__,__LINE__,__func__,class_name()) << EXPR;
+#define CSL_TRACE( EXPR ) \
+    do { \
+      lgr::loc * __loc_ptr__ = 0; \
+      CSL_DEFINE_LOGGER_LOCATION_PTR( csl::common::logger_base::trace_, __loc_ptr__ ); \
+      if( __loc_ptr__->enabled() ) \
+        logger::get().trace(*__loc_ptr_) << EXPR; \
+    } while(0)
 #else // !CSL_TRACE_ENABLED
 #define CSL_TRACE( EXPR )
 #endif
 
 #ifdef CSL_SCOPED_TRACE_ENABLED
 #define CSL_SCOPED( EXPR ) \
-  logger_base::msg __func__##__LINE__(logger::get().scoped(__FILE__,__LINE__,__func__,class_name())); \
-  __func__##__LINE__ << EXPR;
+  lgr::loc * __scoped_loc_ptr__ = 0; \
+  CSL_DEFINE_LOGGER_LOCATION_PTR( csl::common::logger_base::scoped_, __loc_ptr__ ); \
+  logger_base::msg __scoped_logger__(logger::get().scoped(*__scoped_loc_ptr__)); \
+  __scoped_logger__ << EXPR;
 #else // !CSL_SCOPED+TRACE_ENABLED
 #define CSL_SCOPED( EXPR )
 #endif
