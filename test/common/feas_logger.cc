@@ -23,9 +23,14 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef CSL_INFO_ENABLED
+#define CSL_INFO_ENABLED 1
+#endif // CSL_INFO_ENABLED
 
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/test_timer.h"
+#include "codesloop/common/allocator.hh"
+#include <vector>
 
 using namespace csl::common;
 
@@ -33,9 +38,43 @@ namespace test_logger
 {
   const char * class_name() { return "test_logger"; }
 
-  void dummy_loc()
+  void loc_baseline()
   {
     CSL_DEFINE_LOGGER_LOCATION(2);
+  }
+
+  void info_baseline()
+  {
+    CSL_INFO( "hello" );
+  }
+
+  void msg_baseline()
+  {
+    lgr::loc * p = 0;
+    CSL_DEFINE_LOGGER_LOCATION_PTR(1,p);
+    lgr::msg m(*p);
+  }
+
+  void part_stdvec()
+  {
+    std::vector<lgr::msg::part> pv;
+    pv.reserve(16);
+  }
+
+  void part_stdvec2()
+  {
+    std::vector<lgr::msg::part> pv(16);
+  }
+
+  void part_simpstack()
+  {
+    std::vector< lgr::msg::part, allocator< lgr::msg::part,16,impl::simpstack > > pv(16);
+  }
+
+  void part_simpstack2()
+  {
+    std::vector< lgr::msg::part, allocator< lgr::msg::part,16,impl::simpstack > > pv;
+    pv.reserve(16);
   }
 
   void print_locs()
@@ -51,13 +90,34 @@ namespace test_logger
           (l.enabled()? "ENABLED":"DISABLED"));
     }
   }
+
+  class dummylog : public logger_base
+  {
+  public:
+    CSL_CLASS( csl::common::dummy );
+
+    inline stream & push(ksmsg p) { return *this; }
+    dummylog() {}
+    virtual ~dummylog() {}
+  };
+
 }
 
 using namespace test_logger;
 
 int main()
 {
-  dummy_loc();
+  dummylog l;
+  logger::set(l);
+
+  csl_common_print_results( "loc   baseline", csl_common_test_timer_v0(loc_baseline),"" );
+  csl_common_print_results( "info  baseline", csl_common_test_timer_v0(info_baseline),"" );
+  csl_common_print_results( "msg   baseline", csl_common_test_timer_v0(msg_baseline),"" );
+  csl_common_print_results( "part  stdvec  ", csl_common_test_timer_v0(part_stdvec),"" );
+  csl_common_print_results( "part  stdvec2 ", csl_common_test_timer_v0(part_stdvec2),"" );
+  csl_common_print_results( "part  sstack  ", csl_common_test_timer_v0(part_simpstack),"" );
+  csl_common_print_results( "part  sstack2 ", csl_common_test_timer_v0(part_simpstack2),"" );
+
   print_locs();
   return 0;
 }

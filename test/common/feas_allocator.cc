@@ -23,11 +23,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifdef CSL_DEBUG
-#define CSL_DEBUG_ENABLE_INDENT
-#define CSL_DEBUG_VERBOSE
-#endif /* CSL_DEBUG */
-
 #include "codesloop/common/common.h"
 #include "codesloop/common/test_timer.h"
 #include "codesloop/common/allocator.hh"
@@ -95,6 +90,11 @@ namespace test_allocator
   void vector_1024_1024() { std::vector<int> v; test(v,1024,1024); }
   void vector_1_1024()    { std::vector<int> v; test(v,1,1024);    }
 
+  void vector2_16_128()    { std::vector<int> v(16);   test(v,16,128);    }
+  void vector2_256_512()   { std::vector<int> v(256);  test(v,256,512);   }
+  void vector2_1024_1024() { std::vector<int> v(1024); test(v,1024,1024); }
+  void vector2_1_1024()    { std::vector<int> v(1024); test(v,1,1024);    }
+
   void baseline_stdc()      { std::vector<int, allocator<int,1> > v;                   }
   void baseline_16_stdc()   { std::vector<int, allocator<int,16> > v; v.reserve(16);   }
   void baseline_256_stdc()  { std::vector<int, allocator<int,256> > v; v.reserve(256); }
@@ -154,21 +154,25 @@ int main()
   csl_common_print_results( "256_simstack  bsline ", csl_common_test_timer_v0(baseline_256_simpstack),"" );
 
   csl_common_print_results( "vector        1:1024 ", csl_common_test_timer_v0(vector_1_1024),"" );
+  csl_common_print_results( "vector 2      1:1024 ", csl_common_test_timer_v0(vector2_1_1024),"" );
   csl_common_print_results( "stdc          1:1204 ", csl_common_test_timer_v0(stdc_1_1024),"" );
   csl_common_print_results( "simstack      1:1024 ", csl_common_test_timer_v0(simpstack_1_1024),"" );
   csl_common_print_results( "stpodary      1:1024 ", csl_common_test_timer_v0(stpodary_1_1024),"" );
 
   csl_common_print_results( "vector     1024:1024 ", csl_common_test_timer_v0(vector_1024_1024),"" );
+  csl_common_print_results( "vector 2   1024:1024 ", csl_common_test_timer_v0(vector2_1024_1024),"" );
   csl_common_print_results( "stdc       1024:1024 ", csl_common_test_timer_v0(stdc_1024_1024),"" );
   csl_common_print_results( "simstack   1024:1024 ", csl_common_test_timer_v0(simpstack_1024_1024),"" );
   csl_common_print_results( "stpodary   1024:1024 ", csl_common_test_timer_v0(stpodary_1024_1024),"" );
 
   csl_common_print_results( "vector       256:512 ", csl_common_test_timer_v0(vector_256_512),"" );
+  csl_common_print_results( "vector 2     256:512 ", csl_common_test_timer_v0(vector2_256_512),"" );
   csl_common_print_results( "stdc         256:512 ", csl_common_test_timer_v0(stdc_256_512),"" );
   csl_common_print_results( "simstack     256:512 ", csl_common_test_timer_v0(simpstack_256_512),"" );
   csl_common_print_results( "stpodary     256:512 ", csl_common_test_timer_v0(stpodary_256_512),"" );
 
   csl_common_print_results( "vector        16:128 ", csl_common_test_timer_v0(vector_16_128),"" );
+  csl_common_print_results( "vector 2      16:128 ", csl_common_test_timer_v0(vector2_16_128),"" );
   csl_common_print_results( "stdc          16:128 ", csl_common_test_timer_v0(stdc_16_128),"" );
   csl_common_print_results( "stpodary      16:128 ", csl_common_test_timer_v0(stpodary_16_128),"" );
 
