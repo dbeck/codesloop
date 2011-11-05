@@ -86,14 +86,15 @@ namespace csl
             const char * fu,
             const char * cs,
             unsigned int ll,
-            locs & lcs)
+            locs & lcs,
+            uint32_t enab=1)
             :
               file_(fl),
               line_(ln),
               func_(fu),
               clazz_(cs),
               level_(ll),
-              enabled_(1)
+              enabled_(enab)
         {
           locid_ = lcs.reg(*this);
         }
@@ -152,6 +153,21 @@ namespace csl
       PTR = &__logger__location__; \
     } while(0)
 #endif //CSL_DEFINE_LOGGER_LOCATION_PTR
+
+#ifndef CSL_DEFINE_LOGGER_LOCATION_PTR_INIT
+#define CSL_DEFINE_LOGGER_LOCATION_PTR_INIT(LEVEL,PTR,INIT) \
+    do { \
+      static csl::common::lgr::loc __logger__location__(\
+          __FILE__,\
+          __LINE__,\
+          __func__,\
+          class_name(),\
+          LEVEL,\
+          csl::common::lgr::locs::instance(),\
+          INIT); \
+      PTR = &__logger__location__; \
+    } while(0)
+#endif //CSL_DEFINE_LOGGER_LOCATION_PTR_INIT
 
 
 #endif /*_csl_common_lgr_loc_hh_included_*/

@@ -26,6 +26,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_lgr_stderr_logger_hh_included_
 #define _csl_common_lgr_stderr_logger_hh_included_
 
+#include "codesloop/common/logger.hh"
+
 namespace csl
 {
   namespace common
@@ -36,7 +38,7 @@ namespace csl
       {
       public:
         CSL_CLASS( csl::common::lgr::stderr_logger );
-        inline stream & push(ksmsg p) { return *this; }
+        stream & push(ksmsg p);
         stderr_logger() : logger_base() {}
         virtual ~stderr_logger() {}
       };

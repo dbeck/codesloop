@@ -86,6 +86,12 @@ namespace csl
 #define CSL_CHECK_LOCATION_ENABLED_VALUE(PTR) (true)
 #endif // CSL_LOGGER_LOCATION_SETTING_ENABLED
 
+#ifdef CSL_SET_TRACE_DISABLED_BY_DEFAULT
+#define CSL_TRACE_INIT_FLAG 0
+#else // CSL_SET_TRACE_DISABLED_BY_DEFAULT
+#define CSL_TRACE_INIT_FLAG 1
+#endif // CSL_SET_TRACE_DISABLED_BY_DEFAULT
+
 #ifndef CSL_LOGGER_COMMON_
 #define CSL_LOGGER_COMMON_( LEVEL, EXPR ) \
   do { \
@@ -117,7 +123,10 @@ namespace csl
 #ifdef CSL_SCOPED_TRACE_ENABLED
 #define CSL_SCOPED( EXPR ) \
   lgr::loc * __scoped_loc_ptr__ = 0; \
-  CSL_DEFINE_LOGGER_LOCATION_PTR( csl::common::logger_base::scoped_, __scoped_loc_ptr__ ); \
+  CSL_DEFINE_LOGGER_LOCATION_PTR_INIT( \
+      csl::common::logger_base::scoped_, \
+      __scoped_loc_ptr__, \
+      CSL_TRACE_INIT_FLAG ); \
   bool __scoped_loc_enabled_here__ = CSL_CHECK_LOCATION_ENABLED_VALUE( __scoped_loc_ptr__ ); \
   csl::common::lgr::msg __scoped_logger_msg__( \
       CSL_CHECK_LOCATION_SWITCH( \
