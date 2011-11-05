@@ -46,6 +46,8 @@ namespace csl
         inline size_t len()          { return buf_size_; }
         inline uint32_t id()         { return id_; }
         inline kspin_lock get_lock() { return kspin_lock(*spin_,id_); }
+        inline void clear()          { spin_ = 0; id_ = -1; buf_ = 0; }
+        inline bool is_valid() const { return (spin_ != 0 && buf_ != 0); }
       };
 
       static const uint32_t buf_size_=BUF_SIZE;

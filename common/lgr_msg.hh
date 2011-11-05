@@ -26,63 +26,99 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _csl_common_lgr_msg_hh_included_
 #define _csl_common_lgr_msg_hh_included_
 #include "codesloop/common/lgr_loc.hh"
-#include "codesloop/common/allocator.hh"
-#include "codesloop/common/stpodary.hh"
+#include "codesloop/common/ksbuf.hh"
 #include <vector>
+
+#ifndef CSL_LOGGER_MAX_LOG_LENGTH
+#define CSL_LOGGER_MAX_LOG_LENGTH 2048
+#endif // CSL_LOGGER_MAX_LOG_LENGTH
+
+#ifndef CSL_LOGGER_MAX_MESSAGE_COUNT // in memory
+#define CSL_LOGGER_MAX_MESSAGE_COUNT 4096
+#endif // CSL_LOGGER_MAX_MESSAGE_COUNT
 
 namespace csl
 {
   namespace common
   {
+    class logger_base;
+
     namespace lgr // logger helpers
     {
+      struct tag {};
+      struct name {};
+      struct end_of_record {};
+      struct return_from_function {};
+      struct max_value {};
+      struct disabled_log {};
+
+      template <typename T> struct type_select             { };
+      template <> struct type_select<bool>                 { enum { val_ =  1 }; static const unsigned char sel_; };
+      template <> struct type_select<int8_t>               { enum { val_ =  2 }; static const unsigned char sel_; };
+      template <> struct type_select<int16_t>              { enum { val_ =  3 }; static const unsigned char sel_; };
+      template <> struct type_select<int32_t>              { enum { val_ =  4 }; static const unsigned char sel_; };
+      template <> struct type_select<int64_t>              { enum { val_ =  5 }; static const unsigned char sel_; };
+      template <> struct type_select<uint8_t>              { enum { val_ =  6 }; static const unsigned char sel_; };
+      template <> struct type_select<uint16_t>             { enum { val_ =  7 }; static const unsigned char sel_; };
+      template <> struct type_select<uint32_t>             { enum { val_ =  8 }; static const unsigned char sel_; };
+      template <> struct type_select<uint64_t>             { enum { val_ =  9 }; static const unsigned char sel_; };
+      template <> struct type_select<float>                { enum { val_ = 10 }; static const unsigned char sel_; };
+      template <> struct type_select<double>               { enum { val_ = 11 }; static const unsigned char sel_; };
+      template <> struct type_select<tag>                  { enum { val_ = 12 }; static const unsigned char sel_; };
+      template <> struct type_select<name>                 { enum { val_ = 13 }; static const unsigned char sel_; };
+      template <> struct type_select<end_of_record>        { enum { val_ = 14 }; static const unsigned char sel_; };
+      template <> struct type_select<return_from_function> { enum { val_ = 15 }; static const unsigned char sel_; };
+      template <> struct type_select<const char *>         { enum { val_ = 16 }; static const unsigned char sel_; };
+      template <> struct type_select<const wchar_t *>      { enum { val_ = 17 }; static const unsigned char sel_; };
+      // keep this up to date:
+      template <> struct type_select<max_value>            { enum { val_ = 17 }; static const unsigned char sel_; };
+
       class msg
       {
       public:
         CSL_CLASS( csl::common::lgr::msg );
 
-        struct part
-        {
-          enum {
-            tag_,       wtag_,
-            name_,      wname_,
-            string_,    wstring_,
-            int32_,     uint32_,
-            int64_,     uint64_,
-            date_,      datetime_,      datetimems_,
-            idate_,     idatetime_,     idatetimems_,
-            double_
-          };
+        typedef csl::common::ksbuf<CSL_LOGGER_MAX_MESSAGE_COUNT, CSL_LOGGER_MAX_LOG_LENGTH> buffer_t;
+        typedef buffer_t::result msgdata_t;
 
-          char type_;
-          union {
-            uint32_t str_ref_;
-            int32_t  int32_data_;
-            uint32_t uint32_data_;
-            int64_t  int64_data_;
-            uint64_t uint64_data_;
-            double   double_data_;
-          };
-        };
+        msg(lgr::loc &, logger_base &);
+        inline msg(lgr::loc &, logger_base &, const disabled_log &) : loc_(0), logger_(0) {}
+        ~msg();
 
-        enum { preallocated_parts_=16,
-               preallocated_buffer_=256 };
+        msg & operator<<(const char *);
+        inline msg & operator<<(const tag &)  { append<unsigned char>(type_select<tag>::sel_);  return *this; }
+        inline msg & operator<<(const name &) { append<unsigned char>(type_select<name>::sel_); return *this; }
+        inline msg & operator<<(const end_of_record &)
+        { append<unsigned char>(type_select<end_of_record>::sel_); flush(); eor_seen_ = true; return *this; }
 
-        typedef csl::common::allocator< part,
-                                        preallocated_parts_,
-                                        csl::common::impl::simpstack >  allocator_t;
-        typedef std::vector< part, allocator_t >                        partvec_t;
-        typedef csl::common::stpodary<char, preallocated_buffer_>       buffer_t;
-        typedef csl::common::stpodary<wchar_t, preallocated_buffer_>    wbuffer_t;
-
-        msg(lgr::loc & l) : loc_(&l) {}
-
-        template <typename T> msg & operator<<(const T &) { return *this; }
       private:
+        inline msg & operator<<(const return_from_function &)
+        { append<unsigned char>(type_select<return_from_function>::sel_); flush(); return *this; }
+
+      public:
+        // catch all: treat them as integral types
+        template <typename T> inline msg & operator<<(const T & v)
+        {
+          append(type_select<T>::sel_,&v,sizeof(T));
+          return *this;
+        }
+
+      private:
+        // internal functions
+        void flush();
+        void append(const void * data, size_t len);
+
+        template<typename T>
+        inline void append(const T & t) { append(&t,sizeof(T)); }
+
+        inline void append(unsigned char typ,const void * data, size_t len)
+        { append<unsigned char>(typ); append(data,len); }
+
         lgr::loc *      loc_;
-        partvec_t       parts_;
-        buffer_t        buffer_;
-        wbuffer_t       wbuffer_;
+        logger_base *   logger_;
+        msgdata_t       data_;
+        size_t          used_;
+        bool            eor_seen_;
       };
     }
   }

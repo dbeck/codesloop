@@ -23,12 +23,31 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "codesloop/common/file_logger.hh"
+#ifndef _csl_common_lgr_silent_logger_hh_included_
+#define _csl_common_lgr_silent_logger_hh_included_
+
+#include "codesloop/common/logger.hh"
 
 namespace csl
 {
   namespace common
   {
-    file_logger::file_logger(const char * file_name) : logger_base(), fp_(NULL) {}
+    namespace lgr
+    {
+      class silent_logger : public logger_base
+      {
+      public:
+        CSL_CLASS( csl::common::lgr::silent_logger );
+        inline stream & push(ksmsg p) { return *this; }
+        silent_logger() : logger_base() {}
+        virtual ~silent_logger() {}
+
+        inline static silent_logger & instance() { return instance_; }
+      private:
+        static silent_logger instance_;
+      };
+    }
   }
 }
+
+#endif /* _csl_common_lgr_silent_logger_hh_included_ */

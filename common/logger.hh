@@ -25,10 +25,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _csl_common_logger_hh_included_
 #define _csl_common_logger_hh_included_
-#include "codesloop/common/str.hh"
 #include "codesloop/common/stream.hh"
 #include "codesloop/common/lgr_loc.hh"
 #include "codesloop/common/lgr_msg.hh"
+#include <memory>
 
 namespace csl
 {
@@ -41,7 +41,10 @@ namespace csl
 
       enum { info_=1, error_=2, trace_=3, scoped_=4 };
 
-      virtual lgr::msg construct_msg(lgr::loc & l) { return lgr::msg(l); }
+      inline logger_base() : buffer_(new lgr::msg::buffer_t) {}
+      inline lgr::msg construct_msg(lgr::loc & l) { return lgr::msg(l,*this); }
+      inline lgr::msg construct_disabled_msg(lgr::loc & l) { return lgr::msg(l,*this,lgr::disabled_log()); }
+      inline lgr::msg::msgdata_t construct_msgdata() { return buffer_->get(); }
 
     public: // -- ignored:
       // input interface
@@ -53,6 +56,9 @@ namespace csl
       inline stream & start() { return *this; }
       inline stream & end()   { return *this; }
       inline stream & flush() { return *this; }
+
+    private:
+      std::auto_ptr<lgr::msg::buffer_t> buffer_;
     };
 
     class logger
@@ -70,22 +76,23 @@ namespace csl
   }
 }
 
-// --- info/error   : log always
-// --- trace        : cumulate+log when needed
-// --- scoped       : enter / leave : only trace
-
-// INFO(val << val << val);
-// ERROR(val << val << val);
-// TRACE(val << val << val);
-// SCOPED(val << val << val << val);
+#ifdef CSL_LOGGER_LOCATION_SETTING_ENABLED
+#define CSL_CHECK_LOCATION_ENABLED(PTR) if( (PTR)->enabled() )
+#define CSL_CHECK_LOCATION_SWITCH(ENABLED,IF_TRUE,IF_FALSE) ( ENABLED ? (IF_TRUE) : (IF_FALSE) )
+#define CSL_CHECK_LOCATION_ENABLED_VALUE(PTR) ((PTR)->enabled())
+#else // CSL_LOGGER_LOCATION_SETTING
+#define CSL_CHECK_LOCATION_ENABLED(PTR)
+#define CSL_CHECK_LOCATION_SWITCH(ENABLED,IF_TRUE,IF_FALSE) (IF_TRUE)
+#define CSL_CHECK_LOCATION_ENABLED_VALUE(PTR) (true)
+#endif // CSL_LOGGER_LOCATION_SETTING_ENABLED
 
 #ifndef CSL_LOGGER_COMMON_
 #define CSL_LOGGER_COMMON_( LEVEL, EXPR ) \
   do { \
     csl::common::lgr::loc * __loc_ptr__ = 0; \
     CSL_DEFINE_LOGGER_LOCATION_PTR( csl::common::logger_base:: LEVEL, __loc_ptr__ ); \
-    if( __loc_ptr__->enabled() ) \
-      logger::get().construct_msg(*__loc_ptr__) << EXPR; \
+    CSL_CHECK_LOCATION_ENABLED( __loc_ptr__ ) \
+      logger::get().construct_msg(*__loc_ptr__) << EXPR << csl::common::lgr::end_of_record(); \
   } while(0)
 #endif // CSL_LOGGER_COMMON_
 
@@ -110,10 +117,16 @@ namespace csl
 #ifdef CSL_SCOPED_TRACE_ENABLED
 #define CSL_SCOPED( EXPR ) \
   lgr::loc * __scoped_loc_ptr__ = 0; \
-  CSL_DEFINE_LOGGER_LOCATION_PTR( csl::common::logger_base::scoped_, __loc_ptr__ ); \
-  logger_base::msg __scoped_logger__(logger::get().construct_msg(*__scoped_loc_ptr__)); \
-  __scoped_logger__ << EXPR;
-#else // !CSL_SCOPED+TRACE_ENABLED
+  CSL_DEFINE_LOGGER_LOCATION_PTR( csl::common::logger_base::scoped_, __scoped_loc_ptr__ ); \
+  bool __scoped_loc_enabled_here__ = CSL_CHECK_LOCATION_ENABLED_VALUE( __scoped_loc_ptr__ ); \
+  csl::common::lgr::msg __scoped_logger_msg__( \
+      CSL_CHECK_LOCATION_SWITCH( \
+          __scoped_loc_enabled_here__,\
+          logger::get().construct_msg(*__scoped_loc_ptr__),\
+          logger::get().construct_disabled_msg(*__scoped_loc_ptr__))); \
+  if( __scoped_loc_enabled_here__ ) { \
+    __scoped_logger_msg__ << EXPR << csl::common::lgr::end_of_record(); }
+#else // !CSL_SCOPED_TRACE_ENABLED
 #define CSL_SCOPED( EXPR )
 #endif
 

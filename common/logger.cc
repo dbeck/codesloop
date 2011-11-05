@@ -24,6 +24,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "codesloop/common/logger.hh"
+#include "codesloop/common/lgr_silent_logger.hh"
 
 namespace csl
 {
@@ -36,6 +37,11 @@ namespace csl
     }
     void logger::set(logger_base & l) { inst_ = &l; }
 
-    logger_base * logger::inst_ = 0;;
+    namespace lgr
+    {
+      silent_logger silent_logger::instance_;
+    }
+
+    logger_base * logger::inst_ = &(lgr::silent_logger::instance());
   }
 }

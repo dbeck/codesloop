@@ -182,12 +182,13 @@ namespace csl
             // problems
             if( recvd > 0 )
             {
-              common::ksmsg::buf b;
-              b.buf_ = buf.buf_;
               // being defensive: buffer cannot be larger than buf_size_
-              b.len_ = (static_cast<size_t>(recvd) & (buffer_t::buf_mask_));
               // create the message
-              common::ksmsg m(b,buf.get_lock());
+              common::ksmsg m(
+                  common::ksmsg::buf(
+                      buf.buf_,
+                      (static_cast<size_t>(recvd) & (buffer_t::buf_mask_))),
+                  buf.get_lock());
 
               try
               {
