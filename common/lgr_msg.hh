@@ -49,6 +49,11 @@ namespace csl
       struct name {};
       struct end_of_record {};
       struct return_from_function {};
+      struct when {};
+      struct threadid {};
+      struct procid {};
+      struct hostid {};
+      struct seqno {};
       struct max_value {};
       struct disabled_log {};
 
@@ -68,10 +73,15 @@ namespace csl
       template <> struct type_select<name>                 { enum { val_ = 13 }; static const unsigned char sel_; };
       template <> struct type_select<end_of_record>        { enum { val_ = 14 }; static const unsigned char sel_; };
       template <> struct type_select<return_from_function> { enum { val_ = 15 }; static const unsigned char sel_; };
-      template <> struct type_select<const char *>         { enum { val_ = 16 }; static const unsigned char sel_; };
-      template <> struct type_select<const wchar_t *>      { enum { val_ = 17 }; static const unsigned char sel_; };
+      template <> struct type_select<when>                 { enum { val_ = 16 }; static const unsigned char sel_; };
+      template <> struct type_select<threadid>             { enum { val_ = 17 }; static const unsigned char sel_; };
+      template <> struct type_select<procid>               { enum { val_ = 18 }; static const unsigned char sel_; };
+      template <> struct type_select<hostid>               { enum { val_ = 19 }; static const unsigned char sel_; };
+      template <> struct type_select<seqno>                { enum { val_ = 20 }; static const unsigned char sel_; };
+      template <> struct type_select<const char *>         { enum { val_ = 21 }; static const unsigned char sel_; };
+      template <> struct type_select<const wchar_t *>      { enum { val_ = 22 }; static const unsigned char sel_; };
       // keep this up to date:
-      template <> struct type_select<max_value>            { enum { val_ = 17 }; static const unsigned char sel_; };
+      template <> struct type_select<max_value>            { enum { val_ = 22 }; static const unsigned char sel_; };
 
       class msg
       {

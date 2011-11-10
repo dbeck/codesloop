@@ -53,7 +53,14 @@ ADD_LIBRARY( csl_common STATIC
     lgr_msg.cc lgr_msg.hh
     lgr_silent_logger.hh
     lgr_stderr_logger.cc lgr_stderr_logger.hh
+    lgr_ksmsg_to_str.cc
 		)
+
+ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/lgr_ksmsg_to_str.cc
+                  PRE_BUILD
+                  COMMAND ragel -G2 ARGS -o lgr_ksmsg_to_str.cc lgr_ksmsg_to_str.rl
+                  MAIN_DEPENDENCY lgr_ksmsg_to_str.rl
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
 FILE(GLOB includes "${CMAKE_CURRENT_SOURCE_DIR}/*.h*")
 INSTALL( FILES ${includes} DESTINATION include/codesloop/common ) 

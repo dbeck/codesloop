@@ -43,6 +43,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/test_timer.h"
 #include <string>
+#include <iosfwd>
+#include <sstream>
 
 using namespace csl::common;
 
@@ -65,6 +67,19 @@ namespace test_logger
     int32_t i(123);
     double d(678.123);
     CSL_INFO( "integer value: " << i << " double xxx:" << d << " hello world" );
+  }
+
+  void strstr_baseline()
+  {
+    std::ostringstream s;
+  }
+
+  void strstr_multi()
+  {
+    std::ostringstream s;
+    int32_t i(123);
+    double d(678.123);
+    s << "integer value: " << i << " double xxx:" << d << " hello world";
   }
 
   void scoped_baseline()
@@ -239,6 +254,8 @@ int main()
   logger::set(l);
 
   csl_common_print_results( "loc     baseline", csl_common_test_timer_v0(loc_baseline),"" );
+  csl_common_print_results( "strstr  baseline", csl_common_test_timer_v0(strstr_baseline),"" );
+  csl_common_print_results( "strstr     multi", csl_common_test_timer_v0(strstr_multi),"" );
   csl_common_print_results( "info    baseline", csl_common_test_timer_v0(info_baseline),"" );
   csl_common_print_results( "info       multi", csl_common_test_timer_v0(info_multi),"" );
   csl_common_print_results( "scoped  baseline", csl_common_test_timer_v0(scoped_baseline),"" );

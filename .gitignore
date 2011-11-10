@@ -314,3 +314,4 @@ test/common/feas_ksbuf
 test/common/func_ksmsg
 test/comm/func_autofd
 .settings
+common/lgr_ksmsg_to_str.cc

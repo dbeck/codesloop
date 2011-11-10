@@ -113,6 +113,11 @@ namespace csl
       CSL_DECLARE_LGR_TYPE_SELECT_SEL(return_from_function);
       CSL_DECLARE_LGR_TYPE_SELECT_SEL(const char *);
       CSL_DECLARE_LGR_TYPE_SELECT_SEL(const wchar_t *);
+      CSL_DECLARE_LGR_TYPE_SELECT_SEL(when);
+      CSL_DECLARE_LGR_TYPE_SELECT_SEL(threadid);
+      CSL_DECLARE_LGR_TYPE_SELECT_SEL(procid);
+      CSL_DECLARE_LGR_TYPE_SELECT_SEL(hostid);
+      CSL_DECLARE_LGR_TYPE_SELECT_SEL(seqno);
       CSL_DECLARE_LGR_TYPE_SELECT_SEL(max_value);
     }
   }
