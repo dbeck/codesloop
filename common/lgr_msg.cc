@@ -25,6 +25,102 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "codesloop/common/lgr_msg.hh"
 #include "codesloop/common/logger.hh"
+#include "codesloop/common/strlength.hh"
+#include "codesloop/common/str.hh"
+#include "codesloop/common/stpodary.hh"
+
+namespace
+{
+  using csl::common::trailing_zero;
+  using csl::common::strconcat;
+  using csl::common::strlength;
+  using csl::common::lgr::loc;
+  using csl::common::lgr::locs;
+
+  typedef csl::common::stpodary<wchar_t,2048> result_t;
+
+  void strip_trailing_zero( result_t & res )
+  {
+    if( res.size() > 0 && trailing_zero<result_t>::check(res) )
+    {
+      res.allocate( res.size()-1 );
+    }
+  }
+
+  void conv_data( result_t & res, bool val )
+  {
+    if( val ) res.append( L"true", 4 );
+    else      res.append( L"false", 5 );
+  }
+
+  void conv_data( result_t & res, int64_t val )
+  {
+    wchar_t tmp[28];
+    int len = swprintf(tmp,27, L"%lld",val );
+    if( len != -1 ) res.append( tmp,len );
+  }
+
+  void conv_data( result_t & res, double val )
+  {
+    wchar_t tmp[28];
+    int len = swprintf(tmp,27, L"%.6f",val );
+    if( len != -1 ) res.append( tmp,len );
+  }
+
+  void conv_data( result_t & res, const char * s, size_t len )
+  {
+    trailing_zero<result_t>::ensure(res);
+    strconcat<result_t>::execute(res,s,len);
+    strip_trailing_zero( res );
+  }
+
+  void conv_data( result_t & res, const char * s )
+  {
+    trailing_zero<result_t>::ensure(res);
+    strconcat<result_t>::execute(res,s);
+    strip_trailing_zero( res );
+  }
+
+  void conv_data( result_t & res, const wchar_t * s, size_t len )
+  {
+    trailing_zero<result_t>::ensure(res);
+    strconcat<result_t>::execute(res,s,len);
+    strip_trailing_zero( res );
+  }
+
+  void conv_data( result_t & res, const wchar_t * s )
+  {
+    trailing_zero<result_t>::ensure(res);
+    strconcat<result_t>::execute(res,s);
+    strip_trailing_zero( res );
+  }
+
+  void conv_locid( result_t & res, unsigned int locid )
+  {
+    loc & l(locs::instance().get(locid));
+    conv_data(res,l.file());
+    conv_data(res,":");
+    conv_data(res,static_cast<int64_t>(l.line()));
+    conv_data(res," ");
+    conv_data(res,l.clazz());
+    conv_data(res,"::");
+    conv_data(res,l.func());
+
+    //conv_data(res,l.line());
+    //inline unsigned int level() const { return level_; }
+  }
+
+  template <typename T> void get_data( const void * ptr, size_t max, T & val, size_t & pos )
+  {
+    size_t needed = sizeof(T);
+    if( pos + needed <= max )
+    {
+      ::memcpy( &val, ptr, needed );
+      pos += needed;
+    }
+  }
+
+}
 
 namespace csl
 {
@@ -84,10 +180,36 @@ namespace csl
         // append type
         append<unsigned char>(type_select<const char *>::sel_);
         // append length
-        unsigned short sz = static_cast<unsigned short>(::strlen(str));
+        unsigned short sz = static_cast<unsigned short>(strlength<char>::execute(str));
         append<unsigned short>(sz);
         // append data
         if( sz > 0 ) append(str,sz);
+        return *this;
+      }
+
+      msg & msg::operator<<(const wchar_t * str)
+      {
+        CSL_REQUIRE( str != NULL );
+        // append type
+        append<unsigned char>(type_select<const wchar_t *>::sel_);
+        // append length
+        unsigned short sz = static_cast<unsigned short>(sizeof(wchar_t)*(strlength<wchar_t>::execute(str)));
+        append<unsigned short>(sz);
+        // append data
+        if( sz > 0 ) append(str,sz);
+        return *this;
+      }
+
+      msg & msg::operator<<(const csl::common::str & s)
+      {
+        CSL_REQUIRE( !s.empty() );
+        // append type
+        append<unsigned char>(type_select<const wchar_t *>::sel_);
+        // append length
+        unsigned short sz = static_cast<unsigned short>(sizeof(wchar_t)*s.size());
+        append<unsigned short>(sz);
+        // append data
+        if( sz > 0 ) append(s.c_str(),sz);
         return *this;
       }
 
@@ -119,6 +241,18 @@ namespace csl
       CSL_DECLARE_LGR_TYPE_SELECT_SEL(hostid);
       CSL_DECLARE_LGR_TYPE_SELECT_SEL(seqno);
       CSL_DECLARE_LGR_TYPE_SELECT_SEL(max_value);
+
+      void msg::to_str(const uint8_t * encoded, size_t len, str & result)
+      {
+        result_t res;
+        size_t pos = 0;
+        unsigned int locid = 0;
+        get_data<unsigned int>(encoded,len,locid,pos);
+        conv_locid(res,locid);
+        res.append(L'\n');
+        res.append(L'\0');
+        result.assign(res.data(),res.data()+res.size());
+      }
     }
   }
 }

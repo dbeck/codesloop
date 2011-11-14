@@ -42,6 +42,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/common.h"
 #include "codesloop/common/logger.hh"
 #include "codesloop/common/test_timer.h"
+#include "codesloop/common/lgr_stderr_logger.hh"
+#include "codesloop/common/lgr_silent_logger.hh"
 #include <string>
 #include <iosfwd>
 #include <sstream>
@@ -250,8 +252,12 @@ using namespace test_logger;
 
 int main()
 {
-  dummylog l;
-  logger::set(l);
+  lgr::stderr_logger errlog;
+  logger::set(errlog);
+  scoped_multi();
+
+  lgr::silent_logger silent;
+  logger::set(silent);
 
   csl_common_print_results( "loc     baseline", csl_common_test_timer_v0(loc_baseline),"" );
   csl_common_print_results( "strstr  baseline", csl_common_test_timer_v0(strstr_baseline),"" );

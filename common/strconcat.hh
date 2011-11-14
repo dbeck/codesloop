@@ -49,11 +49,10 @@ namespace csl
         typedef wchar_t sibling_t;
 
         template <typename CollectionT>
-        static CollectionT & convert( CollectionT & lhs, const wchar_t * rhs )
+        static CollectionT & convert( CollectionT & lhs, const wchar_t * rhs, size_t rlen )
         {
           // over allocating takes care of combining charachters too
-          size_t rlen = strlength<wchar_t>::execute( rhs );
-          size_t allocd = 1+4*rlen;
+          size_t allocd = 1+(sizeof(wchar_t)*rlen);
           
           char * b = lhs.allocate( allocd );
           
@@ -77,6 +76,13 @@ namespace csl
           trailing_zero<CollectionT>::ensure( lhs );
           return lhs;
         }        
+
+        template <typename CollectionT>
+        static CollectionT & convert( CollectionT & lhs, const wchar_t * rhs )
+        {
+          size_t rlen = strlength<wchar_t>::execute( rhs );
+          return convert(lhs,rhs,rlen);
+        }
       };
       
       template <> struct sibling_type<wchar_t>
@@ -86,13 +92,10 @@ namespace csl
         CSL_DECLARE_EXCEPTION( conversion_error );
 
         typedef char sibling_t;
-        
+
         template <typename CollectionT>
-        static CollectionT & convert( CollectionT & lhs, const char * rhs )
+        static CollectionT & convert( CollectionT & lhs, const char * rhs, size_t rlen )
         {
-          // over allocating may happend due to the combining chars
-          size_t rlen = strlength<char>::execute( rhs );
-          
           wchar_t * b = lhs.allocate( 1+rlen );
           
           if( b == NULL )
@@ -114,6 +117,14 @@ namespace csl
                     
           trailing_zero<CollectionT>::ensure( lhs );
           return lhs;
+        }
+
+        template <typename CollectionT>
+        static CollectionT & convert( CollectionT & lhs, const char * rhs )
+        {
+          // over allocating may happend due to the combining chars
+          size_t rlen = strlength<char>::execute( rhs );
+          return convert(lhs,rhs,rlen);
         }
       }; 
     }
@@ -193,6 +204,37 @@ namespace csl
         return execute(lhs,rhs);
       }
 
+      static CollectionT & execute(CollectionT & lhs, const value_t * rhs, size_t rlen)
+      {
+        CSL_REQUIRE( trailing_zero<CollectionT>::check(lhs) == true );
+        CSL_REQUIRE( rhs != NULL );
+        CSL_REQUIRE( lhs.size() != 0 );
+        CSL_REQUIRE( rlen != 0 );
+
+        // parameter checks
+        if( lhs.size() == 0 ) { trailing_zero<CollectionT>::ensure(lhs); }
+        if( rhs == NULL )     { return lhs; }
+
+        // empty string on rhs
+        if( *rhs == zero<value_t>::val_ ) return lhs;
+
+        if( rlen == 0 ) return lhs;
+
+        // remove trailing zero
+        value_t * p = lhs.allocate(lhs.size()-1);
+
+        if( p == NULL ) { CSL_THROW( out_of_memory ); }
+
+        lhs.append( rhs, rlen );
+        CSL_ENSURE( trailing_zero<CollectionT>::check(lhs) == true );
+        return lhs;
+      }
+
+      CollectionT & operator()(CollectionT & lhs, const value_t * rhs, size_t rlen) const
+      {
+        return execute(lhs,rhs,rlen);
+      }
+
       static CollectionT & execute(CollectionT & lhs, const value_t rhs)
       {
         CSL_REQUIRE( trailing_zero<CollectionT>::check(lhs) == true );
@@ -251,6 +293,40 @@ namespace csl
       CollectionT & operator()(CollectionT & lhs, const sibling_t * rhs) const
       {
         return execute(lhs,rhs);
+      }
+
+      static CollectionT & execute(CollectionT & lhs, const sibling_t * rhs, size_t rlen)
+      {
+        CSL_REQUIRE( trailing_zero<CollectionT>::check(lhs) == true );
+        CSL_REQUIRE( rhs != NULL );
+        CSL_REQUIRE( lhs.size() > 0 );
+        CSL_REQUIRE( rlen != 0 );
+
+        // parameter checks
+        if( lhs.size() == 0 ) { trailing_zero<CollectionT>::ensure(lhs); }
+        if( rhs == NULL )     { return lhs; }
+
+        // empty string on rhs
+        if( rlen == 0 ) return lhs;
+
+        // remove trailing zero
+        value_t * p = lhs.allocate(lhs.size()-1);
+
+        if( p == NULL ) { CSL_THROW( out_of_memory ); }
+
+        // convert rhs to value_t collection
+        CollectionT tmp;
+        sibling_type_t::convert( tmp, rhs, rlen );
+
+        lhs.append( tmp );
+
+        CSL_ENSURE( trailing_zero<CollectionT>::check(lhs) == true );
+        return lhs;
+      }
+
+      CollectionT & operator()(CollectionT & lhs, const sibling_t * rhs, size_t rlen) const
+      {
+        return execute(lhs,rhs,rlen);
       }
 
       static CollectionT & execute(CollectionT & lhs, const sibling_t rhs)

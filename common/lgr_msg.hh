@@ -42,6 +42,7 @@ namespace csl
   namespace common
   {
     class logger_base;
+    class str;
 
     namespace lgr // logger helpers
     {
@@ -96,6 +97,8 @@ namespace csl
         ~msg();
 
         msg & operator<<(const char *);
+        msg & operator<<(const wchar_t *);
+        msg & operator<<(const csl::common::str & s);
         inline msg & operator<<(const tag &)  { append<unsigned char>(type_select<tag>::sel_);  return *this; }
         inline msg & operator<<(const name &) { append<unsigned char>(type_select<name>::sel_); return *this; }
         inline msg & operator<<(const end_of_record &)
@@ -112,6 +115,8 @@ namespace csl
           append(type_select<T>::sel_,&v,sizeof(T));
           return *this;
         }
+
+        static void to_str(const uint8_t * encoded, size_t len, str & result);
 
       private:
         // internal functions

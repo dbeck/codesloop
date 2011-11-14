@@ -24,6 +24,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "codesloop/common/lgr_stderr_logger.hh"
+#include "codesloop/common/lgr_msg.hh"
+#include "codesloop/common/str.hh"
 
 namespace csl
 {
@@ -33,6 +35,25 @@ namespace csl
     {
       stream & stderr_logger::push(ksmsg p)
       {
+        try
+        {
+          scoped_kspin_lock lck(p.get_lock());
+          str result;
+          lgr::msg::to_str(p.buffer().buf_, p.buffer().len_, result);
+          if( !result.empty() )
+          {
+            fwrite(result.c_str(),sizeof(wchar_t),result.nchars(),stderr);
+            fflush(stderr);
+          }
+        }
+        catch(const scoped_kspin_lock::key_changed & e)
+        {
+          // XXX TODO
+        }
+        catch(const excbase & e)
+        {
+          // XXX TODO
+        }
         return *this;
       }
     }
