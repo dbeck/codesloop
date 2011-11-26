@@ -157,6 +157,8 @@ namespace csl
           }
         }
 
+        CSL_INFO( L"Starting TCP listener loop" );
+
         fd_set rfds;
 
         while( stop_me_ == false )

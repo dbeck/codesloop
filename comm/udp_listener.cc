@@ -150,6 +150,8 @@ namespace csl
           }
         }
 
+        CSL_INFO( L"Starting UDP listener loop" );
+
         fd_set rfds;
 
         while( stop_me_ == false )

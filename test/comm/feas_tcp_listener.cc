@@ -24,6 +24,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "codesloop/comm/tcp_listener.hh"
+#include "codesloop/common/logger.hh"
+#include "codesloop/common/lgr_stderr_logger.hh"
 #include <assert.h>
 
 using namespace csl::comm;
@@ -54,6 +56,9 @@ using namespace test_tcp_listener;
 
 int main()
 {
+  csl::common::lgr::stderr_logger errlog;
+  csl::common::logger::set(errlog);
+
   try
   {
     start_and_stop();
