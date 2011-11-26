@@ -39,12 +39,15 @@ namespace csl
     public:
       virtual ~logger_base() {}
 
-      enum { info_=1, error_=2, trace_=3, scoped_=4 };
+      enum { info_=0, error_=1, trace_=2, scoped_=3, max_level_=3  };
 
       inline logger_base() : buffer_(new lgr::msg::buffer_t) {}
       inline lgr::msg construct_msg(lgr::loc & l) { return lgr::msg(l,*this); }
       inline lgr::msg construct_disabled_msg(lgr::loc & l) { return lgr::msg(l,*this,lgr::disabled_log()); }
       inline lgr::msg::msgdata_t construct_msgdata() { return buffer_->get(); }
+
+      static const char * level_to_string(unsigned int level);
+      static const wchar_t * level_to_wstring(unsigned int level);
 
     public: // -- ignored:
       // input interface
@@ -98,7 +101,7 @@ namespace csl
     csl::common::lgr::loc * __loc_ptr__ = 0; \
     CSL_DEFINE_LOGGER_LOCATION_PTR( csl::common::logger_base:: LEVEL, __loc_ptr__ ); \
     CSL_CHECK_LOCATION_ENABLED( __loc_ptr__ ) \
-      logger::get().construct_msg(*__loc_ptr__) << EXPR << csl::common::lgr::end_of_record(); \
+      csl::common::logger::get().construct_msg(*__loc_ptr__) << EXPR << csl::common::lgr::end_of_record(); \
   } while(0)
 #endif // CSL_LOGGER_COMMON_
 
@@ -131,8 +134,8 @@ namespace csl
   csl::common::lgr::msg __scoped_logger_msg__( \
       CSL_CHECK_LOCATION_SWITCH( \
           __scoped_loc_enabled_here__,\
-          logger::get().construct_msg(*__scoped_loc_ptr__),\
-          logger::get().construct_disabled_msg(*__scoped_loc_ptr__))); \
+          csl::common::logger::get().construct_msg(*__scoped_loc_ptr__),\
+          csl::common::logger::get().construct_disabled_msg(*__scoped_loc_ptr__))); \
   if( __scoped_loc_enabled_here__ ) { \
     __scoped_logger_msg__ << EXPR << csl::common::lgr::end_of_record(); }
 #else // !CSL_SCOPED_TRACE_ENABLED

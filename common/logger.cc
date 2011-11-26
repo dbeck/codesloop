@@ -43,5 +43,17 @@ namespace csl
     }
 
     logger_base * logger::inst_ = &(lgr::silent_logger::instance());
+
+    const char * logger_base::level_to_string(unsigned int level)
+    {
+      static const char * strs[] = { "INF", "ERR", "TRC", "SCD" };
+      return strs[level%4];
+    }
+
+    const wchar_t * logger_base::level_to_wstring(unsigned int level)
+    {
+      static const wchar_t * wstrs[] = { L"INF", L"ERR", L"TRC", L"SCD" };
+      return wstrs[level%4];
+    }
   }
 }

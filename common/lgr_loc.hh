@@ -82,42 +82,50 @@ namespace csl
       {
       public:
         loc(const char * fl,
+            const wchar_t * wfl,
             unsigned int ln,
             const char * fu,
             const char * cs,
+            const wchar_t * wcs,
             unsigned int ll,
             locs & lcs,
             uint32_t enab=1)
             :
               file_(fl),
+              wfile_(wfl),
               line_(ln),
               func_(fu),
               clazz_(cs),
+              wclazz_(wcs),
               level_(ll),
               enabled_(enab)
         {
           locid_ = lcs.reg(*this);
         }
 
-        inline const char * file()  const { return file_;  }
-        inline unsigned int line()  const { return line_;  }
-        inline const char * func()  const { return func_;  }
-        inline const char * clazz() const { return clazz_; }
-        inline unsigned int level() const { return level_; }
-        inline unsigned int locid() const { return locid_; }
+        inline const char * file()      const { return file_;   }
+        inline const wchar_t * wfile()  const { return wfile_;  }
+        inline unsigned int line()      const { return line_;   }
+        inline const char * func()      const { return func_;   }
+        inline const char * clazz()     const { return clazz_;  }
+        inline const wchar_t * wclazz() const { return wclazz_; }
+        inline unsigned int level()     const { return level_;  }
+        inline unsigned int locid()     const { return locid_;  }
 
         inline bool enabled() const { return (enabled_.load() == 1); }
         inline void disable() { enabled_ = 0; }
         inline void enable()  { enabled_ = 1; }
 
       private:
-        const char * file_;
-        unsigned int line_;
-        const char * func_;
-        const char * clazz_;
-        unsigned int level_;
-        unsigned int locid_;
-        std::atomic_uint enabled_;
+        const char *            file_;
+        const wchar_t *         wfile_;
+        unsigned int            line_;
+        const char *            func_;
+        const char *            clazz_;
+        const wchar_t *         wclazz_;
+        unsigned int            level_;
+        unsigned int            locid_;
+        std::atomic_uint        enabled_;
 
         loc() = delete;
         loc(const loc&) = delete;
@@ -130,42 +138,42 @@ namespace csl
 #ifndef CSL_DEFINE_LOGGER_LOCATION
 #define CSL_DEFINE_LOGGER_LOCATION(LEVEL) \
     do { \
-      static csl::common::lgr::loc __logger__location__(\
-          __FILE__,\
-          __LINE__,\
-          __func__,\
-          class_name(),\
-          LEVEL,\
-          csl::common::lgr::locs::instance()); \
+      static csl::common::lgr::loc __logger__location__(        \
+          __FILE__, L""__FILE__,                                \
+          __LINE__,                                             \
+          __func__,                                             \
+          class_name(), wclass_name(),                          \
+          LEVEL,                                                \
+          csl::common::lgr::locs::instance());                  \
     } while(0)
 #endif //CSL_DEFINE_LOGGER_LOCATION
 
 #ifndef CSL_DEFINE_LOGGER_LOCATION_PTR
-#define CSL_DEFINE_LOGGER_LOCATION_PTR(LEVEL,PTR) \
-    do { \
-      static csl::common::lgr::loc __logger__location__(\
-          __FILE__,\
-          __LINE__,\
-          __func__,\
-          class_name(),\
-          LEVEL,\
-          csl::common::lgr::locs::instance()); \
-      PTR = &__logger__location__; \
+#define CSL_DEFINE_LOGGER_LOCATION_PTR(LEVEL,PTR)               \
+    do {                                                        \
+      static csl::common::lgr::loc __logger__location__(        \
+          __FILE__, L""__FILE__,                                \
+          __LINE__,                                             \
+          __func__,                                             \
+          class_name(), wclass_name(),                          \
+          LEVEL,                                                \
+          csl::common::lgr::locs::instance());                  \
+      PTR = &__logger__location__;                              \
     } while(0)
 #endif //CSL_DEFINE_LOGGER_LOCATION_PTR
 
 #ifndef CSL_DEFINE_LOGGER_LOCATION_PTR_INIT
-#define CSL_DEFINE_LOGGER_LOCATION_PTR_INIT(LEVEL,PTR,INIT) \
-    do { \
-      static csl::common::lgr::loc __logger__location__(\
-          __FILE__,\
-          __LINE__,\
-          __func__,\
-          class_name(),\
-          LEVEL,\
-          csl::common::lgr::locs::instance(),\
-          INIT); \
-      PTR = &__logger__location__; \
+#define CSL_DEFINE_LOGGER_LOCATION_PTR_INIT(LEVEL,PTR,INIT)     \
+    do {                                                        \
+      static csl::common::lgr::loc __logger__location__(        \
+          __FILE__, L""__FILE__,                                \
+          __LINE__,                                             \
+          __func__,                                             \
+          class_name(), wclass_name(),                          \
+          LEVEL,                                                \
+          csl::common::lgr::locs::instance(),                   \
+          INIT);                                                \
+      PTR = &__logger__location__;                              \
     } while(0)
 #endif //CSL_DEFINE_LOGGER_LOCATION_PTR_INIT
 

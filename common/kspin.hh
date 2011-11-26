@@ -102,6 +102,8 @@ namespace csl
         return ret;
       }
 
+      inline bool is_locked() { return (load() == 0); }
+
     private:
       uint32_t           val_;
       std::atomic_flag   lck_;
@@ -120,10 +122,12 @@ namespace csl
 
     private:
       friend class scoped_kspin_lock;
-      inline bool lock()     { return lock_->lock(id_); }
-      inline bool unlock()   { return lock_->unlock(id_); }
+      friend class oneshot_kspin_lock;
+      inline bool lock()      { return lock_->lock(id_); }
+      inline bool unlock()    { return lock_->unlock(id_); }
+      inline bool is_locked() { return lock_->is_locked(); }
 
-      kspin_lock() = delete;
+      kspin_lock() : lock_(0), id_(0) {};
 
       kspin *   lock_;
       uint32_t  id_;
@@ -151,6 +155,56 @@ namespace csl
       scoped_kspin_lock & operator=(const scoped_kspin_lock &) = delete;
 
       kspin_lock * lock_;
+    };
+
+    class oneshot_kspin_lock
+    {
+    public:
+      CSL_CLASS( csl::common::oneshot_kspin_lock );
+
+      oneshot_kspin_lock() : is_valid_(false) {}
+
+      oneshot_kspin_lock(kspin_lock ksl) : lock_(ksl), is_valid_(false)
+      {
+        is_valid_ = lock_.lock();
+      }
+
+      ~oneshot_kspin_lock() { reset(); }
+
+      bool is_valid() const { return is_valid_; }
+
+      void reset()
+      {
+        if( is_valid() )
+        {
+          lock_.unlock();
+          is_valid_ = false;
+        }
+      }
+
+      bool assign(kspin_lock ksl)
+      {
+        reset();
+        if( ksl.lock() )
+        {
+          lock_     = ksl;
+          is_valid_ = true;
+        }
+        return is_valid_;
+      }
+
+      oneshot_kspin_lock(oneshot_kspin_lock && other) : lock_(other.lock_), is_valid_(other.is_valid_)
+      {
+        other.is_valid_ = false;
+      }
+
+
+    private:
+      kspin_lock        lock_;
+      bool              is_valid_;
+
+      oneshot_kspin_lock(kspin_lock & ksl) = delete;
+      oneshot_kspin_lock & operator=(const oneshot_kspin_lock &) = delete;
     };
   }
 }

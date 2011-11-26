@@ -24,6 +24,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "codesloop/comm/tcp_listener.hh"
+#include "codesloop/common/logger.hh"
 
 namespace csl
 {
@@ -151,8 +152,8 @@ namespace csl
           scoped_lock lck(lock_);
           if( sock_.get() == -1 )
           {
-            // XXX ???
-            CSL_THROW( not_started );
+            CSL_ERROR( L"Failed to create socket" );
+            return;
           }
         }
 
@@ -168,8 +169,10 @@ namespace csl
           int err = ::select(sock_.get()+1,&rfds,NULL,NULL,&tv);
           if( err == -1 )
           {
-            // XXX ???
-            CSL_THROW( select_failed );
+            // treat this as a permanent error because that usually means
+            // the listener socket is in bad shape
+            CSL_ERROR( L"select() failed" );
+            break;
           }
           else if (err)
           {
@@ -197,14 +200,21 @@ namespace csl
             }
             else if( fdtmp < 0 )
             {
-              // XXX ???
-              CSL_THROW( accept_failed );
+              // treat this as a transient error, because this can be caused by a
+              // temporary inability of handling new connections
+              // --> we give some time to the system to recover
+
+              suspend_interval_ += 100;
+
+              CSL_ERROR( L"accept() failed (sleeping for " << suspend_interval_ << L" ms)" );
+
+              SleepMiliseconds(suspend_interval_);
             }
           }
         }
 
-        sock_      = -1;
-        started_   = false;
+        sock_    = -1;
+        started_ = false;
         stop_me_ = false;
       }
     }

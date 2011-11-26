@@ -51,6 +51,7 @@ ADD_LIBRARY( csl_common STATIC
     # -- logger helpers
     lgr_loc.cc lgr_loc.hh
     lgr_msg.cc lgr_msg.hh
+    lgr_msg_types.cc lgr_msg_types.hh
     lgr_silent_logger.hh
     lgr_stderr_logger.cc lgr_stderr_logger.hh
     # lgr_ksmsg_to_str.cc

@@ -216,9 +216,8 @@ namespace csl
         if( rhs == NULL )     { return lhs; }
 
         // empty string on rhs
-        if( *rhs == zero<value_t>::val_ ) return lhs;
-
         if( rlen == 0 ) return lhs;
+        if( *rhs == zero<value_t>::val_ ) return lhs;
 
         // remove trailing zero
         value_t * p = lhs.allocate(lhs.size()-1);
@@ -308,6 +307,7 @@ namespace csl
 
         // empty string on rhs
         if( rlen == 0 ) return lhs;
+        if( *rhs == zero<sibling_t>::val_ ) return lhs;
 
         // remove trailing zero
         value_t * p = lhs.allocate(lhs.size()-1);

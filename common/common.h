@@ -160,7 +160,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /* class helpers */
 #ifndef CSL_CLASS
-#define CSL_CLASS(NAME) static inline const char * class_name() { return (#NAME); }
+#define CSL_CLASS(NAME) \
+  static inline const char * class_name() { return (#NAME); } \
+  static inline const wchar_t * wclass_name() { return (L""#NAME); }
 #endif /*CSL_CLASS*/
 
 #ifndef AUTOEXEC
