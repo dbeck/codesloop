@@ -1,4 +1,4 @@
-# Copyright (c) 2008,2009,2010,2011 CodeSloop Team
+# Copyright (c) 2008,2009,2010, CodeSloop Team
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -21,27 +21,21 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-PROJECT(codesloop)
-ENABLE_TESTING()
+# -- test / db --
 
 # SET(CMAKE_VERBOSE_MAKEFILE ON)
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-INCLUDE(DefaultCompilerFlags)
-FIND_PACKAGE(MySQL)
-FIND_PACKAGE(ZLib)
-FIND_PACKAGE(Dlopen)
-FIND_PACKAGE(OPSSL)
-FIND_PACKAGE(Wsock32)
-FIND_PACKAGE(Pthread)
-FIND_PACKAGE(StdCXX)
 
-SUBDIRS(
-         common
-         comm
-         db
-         example
-         test
-       )
+IF(MYSQL_FOUND)
+  SET(MYSQL_DB_TEST_DIR mysql)
+ELSE(MYSQL_FOUND)
+  SET(MYSQL_DB_TEST_DIR)
+ENDIF(MYSQL_FOUND)
+
+LINK_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}../../db ${CMAKE_CURRENT_SOURCE_DIR}../../common )
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../../.. )
+LINK_LIBRARIES( csl_db csl_common ${DLOPEN_LIBRARY} )
+
+#ADD_EXECUTABLE( func_ksmsg      func_ksmsg.cc )
+#ADD_TEST( func_common_ksmsg     ${EXECUTABLE_OUTPUT_PATH}/func_ksmsg )
 
 # -- EOF --

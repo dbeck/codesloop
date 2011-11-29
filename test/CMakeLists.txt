@@ -28,5 +28,6 @@
 SUBDIRS(
     common
     comm
+    db
     )
 
