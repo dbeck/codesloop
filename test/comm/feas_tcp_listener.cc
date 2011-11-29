@@ -38,7 +38,7 @@ namespace test_tcp_listener
   public:
     void operator()(autofd fd, addr a)
     {
-      printf(".");
+      CSL_INFO(L"New connection on fd:" << fd.get() );
     }
   };
 

@@ -157,7 +157,7 @@ namespace csl
           }
         }
 
-        CSL_INFO( L"Starting TCP listener loop" );
+        CSL_INFO( L"Starting TCP listener loop @(" << hostname_ << L":" << port_ << L")" );
 
         fd_set rfds;
 

@@ -63,7 +63,7 @@ namespace csl
 
         uint32_t pos = (++act_pos_)%buf_count_;
 
-        while( locks_[pos].load()==0 )
+        while( locks_[pos].is_locked() )
         {
           pos = (++act_pos_)%buf_count_;
         }

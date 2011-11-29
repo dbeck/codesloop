@@ -150,7 +150,7 @@ namespace csl
           }
         }
 
-        CSL_INFO( L"Starting UDP listener loop" );
+        CSL_INFO( L"Starting UDP listener loop @(" << hostname_ << L":" << port_ << L")" );
 
         fd_set rfds;
 

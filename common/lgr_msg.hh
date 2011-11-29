@@ -29,6 +29,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "codesloop/common/lgr_msg_types.hh"
 #include "codesloop/common/ksbuf.hh"
 #include <vector>
+#include <string>
 
 #ifndef CSL_LOGGER_MAX_LOG_LENGTH
 #define CSL_LOGGER_MAX_LOG_LENGTH 2048
@@ -62,7 +63,10 @@ namespace csl
 
         msg & operator<<(const char *);
         msg & operator<<(const wchar_t *);
+        msg & operator<<(const std::string & s);
         msg & operator<<(const csl::common::str & s);
+        inline msg & operator<<(char * s)     { return (*this << static_cast<const char *>(s)); }
+        inline msg & operator<<(wchar_t * w)  { return (*this << static_cast<const wchar_t *>(w)); }
         inline msg & operator<<(const tag &)  { append<uint8_t>(type_select<tag>::sel_);  return *this; }
         inline msg & operator<<(const name &) { append<uint8_t>(type_select<name>::sel_); return *this; }
         inline msg & operator<<(const end_of_record &)

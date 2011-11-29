@@ -50,12 +50,8 @@ namespace test_udp_listener
 
         if(!err)
         {
-          printf("Received: %s (from %s:%s) %ld bytes (lockid:%d)\n",
-              s.c_str(),
-              host,
-              service,
-              m.buffer().len_,
-              m.get_lock().id());
+          CSL_INFO( "Received: '" << s << "' (from " << host << ":" << service << ") " <<
+              m.buffer().len_ << " bytes (lockid:" << m.get_lock().id() << ")\n" );
           ::sendto(fd,bf,m.buffer().len_,0,a.get(),a.len());
         }
       }

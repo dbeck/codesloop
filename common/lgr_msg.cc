@@ -205,7 +205,7 @@ namespace csl
         // append type
         append<uint8_t>(type_select<const char *>::sel_);
         // append length
-        unsigned short sz = static_cast<unsigned short>(strlength<char>::execute(str));
+        uint16_t sz = static_cast<uint16_t>(strlength<char>::execute(str));
         append<uint16_t>(sz);
         // append data
         if( sz > 0 ) append(str,sz);
@@ -218,7 +218,7 @@ namespace csl
         // append type
         append<uint8_t>(type_select<const wchar_t *>::sel_);
         // append length
-        unsigned short sz = static_cast<unsigned short>(strlength<wchar_t>::execute(str));
+        uint16_t sz = static_cast<uint16_t>(strlength<wchar_t>::execute(str));
         append<uint16_t>(sz);
         // append data
         if( sz > 0 ) append(str,sz*sizeof(wchar_t));
@@ -231,10 +231,23 @@ namespace csl
         // append type
         append<uint8_t>(type_select<const wchar_t *>::sel_);
         // append length
-        unsigned short sz = static_cast<unsigned short>(s.size());
+        uint16_t sz = static_cast<uint16_t>(s.size());
         append<uint16_t>(sz);
         // append data
         if( sz > 0 ) append(s.c_str(),sz*sizeof(wchar_t));
+        return *this;
+      }
+
+      msg & msg::operator<<(const std::string & s)
+      {
+        CSL_REQUIRE( !s.empty() );
+        // append type
+        append<uint8_t>(type_select<const char *>::sel_);
+        // append length
+        uint16_t sz = static_cast<uint16_t>(s.size());
+        append<uint16_t>(sz);
+        // append data
+        if( sz > 0 ) append(s.c_str(),sz);
         return *this;
       }
 
@@ -247,7 +260,6 @@ namespace csl
       { \
         TYPE tmp_val = 0; \
         get_data<TYPE>(encoded,len,tmp_val,pos); \
-        /*conv_data(res,L"\n  " #TYPE ": "); conv_data(res,static_cast<int64_t>(tmp_val));*/ \
         conv_data(res2,static_cast<int64_t>(tmp_val)); \
       }
 #endif // CSL_CONV_DATA
@@ -257,7 +269,6 @@ namespace csl
       { \
         TYPE tmp_val = 0; \
         get_data<TYPE>(encoded,len,tmp_val,pos); \
-        /*conv_data(res,L"\n  " #TYPE ": "); conv_data(res,static_cast<CAST>(tmp_val));*/ \
         conv_data(res2,static_cast<CAST>(tmp_val)); \
       }
 #endif // CSL_CONV_DATA2
@@ -275,8 +286,6 @@ namespace csl
 
         res.append(L'\0');
 
-        //conv_start(res);
-
         while(pos < len)
         {
 
@@ -293,11 +302,12 @@ namespace csl
           case CSL_TYPE_SEL(uint16_t):  CSL_CONV_DATA(uint16_t); break;
           case CSL_TYPE_SEL(uint32_t):  CSL_CONV_DATA(uint32_t); break;
           case CSL_TYPE_SEL(uint64_t):  CSL_CONV_DATA(uint64_t); break;
-
           case CSL_TYPE_SEL(float):     CSL_CONV_DATA2(float,double); break;
           case CSL_TYPE_SEL(double):    CSL_CONV_DATA2(double,double); break;
-          case CSL_TYPE_SEL(tag): break;
-          case CSL_TYPE_SEL(name): break;
+
+          case CSL_TYPE_SEL(tag):  break; // TODO
+          case CSL_TYPE_SEL(name): break; // TODO
+
           case CSL_TYPE_SEL(end_of_record): break;
 
           case CSL_TYPE_SEL(return_from_function):
@@ -314,7 +324,6 @@ namespace csl
                 {
                   get_data(encoded,len,p,stmp.nbytes(),pos);
                   stmp.append('\0');
-                  /*conv_data(res,L"\n  String: "); conv_data(res,stmp.data(),slen);*/
                   conv_data(res2,stmp.data(),slen);
 
                 }
@@ -332,18 +341,17 @@ namespace csl
                 {
                   get_data(encoded,len,p,wstmp.nbytes(),pos);
                   wstmp.append(L'\0');
-                  /*conv_data(res,L"\n  WString: "); conv_data(res,wstmp.data(),slen);*/
                   conv_data(res2,wstmp.data(),slen);
                 }
               }
             }
             break;
 
-          case CSL_TYPE_SEL(when): break;
-          case CSL_TYPE_SEL(threadid): break;
-          case CSL_TYPE_SEL(procid): break;
-          case CSL_TYPE_SEL(hostid): break;
-          case CSL_TYPE_SEL(seqno): break;
+          case CSL_TYPE_SEL(when):     break; // TODO
+          case CSL_TYPE_SEL(threadid): break; // TODO
+          case CSL_TYPE_SEL(procid):   break; // TODO
+          case CSL_TYPE_SEL(hostid):   break; // TODO
+          case CSL_TYPE_SEL(seqno):    break; // TODO
 
           case CSL_TYPE_SEL(location_id):
             get_data<uint32_t>(encoded,len,locid,pos);
@@ -353,12 +361,12 @@ namespace csl
           default: break;
           };
         }
+
         if( res2.size() > 0 )
         {
           res2.append(L'\0');
           conv_data(res,"@: "); conv_data(res,res2.data(),res2.size()-1);
         }
-        //conv_end(res);
         conv_data(res,L"\n");
         result.assign(res.data(),res.data()+res.size());
       }
